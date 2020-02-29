@@ -311,6 +311,345 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/13/front-end-modular-specification/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/03/13/front-end-modular-specification/" class="post-title-link" itemprop="http://yoursite.com/page/2/index.html">彻底搞懂前端各种模块化规范</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-13 14:09:21" itemprop="dateCreated datePublished" datetime="2019-03-13T14:09:21+08:00">2019-03-13</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/13/front-end-modular-specification/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2019/03/13/front-end-modular-specification/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Javascript 中有两种源文件，一种叫做脚本，一种叫做模块。脚本是可以由浏览器或 Node 环境引入执行的，而模块只能由 Javascript 代码用 import 引入。<br>模块中包含：import声明，export声明、语句。脚本中包含的是语句。所以脚本和模块的区别仅仅在于是否包含 import 和 export。浏览器中的脚本通过script 标签引入，如果要引入模块，需要给 script 标签加上 <code>type=&quot;module&quot;</code>。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type =<span class="string">"module"</span> src=<span class="string">""</span>&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>下面来区分各种模块规范。<a href="https://github.com/seasonrui/demo-for-blog/tree/master/javascript-modules" target="_blank" rel="noopener">本文代码示例在此</a></p>
+<h2 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h2><p>主要用于服务端，<strong>同步</strong>加载模块，只有加载完成，才能执行后面的操作。<br>CommonJS 定义的模块分为: 模块标识(module)、模块定义(exports) 、模块引用(require)</p>
+<h3 id="暴露模块"><a href="#暴露模块" class="headerlink" title="暴露模块"></a>暴露模块</h3><p>CommonJS 暴露模块有两个，exports 和 module.exports<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = value</span><br><span class="line">exports.a = value</span><br></pre></td></tr></table></figure></p>
+<p>那这两个有什么区别呢？</p>
+<p><strong>module.exports 和 exports 都是引用类型，require 引入的内容是 module.exports 指向的内存块内容，require 是看不到 exports 对象的，exports 只是 module.exports 的引用，如果改变了 exports 的引用（也就是指向了一个新的内存地址），require 的还是 module.exports 的内容，所以最好一直用 module.exports。</strong></p>
+<h3 id="引入模块"><a href="#引入模块" class="headerlink" title="引入模块"></a>引入模块</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(xxx)</span><br></pre></td></tr></table></figure>
+<p>第一次加载某个模块时，Node 会缓存该模块。以后再加载该模块，就直接从缓存取出该模块的 module.exports 属性。<br><a href="https://github.com/seasonrui/demo-for-blog/tree/master/javascript-modules/CommonJS" target="_blank" rel="noopener">查看 CommonJS Demo</a></p>
+<h2 id="AMD-异步模块定义，依赖前置。"><a href="#AMD-异步模块定义，依赖前置。" class="headerlink" title="AMD: 异步模块定义，依赖前置。"></a>AMD: 异步模块定义，依赖前置。</h2><p>CommonJS 规范主要用于服务端，那客户端的呢，而由于 CommonJS 同步的局限性，导致浏览器不能使用 CommonJS 规范，所以 AMD 规范就出来了，用于<strong>异步</strong>加载模块。AMD 是”Asynchronous Module Definition”的缩写，意思就是”异步模块定义”，<br>模块的加载不影响后续执行，依赖模块加载的语句，都会放在一个回调函数里，等到该模块加载完之后回调函数才运行。<br><code>define(id?, dependencies?, factory)</code><br>第一个参数 id：字符串，表示模块的标识。<br>第二个参数 dependencies：数组，元素是依赖模块的id。<br>第三个参数 factory：回调函数，在依赖的模块加载成功后，会执行这个回调函数，参数是所有依赖模块的引用。</p>
+<h3 id="暴露模块-1"><a href="#暴露模块-1" class="headerlink" title="暴露模块"></a>暴露模块</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义没有依赖的模块</span></span><br><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> xxx</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">//定义有依赖的模块</span></span><br><span class="line">define([<span class="string">'module1'</span>, <span class="string">'module2'</span>], <span class="function"><span class="keyword">function</span>(<span class="params">m1, m2</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> xxx</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>AMD 是 RequireJS 在推广过程中对模块定义的规范化产出。RequireJS 通过 require 函数实现模块的加载。</p>
+<h3 id="引入模块-1"><a href="#引入模块-1" class="headerlink" title="引入模块"></a>引入模块</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">require([module], callback);</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/seasonrui/demo-for-blog/tree/master/javascript-modules/AMD" target="_blank" rel="noopener">查看 AMD Demo</a></p>
+<h2 id="CMD-通用模块定义，依赖就近。"><a href="#CMD-通用模块定义，依赖就近。" class="headerlink" title="CMD: 通用模块定义，依赖就近。"></a>CMD: 通用模块定义，依赖就近。</h2><p>CMD 是”Common Module Definition”的缩写，意思就是”通用模块定义”，CMD 是 Sea.js 在推广过程中对模块定义的规范化产出。</p>
+<h3 id="暴露模块-2"><a href="#暴露模块-2" class="headerlink" title="暴露模块"></a>暴露模块</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义没有依赖的模块</span></span><br><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params">require, exports, module</span>)</span>&#123;</span><br><span class="line">  exports.xxx = value</span><br><span class="line">  <span class="built_in">module</span>.exports = value</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">//定义有依赖的模块</span></span><br><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params">require, exports, module</span>)</span>&#123;</span><br><span class="line">  <span class="comment">//引入依赖模块(同步)</span></span><br><span class="line">  <span class="keyword">var</span> module2 = <span class="built_in">require</span>(<span class="string">'./module2'</span>)</span><br><span class="line">  <span class="comment">//引入依赖模块(异步)</span></span><br><span class="line">    <span class="built_in">require</span>.async(<span class="string">'./module3'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">m3</span>) </span>&#123;</span><br><span class="line">    &#125;)</span><br><span class="line">  <span class="comment">//暴露模块</span></span><br><span class="line">  exports.xxx = value</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="引入模块-2"><a href="#引入模块-2" class="headerlink" title="引入模块"></a>引入模块</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用模块</span></span><br><span class="line">define(<span class="function"><span class="keyword">function</span> (<span class="params">require</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> m1 = <span class="built_in">require</span>(<span class="string">'./module1'</span>)</span><br><span class="line">  <span class="keyword">var</span> m2 = <span class="built_in">require</span>(<span class="string">'./module2'</span>)</span><br><span class="line">  m1.show()</span><br><span class="line">  m2.show()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/seasonrui/demo-for-blog/tree/master/javascript-modules/CMD" target="_blank" rel="noopener">查看 CMD Demo</a></p>
+<h2 id="CMD与AMD区别"><a href="#CMD与AMD区别" class="headerlink" title="CMD与AMD区别"></a>CMD与AMD区别</h2><p>共同点：</p>
+<ul>
+<li>都是为了实现浏览器 JavaScript 模块化开发。</li>
+<li>AMD 是 RequireJS 在推广过程中对模块定义的规范化产出。</li>
+<li>CMD 是 Sea.js 在推广过程中对模块定义的规范化产出。<br>区别：</li>
+<li>对于依赖的模块，AMD 是 提前执行，CMD 是延迟执行。不过从 RequireJS 2.0开始，也可以延迟执行。</li>
+<li>AMD 推崇依赖前置，CMD 推崇依赖就近。</li>
+</ul>
+<h2 id="ES6模块"><a href="#ES6模块" class="headerlink" title="ES6模块"></a>ES6模块</h2><p>在ES6之前，主要的模块规范是 CommonJS 和 AMD 规范，<strong>ES6模块设计思想是尽量静态化，使得编译时就确定模块的依赖关系（静态加载），便于做静态代码分析。同时，静态加载也限制了模块加载在文件中所有语句之前，并且不能使用表达式和变量这种运行时才能得到结果的语法结构</strong>。CommonJS 和 AMD 都只能在运行时确定。ES6 模块化的出现，旨在成为浏览器和服务器通用的模块解决方案，</p>
+<h3 id="export声明"><a href="#export声明" class="headerlink" title="export声明"></a>export声明</h3><p>模块导出变量的方式有两种，一种是独立使用 export 声明，一种是在声明型语句（let, const, var, function, class等）前加上 export。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 独立使用export声明。</span></span><br><span class="line"><span class="keyword">export</span> &#123;a, b, c&#125;;</span><br><span class="line"><span class="comment">// 声明型语句前加export。</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">var</span> a = <span class="number">1</span>;</span><br></pre></td></tr></table></figure></p>
+<p>export 还可以默认导出，使用 export default 表示默认导出一个变量值。使用 export default 来导出时，对应的 import 不需要大括号。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params"></span>) </span>&#123; <span class="comment">// 输出</span></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> add <span class="keyword">from</span> <span class="string">'add'</span>; <span class="comment">// 输入</span></span><br></pre></td></tr></table></figure></p>
+<p>export default 输出一个 default 的变量，所以后面不能跟变量声明语句。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 正确</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 正确</span></span><br><span class="line"><span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> a;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 错误</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">var</span> a = <span class="number">1</span>;</span><br></pre></td></tr></table></figure></p>
+<p>要注意的是，export 导出的必须是一个接口，与模块内的变量是一一对应的关系。不能直接导出变量值。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 报错</span></span><br><span class="line"><span class="keyword">export</span> <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 报错</span></span><br><span class="line"><span class="keyword">var</span> m = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">export</span> m;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 正确</span></span><br><span class="line"><span class="comment">// 写法一</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">var</span> m = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写法二</span></span><br><span class="line"><span class="keyword">var</span> m = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">export</span> &#123;m&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写法三</span></span><br><span class="line"><span class="keyword">var</span> n = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">export</span> &#123;n <span class="keyword">as</span> m&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="import声明"><a href="#import声明" class="headerlink" title="import声明"></a>import声明</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> x <span class="keyword">from</span> <span class="string">"./a.js"</span>; <span class="comment">// 导入默认值</span></span><br><span class="line"><span class="keyword">import</span> &#123;a <span class="keyword">as</span> x, modify&#125; <span class="keyword">from</span> <span class="string">'./a.js'</span>; <span class="comment">// 引入模块中的变量</span></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">from</span> <span class="string">"./a.js"</span>; <span class="comment">// 把模块中的所有变量以类似对象的方式引入</span></span><br></pre></td></tr></table></figure>
+<h2 id="ES6模块与CommonJS模块区别"><a href="#ES6模块与CommonJS模块区别" class="headerlink" title="ES6模块与CommonJS模块区别"></a>ES6模块与CommonJS模块区别</h2><p><strong>CommonJS 模块是运行时加载，ES6 模块是编译时输出接口</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CommonJS模块</span></span><br><span class="line"><span class="keyword">let</span> &#123; stat, exists, readFile &#125; = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="comment">// 等同于</span></span><br><span class="line"><span class="keyword">let</span> _fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">let</span> stat = _fs.stat;</span><br><span class="line"><span class="keyword">let</span> exists = _fs.exists;</span><br><span class="line"><span class="keyword">let</span> readfile = _fs.readfile;</span><br></pre></td></tr></table></figure></p>
+<p>CommonJS 加载模块是加载整个对象，生成 _fs 对象，再从这三个对象上读取3个方法，因为只有运行时才能得到这个对象，所以称为“运行时加载”，而 ES6 模块<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ES6模块</span></span><br><span class="line"><span class="keyword">import</span> &#123; stat, exists, readFile &#125; <span class="keyword">from</span> <span class="string">'fs'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>只会加载三个方法，别的不会加载，ES6 模块不是对象，对外接口是一种静态定义，所以在编译时就完成模块加载，效率要比 CommonJS 模块的加载方式高。<br><strong>CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用</strong><br>CommonJS 模块输出一个对象，结果被缓存，在第一次运行的时候加载一次，之后从缓存里读。JS 引擎在对脚本进行静态分析的时候，遇到模块加载命令 import，会先生成一个只读引用，等脚本真正执行的时候，才会去模块里执行。所以 ES6 模块是动态引用，不会缓存值。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/07/addRoutes-dynamic-routing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/03/07/addRoutes-dynamic-routing/" class="post-title-link" itemprop="http://yoursite.com/page/2/index.html">记一次 addRoutes 实现动态路由的过程</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-07 09:57:08" itemprop="dateCreated datePublished" datetime="2019-03-07T09:57:08+08:00">2019-03-07</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/07/addRoutes-dynamic-routing/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2019/03/07/addRoutes-dynamic-routing/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>权限控制是后台管理系统常见的需求，vue2 版本有一个 addRoutes 方法可以动态添加路由，记录一下用此方法踩坑的过程。</p>
+<h2 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h2><p>基本思路：初始路由是不需要权限的页面例如 login 页面等，登录成功后拿到用户信息（权限列表），筛选出对应的路由，用 addRoutes 将需要的路由加进来</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> constRoutes = [</span><br><span class="line">   &#123;</span><br><span class="line">    path: <span class="string">'/login'</span>,</span><br><span class="line">    name: <span class="string">'login'</span>,</span><br><span class="line">    component: login,</span><br><span class="line">    meta: &#123;</span><br><span class="line">      title: <span class="string">'登录'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    path: <span class="string">'*'</span>,</span><br><span class="line">    name: <span class="string">'404'</span>,</span><br><span class="line">    component: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'../../views/page404'</span>)</span><br><span class="line">    meta: &#123;</span><br><span class="line">      title: <span class="string">'404'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> router = <span class="keyword">new</span> Router(&#123;</span><br><span class="line">    routes: constRoutes</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>登录成功后，将用户信息放到 vuex 里存储，<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> auth = &#123;</span><br><span class="line">  state: &#123;</span><br><span class="line">    userInfo: <span class="literal">null</span>,</span><br><span class="line">    routes: []</span><br><span class="line">  &#125;,</span><br><span class="line">  getters: &#123;</span><br><span class="line">    dynamicMenu: <span class="function">(<span class="params">state</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// 筛选菜单</span></span><br><span class="line">    &#125;,</span><br><span class="line">    dynamicRoutes: <span class="function">(<span class="params">state</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// 筛选路由</span></span><br><span class="line">        <span class="keyword">return</span> data;</span><br><span class="line">    &#125; </span><br><span class="line">  &#125;,</span><br><span class="line">  mutations:&#123;</span><br><span class="line">    SET_USERINFO: <span class="function">(<span class="params">state, userInfo</span>) =&gt;</span> &#123;</span><br><span class="line">        state.userInfo = userInfo</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;，</span><br><span class="line">  actions: &#123;</span><br><span class="line">    setUserInfo (&#123; state, dispatch &#125;, data) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="comment">// 持久化存储</span></span><br><span class="line">          localStorage.userInfo = data;</span><br><span class="line">          dispatch(<span class="string">'SET_USERINFO'</span>, data) </span><br><span class="line">          resolve()</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;,</span><br><span class="line">    </span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> auth;</span><br></pre></td></tr></table></figure></p>
+<p>假设根据用户权限信息匹配筛选得到的路由如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> dynamicRoutes = [</span><br><span class="line">    &#123;</span><br><span class="line">      path: <span class="string">'/home'</span>,</span><br><span class="line">      component: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'../../views/home'</span>),</span><br><span class="line">      children: [</span><br><span class="line">        &#123;</span><br><span class="line">            path: <span class="string">'/page1'</span>,</span><br><span class="line">            component: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="regexp">/ '../</span>../views/page1<span class="string">'),</span></span><br><span class="line"><span class="string">            title: '</span>页面一<span class="string">'</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        &#123;</span></span><br><span class="line"><span class="string">            path: '</span>/page1<span class="string">',</span></span><br><span class="line"><span class="string">            component: () =&gt; import(/ '</span>../../views/page1<span class="string">'),</span></span><br><span class="line"><span class="string">            title: '</span>页面二<span class="string">'</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">      ]</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  ]</span></span><br></pre></td></tr></table></figure></p>
+<p>用 addRoutes 添加到路由中：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vm.$router.addRoutes(dynamicRoutes);</span><br><span class="line">vm.$router.push(&#123;<span class="attr">path</span>:<span class="string">'/page1'</span>&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>此时遇到第一个坑：当刷新页面时，会被重定向到404。因为刷新页面时 vue 会重新实例化，路由也会恢复到初始路由，匹配不到当前路由被重定向到404，所以要将404页面放到动态路由的最后。同时也需要将用户信息持久化，当刷新页面时，从持久化数据中拿到用户信息，获取到匹配到路由信息。<br>所以想到的处理办法是在 vuex 的 auth 里添加：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> userInfo = &#123;&#125;;</span><br><span class="line"><span class="keyword">if</span>(localStorage.userInfo) &#123; <span class="comment">// 从持久化数据中取出用户信息</span></span><br><span class="line">  <span class="keyword">var</span> userInfo = <span class="built_in">JSON</span>.parse(localStorage.userInfo);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123; <span class="comment">// 不存在则跳转到登录页</span></span><br><span class="line">  router.push(&#123;<span class="attr">name</span>: <span class="string">'login'</span>&#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> auth = &#123;</span><br><span class="line">  state: &#123;</span><br><span class="line">    userInfo: userInfo,</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">///...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在最外层APP.vue中添加<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">computed: &#123;</span><br><span class="line">  dynamicRoutes() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.$store.getters.dynamicRoutes</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;,</span><br><span class="line">created() &#123;</span><br><span class="line">  <span class="keyword">this</span>.$router.addRoutes(<span class="keyword">this</span>.dynamicRoutes)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样在刷新时路由初始化的问题就解决了，退出登录的时候将本地的 userInfo 清空，然而还是想的太简单，第二个坑又来了：在退出登录跳转到登录页时，即使将 userInfo 清空了，但已经添加的路由还在，再次登录时会再重复添加路由信息，所以得想办法清空路由信息，而 vue-router 没有提供清空路由的方法，只能通过刷新页面来将路由初始化（因为userInfo 已经清空），此时退出登录的问题解决了。看了看网上开源的项目 vue-element-admin 使用 addRoutes 方法。</p>
+<p>使用 addRoutes 实现动态路由的重点是：addRoutes在哪里调用？</p>
+<p>之前的思路是在登录成功后调用一次，在系统最外层 App.vue 初始化的时候调用一次，将用户信息持久化，动态路由是根据用户信息计算得来，清空用户信息刷新页面时路由失效。vue-element-admin 实现是：在全局导航钩子里调用 addRoutes，根据用户是否登录（token）来判断，如果用户登录并且已经有用户信息（也就是拿到权限信息）则next()，避免重复添加路由。如果已经登录但没有用户信息说明是刷新了页面，此时先去获取用户信息然后调用 addRoutes。退出系统时将用户唯一标识 token 清掉并 reload 页面将路由清空。核心代码是：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// permission judge function</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hasPermission</span>(<span class="params">roles, permissionRoles</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (roles.indexOf(<span class="string">'admin'</span>) &gt;= <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">true</span> <span class="comment">// admin permission passed directly</span></span><br><span class="line">  <span class="keyword">if</span> (!permissionRoles) <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">  <span class="keyword">return</span> roles.some(<span class="function"><span class="params">role</span> =&gt;</span> permissionRoles.indexOf(role) &gt;= <span class="number">0</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> whiteList = [<span class="string">'/login'</span>, <span class="string">'/authredirect'</span>]<span class="comment">// no redirect whitelist</span></span><br><span class="line"></span><br><span class="line">router.beforeEach(<span class="function">(<span class="params">to, <span class="keyword">from</span>, next</span>) =&gt;</span> &#123;</span><br><span class="line">  NProgress.start() <span class="comment">// start progress bar</span></span><br><span class="line">  <span class="keyword">if</span> (getToken()) &#123; <span class="comment">// determine if there has token</span></span><br><span class="line">    <span class="comment">/* has token*/</span></span><br><span class="line">    <span class="keyword">if</span> (to.path === <span class="string">'/login'</span>) &#123;</span><br><span class="line">      next(&#123; <span class="attr">path</span>: <span class="string">'/'</span> &#125;)</span><br><span class="line">      NProgress.done() <span class="comment">// if current page is dashboard will not trigger	afterEach hook, so manually handle it</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (store.getters.roles.length === <span class="number">0</span>) &#123; <span class="comment">// 判断当前用户是否已拉取完user_info信息</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'shi sm '</span>);</span><br><span class="line">        store.dispatch(<span class="string">'GetUserInfo'</span>).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123; <span class="comment">// 拉取user_info</span></span><br><span class="line">          <span class="keyword">const</span> roles = res.data.roles <span class="comment">// note: roles must be a array! such as: ['editor','develop']</span></span><br><span class="line">          store.dispatch(<span class="string">'GenerateRoutes'</span>, &#123; roles &#125;).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123; <span class="comment">// 根据roles权限生成可访问的路由表</span></span><br><span class="line">            router.addRoutes(store.getters.addRouters) <span class="comment">// 动态添加可访问路由表</span></span><br><span class="line">            next(&#123; ...to, <span class="attr">replace</span>: <span class="literal">true</span> &#125;) <span class="comment">// hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record</span></span><br><span class="line">          &#125;)</span><br><span class="line">        &#125;).catch(<span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</span><br><span class="line">          store.dispatch(<span class="string">'FedLogOut'</span>).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">            Message.error(err)</span><br><span class="line">            next(&#123; <span class="attr">path</span>: <span class="string">'/'</span> &#125;)</span><br><span class="line">          &#125;)</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓</span></span><br><span class="line">        <span class="keyword">if</span> (hasPermission(store.getters.roles, to.meta.roles)) &#123;</span><br><span class="line">          next()</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          next(&#123; <span class="attr">path</span>: <span class="string">'/401'</span>, <span class="attr">replace</span>: <span class="literal">true</span>, <span class="attr">query</span>: &#123; <span class="attr">noGoBack</span>: <span class="literal">true</span> &#125;&#125;)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 可删 ↑</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">/* has no token*/</span></span><br><span class="line">    <span class="keyword">if</span> (whiteList.indexOf(to.path) !== <span class="number">-1</span>) &#123; <span class="comment">// 在免登录白名单，直接进入</span></span><br><span class="line">      next()</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      next(<span class="string">`/login?redirect=<span class="subst">$&#123;to.path&#125;</span>`</span>) <span class="comment">// 否则全部重定向到登录页</span></span><br><span class="line">      NProgress.done() <span class="comment">// if current page is login will not trigger afterEach hook, so manually handle it</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/18/you-don-t-know-javascript-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1737,368 +2076,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/25/js-event-loop/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ruirui">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ruirui's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/09/25/js-event-loop/" class="post-title-link" itemprop="http://yoursite.com/page/2/index.html">JS 事件运行机制</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-09-25 13:49:46" itemprop="dateCreated datePublished" datetime="2018-09-25T13:49:46+08:00">2018-09-25</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/09/25/js-event-loop/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2018/09/25/js-event-loop/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>网上看了好多关于 JS 事件循环的文章，从各个文章中吸收了点自己需要的，整理总结如下。</p>
-<h3 id="JS-运行机制"><a href="#JS-运行机制" class="headerlink" title="JS 运行机制"></a>JS 运行机制</h3><p>JS是单线程的，某一时刻只能执行特定的一个任务，并且会阻塞其他任务执行，浏览器使用事件循环（Event Loop）机制来处理事件。</p>
-<p>事件循环的任务队列有两种：macro task 和 micro task。<br>常见的 macro task 有：script（整体代码）、setTimeout、setInterval、I/O、UI交互事件。<br>常见的 micro task 有：promise.then、process.nextTick、MutationObserver。</p>
-<p>一次完整的 Event loop 过程如下：</p>
-<ul>
-<li>初始状态：<strong>调用栈</strong>为空，micro task 为空，macro task 有script（整体代码）。</li>
-<li>接着：执行macro task 中的 script 代码，碰到同步任务，推入调用栈执行，碰到异步任务，将其分发到对应的任务队列中。此时，macro task 中的第一个任务（script）执行完了，script 被移出 macro 队列，</li>
-<li>然后：开始清空 micro task 队列。也就是，执行一个 macro 队列，清空所有的 micro 队列。</li>
-<li>执行渲染操作，更新界面。</li>
-<li>检查看是否有 web worker 任务，有的话则处理。</li>
-</ul>
-<p>每一次循环都是这样一个过程：<br><img src="event-loop.png" alt="event-loop"><br>以一个简单例子描述：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'script start'</span>)</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'setTimeout'</span>)</span><br><span class="line">&#125;, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Promise'</span>)</span><br><span class="line">  resolve()</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">'promise1'</span>)</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">'promise2'</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'script end'</span>)</span><br></pre></td></tr></table></figure></p>
-<p>分析一下执行过程：</p>
-<ul>
-<li>初始状态：macro 中是整体的 script 代码。</li>
-<li>开始执行 script，第一个console.log(‘script start’)，直接输出。</li>
-<li>接着碰到 setTimeout，将其放入 macro 中。</li>
-<li>接着 new promise 直接打印出 Promise，因为 Promise 实例一旦创建，执行器立刻执行，后续的.then放入 micro 中。</li>
-<li>直接打印 script end。</li>
-<li>此时，macro 中的第一个任务结束，要开始清空 micro 了，于是输出、promise1、promise2。</li>
-<li>接着执行下一轮事件循环，执行下一个 macro task，输出 setTimeout。</li>
-</ul>
-<p>于是，最终输出顺序是：script start =&gt; Promise =&gt; script end =&gt; promise1 =&gt; promise2 =&gt; setTimeout。</p>
-<p>如果加上 async/await 呢？</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'script start'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">await</span> async2()</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'async2 end'</span>)</span><br><span class="line">&#125;</span><br><span class="line">async1()</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'setTimeout'</span>)</span><br><span class="line">&#125;, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Promise'</span>)</span><br><span class="line">  resolve()</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">'promise1'</span>)</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">'promise2'</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'script end'</span>)</span><br></pre></td></tr></table></figure>
-<p>加上 async/await 发现「async1 end」的输出顺序有了差异。<br>chrome 70 版本是：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">script start =&gt; async2 end =&gt; <span class="function"><span class="params">Promise</span> =&gt;</span> script end =&gt; <span class="function"><span class="params">promise1</span> =&gt;</span> promise2 =&gt; async1 end =&gt; setTimeout。</span><br></pre></td></tr></table></figure></p>
-<p>chrome 73 版本是：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">script start =&gt; async2 end =&gt; <span class="function"><span class="params">Promise</span> =&gt;</span> script end =&gt; async1 end =&gt; <span class="function"><span class="params">promise1</span> =&gt;</span> promise2 =&gt; setTimeout。</span><br></pre></td></tr></table></figure></p>
-<p>所以问题是<strong>await 做了什么？</strong>async/await 其实是 promise 的语法糖，promise 的事件循环机制理解了，那将 await 转化为 promise 就好理解了。</p>
-<p>我们知道 async 函数总会返回一个 promise，看<a href="https://tc39.github.io/ecma262/#await" target="_blank" rel="noopener">官方规范</a>：<br>也就是说：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">await</span> async2()</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>等价于：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> RESOLVE(async2).then(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>而 RESOLVE() 几乎等于 Promise.resolve()。几乎等于的意思就是还是有区别，下面看具体区别。</p>
-<h3 id="RESOLVE-vs-Promise-resolve"><a href="#RESOLVE-vs-Promise-resolve" class="headerlink" title="RESOLVE() vs Promise.resolve()"></a>RESOLVE() vs Promise.resolve()</h3><p>如果参数是个非 thenable 值，那么 Promise.resolve(non-thenable) 等价于 RESOLVE(non-thenable)。<br>但如果是个 thenable 对象，就不相等了，因为</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RESOLVE()</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  resolve(thenable)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>等价于<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    thenable.then(resolve)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
-<p>也就是说：RESOLVE() 会产生一个新的 promise，尽管该 promise 会 resolve，但这个过程是异步的，所以进入队列的是 Promise.resolve 的 then 过程，thenable 的 then 要等到执行到该 promise 的 then 之后才能执行，所以时序会靠后，举个明显的例子：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RESOLVE(thenable)</span></span><br><span class="line"><span class="keyword">let</span> p1 = <span class="built_in">Promise</span>.resolve(<span class="number">1</span>)</span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  resolve(p1)</span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res)</span><br><span class="line">&#125;)</span><br><span class="line">p1.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="number">2</span>)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">//2</span></span><br><span class="line"><span class="comment">//1</span></span><br></pre></td></tr></table></figure>
-<p>但<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Promise.resolve(thenable)</span></span><br><span class="line"><span class="keyword">let</span> p1 = <span class="built_in">Promise</span>.resolve(<span class="number">1</span>)</span><br><span class="line"><span class="built_in">Promise</span>.resolve(p1).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res)</span><br><span class="line">&#125;)</span><br><span class="line">p1.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="number">2</span>)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">//1</span></span><br><span class="line"><span class="comment">//2</span></span><br></pre></td></tr></table></figure></p>
-<p>回到上面await：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">await</span> async2()</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>等价于：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> RESOLVE(async2).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>再等价于：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      async2().then(resolve)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>所以，「async1 end」的输出会靠后。</p>
-<h3 id="Await-规范的更新"><a href="#Await-规范的更新" class="headerlink" title="Await 规范的更新"></a>Await 规范的更新</h3><blockquote>
-<p>根据最新的TC39决议，await 将直接使用 Promise.resolve() 相同语义。</p>
-</blockquote>
-<p>也就是说：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">await</span> async2()</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>等价于：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">Promise</span>.resolve(async2).then(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>Promise.resolve(p): 如果传入的 p 是一个 promise 实例，则会直接返回 p，不做任何修改，所以再次等价于：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  async2().then(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>chrome canary 73 采用了这种实现，所以输出会靠前。</p>
-<p>参考文章：<br><a href="https://github.com/xianshenglu/blog/issues/60" target="_blank" rel="noopener">https://github.com/xianshenglu/blog/issues/60</a><br><a href="https://segmentfault.com/q/1010000016147496" target="_blank" rel="noopener">https://segmentfault.com/q/1010000016147496</a></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-       
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/28/observer-pattern/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ruirui">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ruirui's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/08/28/observer-pattern/" class="post-title-link" itemprop="http://yoursite.com/page/2/index.html">从一道题理解观察者模式（自定义事件）</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-08-28 10:16:21" itemprop="dateCreated datePublished" datetime="2018-08-28T10:16:21+08:00">2018-08-28</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/08/28/observer-pattern/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2018/08/28/observer-pattern/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>看到过许多关于观察者模式的介绍，大都是大篇理论性的概念开始，看的云里雾里的，直到看到这道题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">请实现下面的自定义事件 Event 对象的接口，功能见注释(测试1)</span><br><span class="line">该 Event 对象的接口需要能被其他对象拓展复用(测试2)</span><br><span class="line"></span><br><span class="line">// 测试1</span><br><span class="line">Event.on(&apos;test&apos;, function (result) &#123;</span><br><span class="line">    console.log(result);</span><br><span class="line">&#125;);</span><br><span class="line">Event.on(&apos;test&apos;, function () &#123;</span><br><span class="line">    console.log(&apos;test&apos;);</span><br><span class="line">&#125;);</span><br><span class="line">Event.emit(&apos;test&apos;, &apos;hello world&apos;); // 输出 &apos;hello world&apos; 和 &apos;test&apos;</span><br><span class="line"></span><br><span class="line">// 测试2</span><br><span class="line">var person1 = &#123;&#125;;</span><br><span class="line">var person2 = &#123;&#125;;</span><br><span class="line">Object.assign(person1, Event);</span><br><span class="line">Object.assign(person2, Event);</span><br><span class="line">person1.on(&apos;call1&apos;, function () &#123;</span><br><span class="line">    console.log(&apos;person1&apos;);</span><br><span class="line">&#125;);</span><br><span class="line">person2.on(&apos;call2&apos;, function () &#123;</span><br><span class="line">    console.log(&apos;person2&apos;);</span><br><span class="line">&#125;);</span><br><span class="line">person1.emit(&apos;call1&apos;); // 输出 &apos;person1&apos;</span><br><span class="line">person1.emit(&apos;call2&apos;); // 没有输出</span><br><span class="line">person2.emit(&apos;call1&apos;); // 没有输出</span><br><span class="line">person2.emit(&apos;call2&apos;); // 输出 &apos;person2&apos;</span><br><span class="line">var Event = &#123;</span><br><span class="line">    // 通过on接口监听事件eventName</span><br><span class="line">    // 如果事件eventName被触发，则执行callback回调函数</span><br><span class="line">    on: function (eventName, callback) &#123;</span><br><span class="line">        //你的代码</span><br><span class="line">    &#125;,</span><br><span class="line">    // 触发事件 eventName</span><br><span class="line">    emit: function (eventName) &#123;</span><br><span class="line">        //你的代码</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>首先看测试1，需要实现一个 Event 对象，用 on 方法注册了两个 test 属性的事件，当 emit 触发事件时，触发 test 属性对应的回调。on 方法也就是注册事件，需要传两个参数，第一个是事件类型，第二个是该事件的回调，当调用 emit 方法的时候，触发对应属性的回调。总结来说，主要就是实现两点：注册事件和触发事件。这就是典型的观察者模式啊！<br>通过上面分析，要写的代码就是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">var Event = &#123;</span><br><span class="line">  subs: &#123;&#125;,</span><br><span class="line">  on: function(eventName, callback) &#123;</span><br><span class="line">    if(!this.subs) &#123;</span><br><span class="line">      this.subs = &#123;&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    if(!this.subs[eventName]) &#123;</span><br><span class="line">      this.subs[eventName] = [];</span><br><span class="line">    &#125;</span><br><span class="line">    this.subs[eventName].push(callback);</span><br><span class="line">  &#125;,</span><br><span class="line">  emit: function(eventName) &#123;</span><br><span class="line">    var arg = arguments[1];</span><br><span class="line">    if(!eventName) &#123;</span><br><span class="line">      return</span><br><span class="line">    &#125;</span><br><span class="line">    this.subs[eventName] &amp;&amp; this.subs[eventName].forEach(function(item)&#123;</span><br><span class="line">      item(arg);</span><br><span class="line">    &#125;)</span><br><span class="line">   </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>以上面的例子简单理解一下观察者模式：</p>
-<h2 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h2><p>观察者模式也叫发布-订阅模式（当然这两个有区别，后续说区别），定义了对象的一对多的依赖关系，当一个对象的状态发生改变时，所有依赖它的对象都得到通知。由 Subject（主体）和 Observe（观察者）组成，Subject 负责发布事件，Observe 通过订阅事件来观察 Subject，一旦 Subject 发布更新，Observe 会得到通知。DOM 事件就是典型的观察者模式，元素注册事件，当触发事件时调用注册的回调。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">el.addEventListener(&apos;click&apos;,function(e)&#123;</span><br><span class="line">  console.log(e);</span><br><span class="line">&#125;, false)</span><br></pre></td></tr></table></figure></p>
-<h2 id="观察者模式-VS-发布-订阅者模式"><a href="#观察者模式-VS-发布-订阅者模式" class="headerlink" title="观察者模式 VS 发布-订阅者模式"></a>观察者模式 VS 发布-订阅者模式</h2><h3 id="观察者模式-1"><a href="#观察者模式-1" class="headerlink" title="观察者模式"></a>观察者模式</h3><p>观察者模式中，观察者直接订阅目标事件，目标改变时，调用观察者的通知方法，是一种紧耦合的状态。</p>
-<p><img src="observe.jpg" alt="observe.jpg"></p>
-<p>实现方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">class Subject &#123;</span><br><span class="line">  constructor() &#123;</span><br><span class="line">    this.subs = [];</span><br><span class="line">  &#125;</span><br><span class="line">  subscribe(sub) &#123;</span><br><span class="line">    this.subs.push(sub);</span><br><span class="line">  &#125;</span><br><span class="line">  update() &#123;</span><br><span class="line">    this.subs.forEach(sub=&gt;&#123;</span><br><span class="line">      sub.notify();</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">class Observer &#123;</span><br><span class="line">  constructor(data) &#123;</span><br><span class="line">    this.data = data;</span><br><span class="line">  &#125;</span><br><span class="line">  notify() &#123;</span><br><span class="line">    console.log(this.data)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let subject = new Subject();</span><br><span class="line">let obj1 = new Observer(&apos;hello&apos;);</span><br><span class="line">let obj2 = new Observer(&apos;world&apos;);</span><br><span class="line">subject.subscribe(obj1);</span><br><span class="line">subject.subscribe(obj2); // obj1 和 obj2 订阅了 subject</span><br><span class="line">subject.update(); // subject 更新通知所有的 观察者 obj1 和 ob2，调用 notify 方法</span><br></pre></td></tr></table></figure></p>
-<h3 id="发布-订阅模式"><a href="#发布-订阅模式" class="headerlink" title="发布-订阅模式"></a>发布-订阅模式</h3><p>发布-订阅模式是广义的观察者模式，发布-订阅模式会抽离出一个<strong>调度中心</strong>(Event Bus)，负责对订阅者的管理，使得发布者和订阅者解耦，便于扩展。</p>
-<p><img src="pub-sub.jpg" alt="pub-sub.jpg"></p>
-<p>Vue 非父子组件通信方式 Event Bus 就是这种模式。通过 Event Bus 管理事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 全局注册事件中心</span><br><span class="line">var bus = new Vue();</span><br><span class="line"></span><br><span class="line">// 在组件 A 中注册监听事件</span><br><span class="line">bus.$on(&apos;id-selected&apos;, function()&#123;&#125;);</span><br><span class="line"></span><br><span class="line">// 在组件 B 触发事件</span><br><span class="line">bus.$emit(&apos;id-selected&apos;,&apos;&apos;);</span><br></pre></td></tr></table></figure></p>
-<p>实现方式：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">class EventBus &#123;</span><br><span class="line">  constructor() &#123;</span><br><span class="line">    this.subs = &#123;&#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  on(subject, callback) &#123;</span><br><span class="line">    if(!this.subs[subject]) &#123;</span><br><span class="line">      this.subs[subject] = [];</span><br><span class="line">    &#125;</span><br><span class="line">    this.subs[subject].push(callback);</span><br><span class="line">  &#125;</span><br><span class="line">  emit(subject, params) &#123;</span><br><span class="line">   if(!this.subs[subject]) &#123;</span><br><span class="line">     return</span><br><span class="line">   &#125;</span><br><span class="line">   this.subs[subject].forEach(callback=&gt;&#123;</span><br><span class="line">     callback(...params);</span><br><span class="line">   &#125;)    </span><br><span class="line">   </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const event = new EventBus();</span><br><span class="line">event.on(&apos;update&apos;, function(data)&#123;</span><br><span class="line">  console.log(data);</span><br><span class="line">&#125;)</span><br><span class="line">event.emit(&apos;update&apos;, 123);</span><br></pre></td></tr></table></figure>
-<p>接着回到题目看测试2：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 测试2</span><br><span class="line">var person1 = &#123;&#125;;</span><br><span class="line">var person2 = &#123;&#125;;</span><br><span class="line">Object.assign(person1, Event);</span><br><span class="line">Object.assign(person2, Event);</span><br><span class="line">person1.on(&apos;call1&apos;, function () &#123;</span><br><span class="line">    console.log(&apos;person1&apos;);</span><br><span class="line">&#125;);</span><br><span class="line">person2.on(&apos;call2&apos;, function () &#123;</span><br><span class="line">    console.log(&apos;person2&apos;);</span><br><span class="line">&#125;);</span><br><span class="line">person1.emit(&apos;call1&apos;); // 输出 &apos;person1&apos;</span><br><span class="line">person1.emit(&apos;call2&apos;); // 没有输出</span><br><span class="line">person2.emit(&apos;call1&apos;); // 没有输出</span><br><span class="line">person2.emit(&apos;call2&apos;); // 输出 &apos;person2&apos;</span><br></pre></td></tr></table></figure></p>
-<p>为两个 person 注册独立的事件，如果按之前的代码，测试输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">person1</span><br><span class="line">person2</span><br><span class="line">person1</span><br><span class="line">person2</span><br></pre></td></tr></table></figure></p>
-<p>也就是，两个 person 并没有互相独立，person1 注册的方法 person2 也会有。因为有个 Object.assign() 方法，Object.assign(target, source)用于将源对象（source）的<strong>所有可枚举</strong>的属性，复制到目标对象（target）中，这个方法只是第一层属性的拷贝，如果属性的值是个对象，那值就是对象的引用，所以两个 person 里的 subs 是同一个引用。<br>解决方法最简单的是实现深度克隆，但题目已经固定了方式，所以必须将 subs 设置为不可枚举的属性。这样在每个 person 调用的时候都产生新的 subs。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">var Event = &#123;</span><br><span class="line">  on: function (eventName, callback) &#123;</span><br><span class="line">    if(!this.subs) &#123;</span><br><span class="line">      Object.defineProperty(this, &quot;subs&quot;, &#123;</span><br><span class="line">        value: &#123;&#125;,</span><br><span class="line">        enumerable: false,</span><br><span class="line">        configurable: true,</span><br><span class="line">        writable: true</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    if(!this.subs[eventName])&#123;</span><br><span class="line">      this.subs[eventName]=[];</span><br><span class="line">    &#125;</span><br><span class="line">    this.subs[eventName].push(callback);</span><br><span class="line">  &#125;,</span><br><span class="line">  emit: function(eventName) &#123;</span><br><span class="line">    var arg = arguments[1];</span><br><span class="line">    if(!eventName) &#123;</span><br><span class="line">      return</span><br><span class="line">    &#125;</span><br><span class="line">    this.subs[eventName] &amp;&amp; this.subs[eventName].forEach(function(item)&#123;</span><br><span class="line">      item(arg);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-       
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2149,7 +2126,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-count">33</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2176,7 +2153,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">6</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
@@ -2215,7 +2196,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

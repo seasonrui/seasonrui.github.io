@@ -311,6 +311,368 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/25/js-event-loop/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/09/25/js-event-loop/" class="post-title-link" itemprop="http://yoursite.com/page/3/index.html">JS 事件运行机制</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-09-25 13:49:46" itemprop="dateCreated datePublished" datetime="2018-09-25T13:49:46+08:00">2018-09-25</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/09/25/js-event-loop/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2018/09/25/js-event-loop/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>网上看了好多关于 JS 事件循环的文章，从各个文章中吸收了点自己需要的，整理总结如下。</p>
+<h3 id="JS-运行机制"><a href="#JS-运行机制" class="headerlink" title="JS 运行机制"></a>JS 运行机制</h3><p>JS是单线程的，某一时刻只能执行特定的一个任务，并且会阻塞其他任务执行，浏览器使用事件循环（Event Loop）机制来处理事件。</p>
+<p>事件循环的任务队列有两种：macro task 和 micro task。<br>常见的 macro task 有：script（整体代码）、setTimeout、setInterval、I/O、UI交互事件。<br>常见的 micro task 有：promise.then、process.nextTick、MutationObserver。</p>
+<p>一次完整的 Event loop 过程如下：</p>
+<ul>
+<li>初始状态：<strong>调用栈</strong>为空，micro task 为空，macro task 有script（整体代码）。</li>
+<li>接着：执行macro task 中的 script 代码，碰到同步任务，推入调用栈执行，碰到异步任务，将其分发到对应的任务队列中。此时，macro task 中的第一个任务（script）执行完了，script 被移出 macro 队列，</li>
+<li>然后：开始清空 micro task 队列。也就是，执行一个 macro 队列，清空所有的 micro 队列。</li>
+<li>执行渲染操作，更新界面。</li>
+<li>检查看是否有 web worker 任务，有的话则处理。</li>
+</ul>
+<p>每一次循环都是这样一个过程：<br><img src="event-loop.png" alt="event-loop"><br>以一个简单例子描述：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'script start'</span>)</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'setTimeout'</span>)</span><br><span class="line">&#125;, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Promise'</span>)</span><br><span class="line">  resolve()</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">'promise1'</span>)</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">'promise2'</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'script end'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>分析一下执行过程：</p>
+<ul>
+<li>初始状态：macro 中是整体的 script 代码。</li>
+<li>开始执行 script，第一个console.log(‘script start’)，直接输出。</li>
+<li>接着碰到 setTimeout，将其放入 macro 中。</li>
+<li>接着 new promise 直接打印出 Promise，因为 Promise 实例一旦创建，执行器立刻执行，后续的.then放入 micro 中。</li>
+<li>直接打印 script end。</li>
+<li>此时，macro 中的第一个任务结束，要开始清空 micro 了，于是输出、promise1、promise2。</li>
+<li>接着执行下一轮事件循环，执行下一个 macro task，输出 setTimeout。</li>
+</ul>
+<p>于是，最终输出顺序是：script start =&gt; Promise =&gt; script end =&gt; promise1 =&gt; promise2 =&gt; setTimeout。</p>
+<p>如果加上 async/await 呢？</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'script start'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">await</span> async2()</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'async2 end'</span>)</span><br><span class="line">&#125;</span><br><span class="line">async1()</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'setTimeout'</span>)</span><br><span class="line">&#125;, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Promise'</span>)</span><br><span class="line">  resolve()</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">'promise1'</span>)</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">'promise2'</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'script end'</span>)</span><br></pre></td></tr></table></figure>
+<p>加上 async/await 发现「async1 end」的输出顺序有了差异。<br>chrome 70 版本是：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">script start =&gt; async2 end =&gt; <span class="function"><span class="params">Promise</span> =&gt;</span> script end =&gt; <span class="function"><span class="params">promise1</span> =&gt;</span> promise2 =&gt; async1 end =&gt; setTimeout。</span><br></pre></td></tr></table></figure></p>
+<p>chrome 73 版本是：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">script start =&gt; async2 end =&gt; <span class="function"><span class="params">Promise</span> =&gt;</span> script end =&gt; async1 end =&gt; <span class="function"><span class="params">promise1</span> =&gt;</span> promise2 =&gt; setTimeout。</span><br></pre></td></tr></table></figure></p>
+<p>所以问题是<strong>await 做了什么？</strong>async/await 其实是 promise 的语法糖，promise 的事件循环机制理解了，那将 await 转化为 promise 就好理解了。</p>
+<p>我们知道 async 函数总会返回一个 promise，看<a href="https://tc39.github.io/ecma262/#await" target="_blank" rel="noopener">官方规范</a>：<br>也就是说：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">await</span> async2()</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>等价于：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> RESOLVE(async2).then(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>而 RESOLVE() 几乎等于 Promise.resolve()。几乎等于的意思就是还是有区别，下面看具体区别。</p>
+<h3 id="RESOLVE-vs-Promise-resolve"><a href="#RESOLVE-vs-Promise-resolve" class="headerlink" title="RESOLVE() vs Promise.resolve()"></a>RESOLVE() vs Promise.resolve()</h3><p>如果参数是个非 thenable 值，那么 Promise.resolve(non-thenable) 等价于 RESOLVE(non-thenable)。<br>但如果是个 thenable 对象，就不相等了，因为</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RESOLVE()</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  resolve(thenable)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>等价于<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    thenable.then(resolve)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>也就是说：RESOLVE() 会产生一个新的 promise，尽管该 promise 会 resolve，但这个过程是异步的，所以进入队列的是 Promise.resolve 的 then 过程，thenable 的 then 要等到执行到该 promise 的 then 之后才能执行，所以时序会靠后，举个明显的例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RESOLVE(thenable)</span></span><br><span class="line"><span class="keyword">let</span> p1 = <span class="built_in">Promise</span>.resolve(<span class="number">1</span>)</span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  resolve(p1)</span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res)</span><br><span class="line">&#125;)</span><br><span class="line">p1.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="number">2</span>)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">//2</span></span><br><span class="line"><span class="comment">//1</span></span><br></pre></td></tr></table></figure>
+<p>但<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Promise.resolve(thenable)</span></span><br><span class="line"><span class="keyword">let</span> p1 = <span class="built_in">Promise</span>.resolve(<span class="number">1</span>)</span><br><span class="line"><span class="built_in">Promise</span>.resolve(p1).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res)</span><br><span class="line">&#125;)</span><br><span class="line">p1.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="number">2</span>)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">//1</span></span><br><span class="line"><span class="comment">//2</span></span><br></pre></td></tr></table></figure></p>
+<p>回到上面await：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">await</span> async2()</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>等价于：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> RESOLVE(async2).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>再等价于：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      async2().then(resolve)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>所以，「async1 end」的输出会靠后。</p>
+<h3 id="Await-规范的更新"><a href="#Await-规范的更新" class="headerlink" title="Await 规范的更新"></a>Await 规范的更新</h3><blockquote>
+<p>根据最新的TC39决议，await 将直接使用 Promise.resolve() 相同语义。</p>
+</blockquote>
+<p>也就是说：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">await</span> async2()</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>等价于：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">Promise</span>.resolve(async2).then(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Promise.resolve(p): 如果传入的 p 是一个 promise 实例，则会直接返回 p，不做任何修改，所以再次等价于：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  async2().then(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>chrome canary 73 采用了这种实现，所以输出会靠前。</p>
+<p>参考文章：<br><a href="https://github.com/xianshenglu/blog/issues/60" target="_blank" rel="noopener">https://github.com/xianshenglu/blog/issues/60</a><br><a href="https://segmentfault.com/q/1010000016147496" target="_blank" rel="noopener">https://segmentfault.com/q/1010000016147496</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/28/observer-pattern/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/08/28/observer-pattern/" class="post-title-link" itemprop="http://yoursite.com/page/3/index.html">从一道题理解观察者模式（自定义事件）</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-08-28 10:16:21" itemprop="dateCreated datePublished" datetime="2018-08-28T10:16:21+08:00">2018-08-28</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/28/observer-pattern/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2018/08/28/observer-pattern/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>看到过许多关于观察者模式的介绍，大都是大篇理论性的概念开始，看的云里雾里的，直到看到这道题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">请实现下面的自定义事件 Event 对象的接口，功能见注释(测试1)</span><br><span class="line">该 Event 对象的接口需要能被其他对象拓展复用(测试2)</span><br><span class="line"></span><br><span class="line">// 测试1</span><br><span class="line">Event.on(&apos;test&apos;, function (result) &#123;</span><br><span class="line">    console.log(result);</span><br><span class="line">&#125;);</span><br><span class="line">Event.on(&apos;test&apos;, function () &#123;</span><br><span class="line">    console.log(&apos;test&apos;);</span><br><span class="line">&#125;);</span><br><span class="line">Event.emit(&apos;test&apos;, &apos;hello world&apos;); // 输出 &apos;hello world&apos; 和 &apos;test&apos;</span><br><span class="line"></span><br><span class="line">// 测试2</span><br><span class="line">var person1 = &#123;&#125;;</span><br><span class="line">var person2 = &#123;&#125;;</span><br><span class="line">Object.assign(person1, Event);</span><br><span class="line">Object.assign(person2, Event);</span><br><span class="line">person1.on(&apos;call1&apos;, function () &#123;</span><br><span class="line">    console.log(&apos;person1&apos;);</span><br><span class="line">&#125;);</span><br><span class="line">person2.on(&apos;call2&apos;, function () &#123;</span><br><span class="line">    console.log(&apos;person2&apos;);</span><br><span class="line">&#125;);</span><br><span class="line">person1.emit(&apos;call1&apos;); // 输出 &apos;person1&apos;</span><br><span class="line">person1.emit(&apos;call2&apos;); // 没有输出</span><br><span class="line">person2.emit(&apos;call1&apos;); // 没有输出</span><br><span class="line">person2.emit(&apos;call2&apos;); // 输出 &apos;person2&apos;</span><br><span class="line">var Event = &#123;</span><br><span class="line">    // 通过on接口监听事件eventName</span><br><span class="line">    // 如果事件eventName被触发，则执行callback回调函数</span><br><span class="line">    on: function (eventName, callback) &#123;</span><br><span class="line">        //你的代码</span><br><span class="line">    &#125;,</span><br><span class="line">    // 触发事件 eventName</span><br><span class="line">    emit: function (eventName) &#123;</span><br><span class="line">        //你的代码</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>首先看测试1，需要实现一个 Event 对象，用 on 方法注册了两个 test 属性的事件，当 emit 触发事件时，触发 test 属性对应的回调。on 方法也就是注册事件，需要传两个参数，第一个是事件类型，第二个是该事件的回调，当调用 emit 方法的时候，触发对应属性的回调。总结来说，主要就是实现两点：注册事件和触发事件。这就是典型的观察者模式啊！<br>通过上面分析，要写的代码就是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">var Event = &#123;</span><br><span class="line">  subs: &#123;&#125;,</span><br><span class="line">  on: function(eventName, callback) &#123;</span><br><span class="line">    if(!this.subs) &#123;</span><br><span class="line">      this.subs = &#123;&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    if(!this.subs[eventName]) &#123;</span><br><span class="line">      this.subs[eventName] = [];</span><br><span class="line">    &#125;</span><br><span class="line">    this.subs[eventName].push(callback);</span><br><span class="line">  &#125;,</span><br><span class="line">  emit: function(eventName) &#123;</span><br><span class="line">    var arg = arguments[1];</span><br><span class="line">    if(!eventName) &#123;</span><br><span class="line">      return</span><br><span class="line">    &#125;</span><br><span class="line">    this.subs[eventName] &amp;&amp; this.subs[eventName].forEach(function(item)&#123;</span><br><span class="line">      item(arg);</span><br><span class="line">    &#125;)</span><br><span class="line">   </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以上面的例子简单理解一下观察者模式：</p>
+<h2 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h2><p>观察者模式也叫发布-订阅模式（当然这两个有区别，后续说区别），定义了对象的一对多的依赖关系，当一个对象的状态发生改变时，所有依赖它的对象都得到通知。由 Subject（主体）和 Observe（观察者）组成，Subject 负责发布事件，Observe 通过订阅事件来观察 Subject，一旦 Subject 发布更新，Observe 会得到通知。DOM 事件就是典型的观察者模式，元素注册事件，当触发事件时调用注册的回调。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">el.addEventListener(&apos;click&apos;,function(e)&#123;</span><br><span class="line">  console.log(e);</span><br><span class="line">&#125;, false)</span><br></pre></td></tr></table></figure></p>
+<h2 id="观察者模式-VS-发布-订阅者模式"><a href="#观察者模式-VS-发布-订阅者模式" class="headerlink" title="观察者模式 VS 发布-订阅者模式"></a>观察者模式 VS 发布-订阅者模式</h2><h3 id="观察者模式-1"><a href="#观察者模式-1" class="headerlink" title="观察者模式"></a>观察者模式</h3><p>观察者模式中，观察者直接订阅目标事件，目标改变时，调用观察者的通知方法，是一种紧耦合的状态。</p>
+<p><img src="observe.jpg" alt="observe.jpg"></p>
+<p>实现方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">class Subject &#123;</span><br><span class="line">  constructor() &#123;</span><br><span class="line">    this.subs = [];</span><br><span class="line">  &#125;</span><br><span class="line">  subscribe(sub) &#123;</span><br><span class="line">    this.subs.push(sub);</span><br><span class="line">  &#125;</span><br><span class="line">  update() &#123;</span><br><span class="line">    this.subs.forEach(sub=&gt;&#123;</span><br><span class="line">      sub.notify();</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">class Observer &#123;</span><br><span class="line">  constructor(data) &#123;</span><br><span class="line">    this.data = data;</span><br><span class="line">  &#125;</span><br><span class="line">  notify() &#123;</span><br><span class="line">    console.log(this.data)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let subject = new Subject();</span><br><span class="line">let obj1 = new Observer(&apos;hello&apos;);</span><br><span class="line">let obj2 = new Observer(&apos;world&apos;);</span><br><span class="line">subject.subscribe(obj1);</span><br><span class="line">subject.subscribe(obj2); // obj1 和 obj2 订阅了 subject</span><br><span class="line">subject.update(); // subject 更新通知所有的 观察者 obj1 和 ob2，调用 notify 方法</span><br></pre></td></tr></table></figure></p>
+<h3 id="发布-订阅模式"><a href="#发布-订阅模式" class="headerlink" title="发布-订阅模式"></a>发布-订阅模式</h3><p>发布-订阅模式是广义的观察者模式，发布-订阅模式会抽离出一个<strong>调度中心</strong>(Event Bus)，负责对订阅者的管理，使得发布者和订阅者解耦，便于扩展。</p>
+<p><img src="pub-sub.jpg" alt="pub-sub.jpg"></p>
+<p>Vue 非父子组件通信方式 Event Bus 就是这种模式。通过 Event Bus 管理事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 全局注册事件中心</span><br><span class="line">var bus = new Vue();</span><br><span class="line"></span><br><span class="line">// 在组件 A 中注册监听事件</span><br><span class="line">bus.$on(&apos;id-selected&apos;, function()&#123;&#125;);</span><br><span class="line"></span><br><span class="line">// 在组件 B 触发事件</span><br><span class="line">bus.$emit(&apos;id-selected&apos;,&apos;&apos;);</span><br></pre></td></tr></table></figure></p>
+<p>实现方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">class EventBus &#123;</span><br><span class="line">  constructor() &#123;</span><br><span class="line">    this.subs = &#123;&#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  on(subject, callback) &#123;</span><br><span class="line">    if(!this.subs[subject]) &#123;</span><br><span class="line">      this.subs[subject] = [];</span><br><span class="line">    &#125;</span><br><span class="line">    this.subs[subject].push(callback);</span><br><span class="line">  &#125;</span><br><span class="line">  emit(subject, params) &#123;</span><br><span class="line">   if(!this.subs[subject]) &#123;</span><br><span class="line">     return</span><br><span class="line">   &#125;</span><br><span class="line">   this.subs[subject].forEach(callback=&gt;&#123;</span><br><span class="line">     callback(...params);</span><br><span class="line">   &#125;)    </span><br><span class="line">   </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const event = new EventBus();</span><br><span class="line">event.on(&apos;update&apos;, function(data)&#123;</span><br><span class="line">  console.log(data);</span><br><span class="line">&#125;)</span><br><span class="line">event.emit(&apos;update&apos;, 123);</span><br></pre></td></tr></table></figure>
+<p>接着回到题目看测试2：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 测试2</span><br><span class="line">var person1 = &#123;&#125;;</span><br><span class="line">var person2 = &#123;&#125;;</span><br><span class="line">Object.assign(person1, Event);</span><br><span class="line">Object.assign(person2, Event);</span><br><span class="line">person1.on(&apos;call1&apos;, function () &#123;</span><br><span class="line">    console.log(&apos;person1&apos;);</span><br><span class="line">&#125;);</span><br><span class="line">person2.on(&apos;call2&apos;, function () &#123;</span><br><span class="line">    console.log(&apos;person2&apos;);</span><br><span class="line">&#125;);</span><br><span class="line">person1.emit(&apos;call1&apos;); // 输出 &apos;person1&apos;</span><br><span class="line">person1.emit(&apos;call2&apos;); // 没有输出</span><br><span class="line">person2.emit(&apos;call1&apos;); // 没有输出</span><br><span class="line">person2.emit(&apos;call2&apos;); // 输出 &apos;person2&apos;</span><br></pre></td></tr></table></figure></p>
+<p>为两个 person 注册独立的事件，如果按之前的代码，测试输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">person1</span><br><span class="line">person2</span><br><span class="line">person1</span><br><span class="line">person2</span><br></pre></td></tr></table></figure></p>
+<p>也就是，两个 person 并没有互相独立，person1 注册的方法 person2 也会有。因为有个 Object.assign() 方法，Object.assign(target, source)用于将源对象（source）的<strong>所有可枚举</strong>的属性，复制到目标对象（target）中，这个方法只是第一层属性的拷贝，如果属性的值是个对象，那值就是对象的引用，所以两个 person 里的 subs 是同一个引用。<br>解决方法最简单的是实现深度克隆，但题目已经固定了方式，所以必须将 subs 设置为不可枚举的属性。这样在每个 person 调用的时候都产生新的 subs。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">var Event = &#123;</span><br><span class="line">  on: function (eventName, callback) &#123;</span><br><span class="line">    if(!this.subs) &#123;</span><br><span class="line">      Object.defineProperty(this, &quot;subs&quot;, &#123;</span><br><span class="line">        value: &#123;&#125;,</span><br><span class="line">        enumerable: false,</span><br><span class="line">        configurable: true,</span><br><span class="line">        writable: true</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    if(!this.subs[eventName])&#123;</span><br><span class="line">      this.subs[eventName]=[];</span><br><span class="line">    &#125;</span><br><span class="line">    this.subs[eventName].push(callback);</span><br><span class="line">  &#125;,</span><br><span class="line">  emit: function(eventName) &#123;</span><br><span class="line">    var arg = arguments[1];</span><br><span class="line">    if(!eventName) &#123;</span><br><span class="line">      return</span><br><span class="line">    &#125;</span><br><span class="line">    this.subs[eventName] &amp;&amp; this.subs[eventName].forEach(function(item)&#123;</span><br><span class="line">      item(arg);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/08/webpack-and-dynamic-Imports/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1875,363 +2237,6 @@ app2.data.major = &apos;science&apos;  // 你设置了major，新的值为 scien
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/08/javascript-event/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ruirui">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ruirui's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/04/08/javascript-event/" class="post-title-link" itemprop="http://yoursite.com/page/3/index.html">Javascript 事件</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2017-04-08 10:55:56" itemprop="dateCreated datePublished" datetime="2017-04-08T10:55:56+08:00">2017-04-08</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/04/08/javascript-event/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/04/08/javascript-event/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="事件流"><a href="#事件流" class="headerlink" title="事件流"></a>事件流</h2><p>IE事件冒泡流：即事件最开始由最具体的元素接收，然后逐级向上传播至最不具体的那个节点（文档）。<br>事件捕获流：与事件冒泡流相反，由最不具体的元素接收，传至最具体的元素节点。</p>
-<h2 id="事件处理程序"><a href="#事件处理程序" class="headerlink" title="事件处理程序"></a>事件处理程序</h2><p><strong>1. HTML事件处理程序</strong><br><strong>缺点</strong>：html和js紧密耦合在一起，js代码和html代码都需要修改<br><strong>2. DOM0级事件处理程序</strong><br><strong>方法</strong>：把一个函数赋值给一个事件的处理程序属性<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var btn = document.getElementById(&apos;btn&apos;);</span><br><span class="line">//指定事件处理程序</span><br><span class="line">btn.onclick=function()&#123;</span><br><span class="line">    alert(&quot;hello&quot;);</span><br><span class="line">&#125;</span><br><span class="line">//取消时，将时间处理程序属性设置为null即可</span><br><span class="line">btn.onclick = null;</span><br></pre></td></tr></table></figure></p>
-<p><strong>作用域</strong>：DOM0事件处理程序被认为是元素的方法，所以其作用域为元素的作用域，即<strong>this引用当前元素</strong>。<br><strong>处理阶段</strong>：事件处理程序会在事件流的<strong>冒泡阶段</strong>被处理。<br><strong>调用情况</strong>：只能绑定一个事件处理函数，后面的会覆盖掉前面的<br><strong>3. DOM2级事件处理程序</strong><br><strong>方法</strong>：添加事件addEventListener()；移除事件removeEventlistener()<br>三个参数：要注册处理程序的事件类型（不包括前缀‘on’）、事件处理程序函数、布尔值（是否在捕获阶段处理事件，默认false）。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var btn = document.getElementById(&apos;btn&apos;);</span><br><span class="line">btn.addEventListener(&apos;click&apos;,showMes,false);//不加on</span><br><span class="line">btn.removeEventListener(&apos;click&apos;,showMes,false);</span><br></pre></td></tr></table></figure></p>
-<p><strong>作用域：</strong>与DOM0级的一样，为元素的作用域，<strong>this引用当前元素</strong>。<br><strong>处理阶段：</strong> DOM2级事件处理程序规定事件流的三个阶段：事件捕获阶段，处于目标阶段，事件冒泡阶段。注意第三个参数，以第三个参数区分捕获阶段处理还是冒泡阶段处理。目前事件捕获只能用于以addEventListener()注册且第三个参数是true的事件处理程序中。<br><strong>调用情况：</strong>同一个事件处理程序可以绑定两次，一次用于事件捕获，一次用于事件冒泡；若绑定的是同一个事件处理程序，并且都为事件冒泡或事件捕获，则只能绑定一次；不同的事件处理函数可以绑定多个，按顺序触发。<br><strong>4. IE事件处理程序</strong><br><strong>方法：</strong>添加事件attachEvent()；移除事件detachEvent()<br><strong>两个参数：</strong>事件类型（加上前缀‘on’）、处理程序函数（因为IE8以及更早的版本只支持事件冒泡，不支持事件捕获）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var btn = document.getElementById(&apos;btn&apos;);</span><br><span class="line">btn.attachEvent(&apos;onclick&apos;,showMes);//加上on</span><br><span class="line">btn.detachEvent(&apos;onclick&apos;,showMes);</span><br></pre></td></tr></table></figure>
-<p><strong>作用域：</strong> <strong>this值为全局（window）对象</strong>。<br><strong>调用情况：</strong> 允许相同的事件处理程序注册多次，当特定的事件类型发生时，注册函数的调用次数和注册次数一样（匿名函数）；同一个事件处理函数只能绑定一次（非匿名函数）</p>
-<h2 id="事件对象"><a href="#事件对象" class="headerlink" title="事件对象"></a>事件对象</h2><p>在触发DOM上的事件时都会产生一个事件对象event，它包含着所有和事件有关的信息，调用事件处理程序时会把事件对象作为一个参数（有一个例外）。<br><strong>DOM中的事件对象属性</strong></p>
-<ul>
-<li>type属性：用于获取事件类型(click…)  event.type</li>
-<li>target属性：触发事件的目标元素，是不变的</li>
-<li>stopPropagation()方法：阻止事件传播，可以在事件传播期间的任何时间调用。</li>
-<li>preventDefault()方法：取消事件默认行为</li>
-</ul>
-<p><strong>IE中的事件对象属性</strong></p>
-<ul>
-<li>type属性：用于获取事件类型(click…)  event.type</li>
-<li>srcElement属性：触发事件的目标元素</li>
-<li>cancleBubble属性：阻止事件传播，因为IE8之前版本不支持事件捕获，所以事件传播即为事件冒泡。设置为true表示阻止冒泡</li>
-<li>returnValue属性：阻止事件默认行为，设置为false阻止事件默认行为</li>
-</ul>
-<h2 id="事件委托"><a href="#事件委托" class="headerlink" title="事件委托"></a>事件委托</h2><p>事件的代理是靠事件的<strong>冒泡机制</strong>实现的。可以避免对特定的每个节点添加事件监听，将事件监听绑定到父元素上。<br><strong>优点：</strong> 1.可以大量节省内存占用，减少事件注册 2.可以实现当新增子对象时无需再次对其绑定事件，对于动态内容尤为合适。</p>
-<h2 id="封装事件处理程序"><a href="#封装事件处理程序" class="headerlink" title="封装事件处理程序"></a>封装事件处理程序</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">var eventUtil = &#123;</span><br><span class="line">  addHandler:function (element,type,handler)&#123;</span><br><span class="line">    if(element.addEventListener)&#123;</span><br><span class="line">      element.addEventListener(type,handler,false);</span><br><span class="line">    &#125;else if(element.attachEvent)&#123;</span><br><span class="line">      element.attachEvent(&apos;on&apos;+type,handler);</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">      element[&apos;on&apos;+type]=handler;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  removeHandler:function (element,type,handler)&#123;</span><br><span class="line">    if(element.removeEventListener)&#123;</span><br><span class="line">      element.removeEventListener(type,handler,false);</span><br><span class="line">    &#125;else if(element.detachEvent)&#123;</span><br><span class="line">      element.detachEvent(&apos;on&apos;+type,handler);</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">      element[&apos;on&apos;+type]=null;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  delegateEvent:function(element,tag,eventName,listener)&#123;</span><br><span class="line"></span><br><span class="line">    eventUtil.addHandler(element,eventName,function(event)&#123;</span><br><span class="line">      var target = event.target || event.srcElement;</span><br><span class="line">      if(target.tagName.toLowerCase() == tag.toLowerCase())&#123;</span><br><span class="line">        listener.call(target,event);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">  getEvent:function(event)&#123;</span><br><span class="line">    var event = event?window.event;</span><br><span class="line">  &#125;,</span><br><span class="line">  getType:function(event)&#123;</span><br><span class="line">            return event.type;</span><br><span class="line">    &#125;,</span><br><span class="line">  getElement:function(event)&#123;</span><br><span class="line">    return event.target || event.srcElement;</span><br><span class="line">  &#125;,</span><br><span class="line">  preventDefault:function(event)&#123;</span><br><span class="line">    if(event.preventDefault)&#123;</span><br><span class="line">      event.preventDefault();</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">      event.returnValue=false;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  stopPropagation:function(event)&#123;</span><br><span class="line">    if(event.stopPropagation)&#123;</span><br><span class="line">      event.stopPropagation();</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">      event.cancelBubble=true;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-       
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/20/javasrcipt-determine-the-type/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ruirui">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ruirui's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/03/20/javasrcipt-determine-the-type/" class="post-title-link" itemprop="http://yoursite.com/page/3/index.html">Javascript 类型判断</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2017-03-20 15:51:10" itemprop="dateCreated datePublished" datetime="2017-03-20T15:51:10+08:00">2017-03-20</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/03/20/javasrcipt-determine-the-type/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/03/20/javasrcipt-determine-the-type/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>JavaScript 具有七种内置数据类型，它们分别是：</p>
-<ul>
-<li>null</li>
-<li>undefined</li>
-<li>boolean</li>
-<li>number</li>
-<li>string</li>
-<li>object</li>
-<li>symbol</li>
-</ul>
-<p>javascript判断数据类型的方法： <strong>typeof</strong>、<strong>instanceof</strong>、<strong>constructor</strong>、<strong>object.prototype.toString</strong></p>
-<h2 id="typeof"><a href="#typeof" class="headerlink" title="typeof"></a>typeof</h2><p>typeof 判断基础数据类型：<br> <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typeof</span> <span class="literal">undefined</span> <span class="comment">// "undefined"</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">true</span> <span class="comment">// "boolean"</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="string">'string'</span> <span class="comment">//  "string"</span></span><br><span class="line"><span class="keyword">var</span> a</span><br><span class="line"><span class="keyword">typeof</span> a <span class="comment">// 'undefined'</span></span><br><span class="line"><span class="keyword">typeof</span> b <span class="comment">// 'undefined'  // 即使b未声明，也会返回undefined</span></span><br><span class="line"><span class="comment">// 特殊</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">null</span> === <span class="string">'object'</span></span><br></pre></td></tr></table></figure></p>
-<p>  typeof 判断复杂数据类型：<br> <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typeof</span> [] <span class="comment">// "object"</span></span><br><span class="line"><span class="keyword">typeof</span> &#123;&#125; <span class="comment">// "object"</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="built_in">Symbol</span>(<span class="string">'foo'</span>) <span class="comment">// "symbol"</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>) </span>&#123;&#125; <span class="comment">// "function"</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="keyword">new</span> <span class="built_in">Date</span>() <span class="comment">// "object"</span></span><br></pre></td></tr></table></figure></p>
-<p>typeof 返回类型的<strong>字符串值</strong>， 使用 typeof 判断基本类型时，不能判断 null 类型，判断复杂类型时，可以判断出 function 类型、symbol类型。</p>
-<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p><strong>typeof 通常用来检测一个对象是否定义，不能判断 Object 类型</strong></p>
-<h2 id="instanceof"><a href="#instanceof" class="headerlink" title="instanceof"></a>instanceof</h2><p>左操作符是对象，右操作符是函数或构造器，判断：<strong>右边的构造器中 prototype 属性是否出现在左边的对象的原型链上</strong>。</p>
-<h3 id="instanceof-的原理"><a href="#instanceof-的原理" class="headerlink" title="instanceof 的原理:"></a>instanceof 的原理:</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">instanceof</span>(<span class="params">left, right</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> left !== <span class="string">'object'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> proto = left._proto_;</span><br><span class="line">  <span class="keyword">let</span> prototype = right.prototype;</span><br><span class="line">  <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span>(proto === prototype) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(proto === <span class="literal">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    proto = proto._proto_</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>instanceof 作用</p>
-<ul>
-<li><p>检测一个对象是否是属于某种类型</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Foo</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line"><span class="keyword">var</span> foo = <span class="keyword">new</span> Foo();</span><br><span class="line"><span class="built_in">console</span>.log(foo <span class="keyword">instanceof</span> Foo) <span class="comment">//true</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在继承关系中判断一个实例是否是属于他的父类型。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Foo</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Bar</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">Bar.prototype = <span class="keyword">new</span> Foo();</span><br><span class="line"><span class="keyword">var</span> bar = <span class="keyword">new</span> Bar();</span><br><span class="line">bar <span class="keyword">instanceof</span> Bar; <span class="comment">// true</span></span><br><span class="line">bar <span class="keyword">instanceof</span> Foo; <span class="comment">// true</span></span><br><span class="line"><span class="comment">// 如果仅仅设置 Bar.prototype 为函数 Foo 本身，而不是 Foo 构造函数的一个实例</span></span><br><span class="line">Bar.prototype = Foo;</span><br><span class="line"><span class="keyword">new</span> Bar() <span class="keyword">instanceof</span> Foo; <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>instanceof 缺陷：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str1 = <span class="string">'hello'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(str1 <span class="keyword">instanceof</span> <span class="built_in">String</span>); <span class="comment">// false</span></span><br><span class="line"><span class="keyword">var</span> str2 = <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">'jomsou'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(str2 <span class="keyword">instanceof</span> <span class="built_in">String</span>); <span class="comment">// true</span></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">arr <span class="keyword">instanceof</span> <span class="built_in">Array</span>;   <span class="comment">// true</span></span><br><span class="line">arr <span class="keyword">instanceof</span> <span class="built_in">Object</span>;  <span class="comment">// true</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="结论-1"><a href="#结论-1" class="headerlink" title="结论"></a>结论</h3><p><strong>instanceof 不能判断基本类型，object 类型判断也有问题，但是可以准确的判断 Array 类型（instanceof 无法判断 iframe 的数组类型）</strong></p>
-<p>准确的判断数组的方法：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">arr <span class="keyword">instanceof</span> <span class="built_in">Array</span></span><br><span class="line"><span class="built_in">Array</span>.isArray() <span class="comment">// Array.isArray() IE9以下的浏览器可能不兼容</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="constructor-NaN"><a href="#constructor-NaN" class="headerlink" title="constructor"></a>constructor</h2><p>使用 constructor 可以查看目标的构造函数。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = [];</span><br><span class="line">a.constructor <span class="comment">// ƒ Array() &#123; [native code] &#125;</span></span><br><span class="line">a.constructor == <span class="built_in">Array</span>; <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> b = &#123;&#125;;</span><br><span class="line">b.constructor <span class="comment">// ƒ Object() &#123; [native code] &#125;</span></span><br><span class="line">b.constructor == <span class="built_in">Object</span>; <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> foo = <span class="built_in">Symbol</span>(<span class="string">"foo"</span>) </span><br><span class="line">foo.constructor <span class="comment">// ƒ Symbol() &#123; [native code] &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 特殊</span></span><br><span class="line"><span class="keyword">var</span> foo = <span class="literal">undefined</span></span><br><span class="line">foo.constructor <span class="comment">// VM241:2 Uncaught TypeError: Cannot read property 'constructor' of undefined at &lt;anonymous&gt;:2:5</span></span><br><span class="line">    </span><br><span class="line"><span class="keyword">var</span> foo = <span class="literal">null</span></span><br><span class="line">foo.constructor <span class="comment">// VM247:2 Uncaught TypeError: Cannot read property 'constructor' of null  at &lt;anonymous&gt;:2:5</span></span><br></pre></td></tr></table></figure>
-<p><strong>constructor 对 undefinded 和 null， 如果尝试读取 constructor 属性，会报错</strong>。constructor 返回的是构造函数本身，一般不用来进行类型判断。</p>
-<h2 id="object-prototype-toString"><a href="#object-prototype-toString" class="headerlink" title="object.prototype.toString"></a>object.prototype.toString</h2><p>对象内部属性[[class]]的值，需要通过Object.prototype.toString()获取。检测一个对象的类型，这是唯一一个可依赖的方法。</p>
-<ul>
-<li><p>判断基本数据类型：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">null</span>);<span class="comment">//"[object Null]";</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">undefined</span>);<span class="comment">//"[object undefined]";</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="string">"abc"</span>);<span class="comment">//"[object String]";</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="number">123</span>);<span class="comment">//"[object Number]";</span></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="literal">true</span>);<span class="comment">//"[object Boolean]";</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>判断原生引用类型：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//函数类型 </span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params"></span>)</span>&#123;<span class="built_in">console</span>.log(<span class="string">"test"</span>);&#125;</span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(fn);<span class="comment">//"[object Function]"; </span></span><br><span class="line"><span class="comment">//日期类型 </span></span><br><span class="line"><span class="keyword">var</span> date = <span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(date);<span class="comment">//"[object Date]"; </span></span><br><span class="line"><span class="comment">//数组类型 </span></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>];</span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(arr);<span class="comment">//”[object Array]” </span></span><br><span class="line"><span class="comment">//正则表达式 </span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/[hbc]at/gi</span>;</span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(reg);<span class="comment">//”[object RegExp]” </span></span><br><span class="line"><span class="comment">//自定义类型 </span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span>(<span class="params">name, age</span>) </span>&#123;</span><br><span class="line"> <span class="keyword">this</span>.name = name;</span><br><span class="line"> <span class="keyword">this</span>.age = age;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> person = <span class="keyword">new</span> Person(<span class="string">"Rose"</span>, <span class="number">18</span>);</span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(arr); <span class="comment">//”[object Object]”</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-       
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2282,7 +2287,7 @@ app2.data.major = &apos;science&apos;  // 你设置了major，新的值为 scien
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-count">33</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2309,7 +2314,11 @@ app2.data.major = &apos;science&apos;  // 你设置了major，新的值为 scien
                     
                       
                     
-                    <span class="site-state-item-count">6</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
@@ -2348,7 +2357,7 @@ app2.data.major = &apos;science&apos;  // 你设置了major，新的值为 scien
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
