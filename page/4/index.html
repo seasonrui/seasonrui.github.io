@@ -311,6 +311,391 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/28/vue-dynamic-data-binding-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2017/08/28/vue-dynamic-data-binding-1/" class="post-title-link" itemprop="http://yoursite.com/page/4/index.html">Vue 动态数据绑定（一）-- Observer</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-08-28 09:46:06" itemprop="dateCreated datePublished" datetime="2017-08-28T09:46:06+08:00">2017-08-28</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/08/28/vue-dynamic-data-binding-1/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/08/28/vue-dynamic-data-binding-1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="任务说明地址"><a href="#任务说明地址" class="headerlink" title="任务说明地址"></a><a href="http://ife.baidu.com/2017/course/detail/id/15" target="_blank" rel="noopener">任务说明地址</a></h2><blockquote>
+<p><strong>任务描述</strong><br>这是“动态数据绑定”系列的第一题。<br>我之前经常使用 Vue，后来不满足于仅仅使用它，我想了解其内部实现原理，所以就尝试学习其源码，获益匪浅。所以，如果你跟我一样，希望挑战这高难度的事情，那就开启这一系列吧！<br>我们从最简单的开始。<br>其中，动态数据绑定就是 Vue 最为基础，最为有用的一个功能。这个系列将分成5部分，一步一步来理解和实现这一功能。<br>ok，我们从最简单的开始。给定任意一个对象，如何监听其属性的读取与变化？也就是说，如何知道程序访问了对象的哪个属性，又改变了哪个属性？ 举个例子。</p>
+</blockquote>
+<pre><code>let app1 = new Observer({
+    name: &apos;youngwind&apos;,
+    age: 25
+});
+let app2 = new Observer({
+    university: &apos;bupt&apos;,
+    major: &apos;computer&apos;
+});
+// 要实现的结果如下：
+app1.data.name // 你访问了 name
+app.data.age = 100;  // 你设置了 age，新的值为100
+app2.data.university // 你访问了 university
+app2.data.major = &apos;science&apos;  // 你设置了major，新的值为 science
+</code></pre><blockquote>
+<p>请实现这样的一个 Observer，要求如下：</p>
+<ol>
+<li>传入参数只考虑对象，不考虑数组。</li>
+<li>new Observer 返回一个对象，其 data 属性要能够访问到传递进去的对象。</li>
+<li>通过 data 访问属性和设置属性的时候，均能打印出右侧对应的信息。</li>
+</ol>
+</blockquote>
+<hr>
+<p>监听属性的变化，有两种方式：</p>
+<ol>
+<li><strong>采用ES5中的 defineProperty，设置 get 和 set 函数，重新定义读取和赋值的方式</strong>。</li>
+<li><strong>采用ES6中的 proxy，对目标对象进行”拦截”</strong>。</li>
+</ol>
+<h2 id="方式一："><a href="#方式一：" class="headerlink" title="方式一："></a>方式一：</h2><p>Object.defineProperty(obj, prop, descriptor)  定义对象的属性。 Object.defineProperty 可设置的属性如下：</p>
+<ul>
+<li><strong>configurable</strong>：能否使用 delete、能否修改属性特性、能否修改访问器属性，false 为不可重新定义。默认为true。</li>
+<li><strong>enumerable</strong>：对象属性是否可通过 for-in 循环遍历或在 Object.keys 中列举，默认为true。</li>
+<li><strong>writable</strong>：对象属性是否可修改，默认为true。</li>
+<li><strong>value</strong>：对象属性的默认值，默认值为 undefined。</li>
+</ul>
+<p>注意： configurable， enumerable， writable 特性默认值根据对象定义方法不同而不同。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 直接在对象上定义属性，这些特性默认值为true</span><br><span class="line">var obj = &#123;&#125;;</span><br><span class="line">obj.name = &apos;ruirui&apos;;</span><br><span class="line">console.log(Object.getOwnPropertyDescriptor(obj, &apos;name&apos;));</span><br><span class="line">// Object &#123;value: &quot;ruirui&quot;, writable: true, enumerable: true, configurable: true&#125;</span><br><span class="line"></span><br><span class="line">// 调用Object.defineProperty()方法，不指定值的时候，默认为false</span><br><span class="line">var obj = &#123;&#125;;</span><br><span class="line">Object.defineProperty(obj, &apos;name&apos;, &#123;</span><br><span class="line">  value: &apos;ruirui&apos;</span><br><span class="line">&#125;);</span><br><span class="line">console.log(Object.getOwnPropertyDescriptor(obj, &apos;name&apos;))</span><br><span class="line">// Object &#123;value: &quot;ruirui&quot;, writable: false, enumerable: false, configurable: false&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 在本例中，可以定义configurable、enumerable，默认为false。 但是如果定义了set或get方法中的任何一个，就不能再设置writable，即使false也不可以。</span><br></pre></td></tr></table></figure>
+<p>接着获取对象属性：</p>
+<p>方法一：使用 Object.keys(obj)，该方法返回一个数组，数组里是 obj 可被枚举的所有属性，接着对数组进行 forEach 遍历。<br>方法二：使用 for in 获取所有属性，接着用 obj.hasOwnProperty(key) 对属性进行判断过滤。</p>
+<p>接着就可以自定义get和set函数啦！</p>
+<p>在这过程中犯了一个低级错误：get 函数 return data[key]，导致 get 函数返回时又触发了 get 函数，陷入死循环。</p>
+<p>最终代码(<a href="https://jsfiddle.net/ruirui/spty73j5/" target="_blank" rel="noopener">Demo</a>)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">function Observer(data) &#123;</span><br><span class="line">  this.data = data;</span><br><span class="line">  this.getset(data);</span><br><span class="line">&#125;</span><br><span class="line">Observer.prototype.getset = function(data) &#123;</span><br><span class="line">  for(var key in data) &#123;</span><br><span class="line">    var val = data[key];</span><br><span class="line">    if(data.hasOwnProperty(key)) &#123;</span><br><span class="line">      Object.defineProperty(data, key, &#123;</span><br><span class="line">        configurable: true,</span><br><span class="line">        enumerable: true, </span><br><span class="line">        //writable: true, //这里不能定义此属性，报错：Uncaught TypeError: Invalid property descriptor. Cannot both specify accessors and a value or writable attribute, #&lt;Object&gt;</span><br><span class="line">        get: function () &#123;</span><br><span class="line">          console.log(&apos;你访问了&apos; + key);</span><br><span class="line">          return val;</span><br><span class="line">        &#125;,</span><br><span class="line">        set: function (newval) &#123;</span><br><span class="line">          console.log(&apos;你设置了&apos; + val + &apos;,新的值为&apos; + newval);</span><br><span class="line">          val = newval;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="方式二："><a href="#方式二：" class="headerlink" title="方式二："></a>方式二：</h2><blockquote>
+<p>Proxy 可以理解成，在目标对象之前架设一层“拦截”，外界对该对象的访问，都必须先通过这层拦截，因此提供了一种机制，可以对外界的访问进行过滤和改写。Proxy 这个词的原意是代理，用在这里表示由它来“代理”某些操作，可以译为“代理器”。</p>
+</blockquote>
+<p>最终代码(<a href="https://jsfiddle.net/ruirui/126j9ykq/" target="_blank" rel="noopener">Demo</a>)：</p>
+<pre><code>function Observer (data) {
+  return new Proxy(data, {
+    get: function (target, propKey) {
+      if (propKey in target) {
+        console.log(&apos;你访问了&apos; + propKey);
+        return target[propKey];
+      } else {
+        console.log(&quot;Property \&quot;&quot; + propKey + &quot;\&quot; does not exist.&quot;);
+      }
+    },
+    set: function (target, propKey, value) {
+      console.log(&apos;你设置了&apos; + propKey + &apos;,新的值为&apos; + value);
+      target[propKey] = value;
+    }
+  })
+}
+</code></pre><h2 id="后续补充：defineProperty-VS-proxy"><a href="#后续补充：defineProperty-VS-proxy" class="headerlink" title="后续补充：defineProperty VS proxy:"></a>后续补充：defineProperty VS proxy:</h2><p>vue 文档中提到：</p>
+<blockquote>
+<p>由于 JavaScript 的限制， Vue 不能检测以下变动的数组：<br> 当你利用索引直接设置一个项时，例如： vm.items[indexOfItem] = newValue<br> 当你修改数组的长度时，例如： vm.items.length = newLength</p>
+</blockquote>
+<p>vue 不能检测到数组的变动，从而无法更新视图，vue 监听数据变动使用的上述 Object.defineProperty，如果传入的是一个数组，通过下标访问数组，下标作为属性，可以看到是能正常调用 get 和 set 方法的，是可以被监听的，但是新增一个元素，修改数组长度，以及删除元素都不会触发监听事件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">let data = [&apos;1&apos;,&apos;2&apos;,&apos;3&apos;];</span><br><span class="line">let app1 = new Observer(data);</span><br><span class="line">console.log(app1.data[1]); // 你访问了2</span><br><span class="line">app1.data[1] = 3; // 你设置了3,新的值为3</span><br><span class="line">app1.length = 5;</span><br><span class="line">console.log(app1.data[4]); // undefined</span><br><span class="line">app1.data[4] = 4;</span><br><span class="line">console.log(app1.data[4]); // 4</span><br><span class="line">app1.data[5] = 9;</span><br></pre></td></tr></table></figure>
+<p>所以，vue 中重写了对数组的监测。这是 defineProperty 的第一个缺陷，第二个缺陷是，只能劫持对象的属性，所以对深层对象的属性需要深度遍历。这就引出了 Proxy 的优点：</p>
+<ul>
+<li>Proxy 可以直接监听对象而非属性。返回的是新对象，可以操作新的对象。</li>
+<li>Proxy 可以直接监听数组的变化。</li>
+</ul>
+<p>Vue3.0 也将放弃Object.defineProperty，改用性能更好的Proxy。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/08/javascript-sort-algorithm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2017/05/08/javascript-sort-algorithm/" class="post-title-link" itemprop="http://yoursite.com/page/4/index.html">Javascript 排序算法</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-05-08 12:59:30" itemprop="dateCreated datePublished" datetime="2017-05-08T12:59:30+08:00">2017-05-08</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/08/javascript-sort-algorithm/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/05/08/javascript-sort-algorithm/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><p>（1）算法说明：是最慢的算法之一，也是最容易实现的排序算法。使用冒泡排序时，数据值会像气泡一样从数组的一端浮到另一端，算法每次比较相邻到元素，如果顺序错误就交换。<br>（2）javascript实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">//如果某一次没有任何交换，则之后不需要再交换</span><br><span class="line">function bubbleSort(arr)&#123;</span><br><span class="line">    var len = arr.length;</span><br><span class="line">    for(var i = 0; i &lt; len;i++)&#123;</span><br><span class="line">        var isExchange = false;</span><br><span class="line">        for(var j = 0; j &lt; len-i;j++)&#123;</span><br><span class="line">            if(arr[j] &gt; arr[j+1])&#123;</span><br><span class="line">                var temp = arr[j];</span><br><span class="line">                arr[j] = arr[j+1];</span><br><span class="line">                arr[j+1] = temp;</span><br><span class="line">                isExchange = true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if(isExchange == false)&#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return arr;</span><br><span class="line">&#125;</span><br><span class="line">（3）算法分析</span><br><span class="line">    时间复杂度：O(n的平方)</span><br><span class="line">    空间复杂度：O(1)</span><br><span class="line">    稳定性：稳定</span><br></pre></td></tr></table></figure></p>
+<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><p>（1）算法说明：从待排序的数据元素中<strong>选择</strong>最小（或最大）的元素，存放在序列的起始位置，直到全部待排元素排完。<br>（2）javascript实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function selectionSort(arr)&#123;</span><br><span class="line">    var len = arr.length;</span><br><span class="line">    var minIndex,temp;</span><br><span class="line">    for(var i = 0; i &lt; len;i++)&#123;</span><br><span class="line">        minIndex = i;</span><br><span class="line">        for(var j = i; j &lt; len;j++)&#123;</span><br><span class="line">            if(arr[minIndex] &gt; arr[j])&#123;</span><br><span class="line">                minIndex = j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        temp = arr[minIndex];</span><br><span class="line">        arr[minIndex] = arr[i];</span><br><span class="line">        arr[i] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">    return arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>（3）算法分析<br>    时间复杂度：O(n的平方)<br>    空间复杂度：O(1)<br>    稳定性：不稳定</p>
+<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><p>（1）算法说明：将一个数据插入到已经排好的有序的有序数据中。<br>（2）javascript实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function insertSort(arr)&#123;</span><br><span class="line">    var len = arr.length;</span><br><span class="line">    for(var i = 1; i &lt; len;i++)&#123;</span><br><span class="line">        var key = arr[i];</span><br><span class="line">        var j = i-1;</span><br><span class="line">        while(j&gt;=0 &amp;&amp; arr[j] &gt; key)&#123;</span><br><span class="line">            arr[j+1] = arr[j];</span><br><span class="line">            j–;</span><br><span class="line">        &#125;</span><br><span class="line">        arr[j+1] = key;</span><br><span class="line">    &#125;</span><br><span class="line">    return arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>（3）算法分析<br>    时间复杂度：O(n的平方)<br>        空间复杂度：O(1)<br>        稳定性：稳定</p>
+<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><p>（1）算法说明：将一系列排好序的子序列合并成一个大的完整有序序列。<br>（2）javascript实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">function mergeSort(arr)&#123;</span><br><span class="line">    var len = arr.length;</span><br><span class="line">    if(len &lt; 2)&#123;</span><br><span class="line">        return arr;</span><br><span class="line">    &#125;</span><br><span class="line">    var middle = Math.floor(len/2),</span><br><span class="line">        left = arr.slice(0,middle),</span><br><span class="line">        right = arr.slice(middle);</span><br><span class="line">    return merge(mergeSort(left),mergeSort(right));</span><br><span class="line">&#125;</span><br><span class="line">function merge(leftArr,rightArr)&#123;</span><br><span class="line">    var result = [];</span><br><span class="line">    while(leftArr.length &amp;&amp; rightArr.length)&#123;</span><br><span class="line">        if(leftArr[0] &gt; rightArr[0])&#123;</span><br><span class="line">            result.push(rightArr.shift())</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            result.push(leftArr.shift());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    while(leftArr.length)&#123;</span><br><span class="line">        result.push(leftArr.shift());</span><br><span class="line">    &#125;</span><br><span class="line">    while(rightArr.length)&#123;</span><br><span class="line">        result.push(rightArr.shift());</span><br><span class="line">    &#125;</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>（3）算法分析<br>    时间复杂度：O(nlogn)<br>    空间复杂度：O(1)<br>    稳定性：稳定</p>
+<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><p>（1）算法说明：快速排序是处理大数据集最快的排序算法之一，是一种分而治之的算法，通过递归的方法将数据依次分解为包含较小元素和较大元素的不同子序列，不断重复这个步骤直到所有数据都是有序的。<br>（2）算法步骤：</p>
+<ul>
+<li>在数据集之中，选择一个元素作为”基准”（pivot）。</li>
+<li>所有小于”基准”的元素，都移到”基准”的左边；所有大于”基准”的元素，都移到”基准”的右边。</li>
+<li>对”基准”左边和右边的两个子集，不断重复第一步和第二步，直到所有子集只剩下一个元素为止。<br>（3）javascript实现：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function quickSort(arr)&#123;</span><br><span class="line">    if(arr.length === 0)&#123;</span><br><span class="line">        return [];</span><br><span class="line">    &#125;;</span><br><span class="line">    var pivot = arr[0],</span><br><span class="line">         left = [],</span><br><span class="line">         right = [];</span><br><span class="line">    for(var i = 1; i &lt; arr.length; i++)&#123;</span><br><span class="line">        if(arr[i] &lt; pivot)&#123;</span><br><span class="line">            left.push(arr[i]);</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            right.push(arr[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    return quickSort(left).concat([pivot],quickSort(right));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>（4）算法分析<br>    时间复杂度：O(nlogn) 最差O(n方)<br>    空间复杂度：O(1)<br>    稳定性：不稳定</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/08/javascript-event/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -907,7 +1292,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">33</span>
+                    <span class="site-state-item-count">35</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -921,8 +1306,6 @@
                 <div class="site-state-item site-state-tags">
                   <a href="/tags/index.html">
                     
-                    
-                      
                     
                       
                     

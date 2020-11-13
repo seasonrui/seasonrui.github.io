@@ -311,6 +311,361 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/02/linux-update-node/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2020/11/02/linux-update-node/" class="post-title-link" itemprop="http://yoursite.com/index.html">Linux 升级 Node</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-11-02 10:16:41" itemprop="dateCreated datePublished" datetime="2020-11-02T10:16:41+08:00">2020-11-02</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/11/02/linux-update-node/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2020/11/02/linux-update-node/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>以下为通过二进制文件升级 node 的方式</p>
+<h2 id="升级-Node"><a href="#升级-Node" class="headerlink" title="升级 Node"></a>升级 Node</h2><ol>
+<li><p>通过官网<a href="https://nodejs.org/zh-cn/download/" target="_blank" rel="noopener">下载</a> linux 二进制文件安装包<br>推荐安装在/opt目录下</p>
+</li>
+<li><p>解压<br><code>tar -xvf node-v14.15.0-linux-x64.tar</code></p>
+</li>
+<li><p>设置环境变量<br>方式一： 设置 PATH 环境变量<br>   修改 /etc/profile 文件，在文件末尾添加以下内容</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export NODE_HOME=/xxx</span><br><span class="line">export PATH=$NODE_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
+<p>修改完之后，打开新的命令窗口，或者执行 <code>source /etc/profile</code> 来生效。</p>
+<p>方式二： 设置软链<br> 通过 <code>which node</code> 查看 node 可执行文件路径，将本次 node 安装路径下的/bin/node 链接到 <code>which node</code>显示的路径下</p>
+<blockquote>
+<p>which 指令: 查看可执行文件的位置，会在环境变量 $PATH 设置的目录里查找符合条件的文件</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ln -s /opt/node/bin/node /usr/local/bin/node </span><br><span class="line">ln -s /opt/node/bin/npx /usr/local/bin/npx </span><br><span class="line">ln -s /opt/node/bin/npm /usr/local/bin/npm</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>以下是在操作上述过程中遇到的一些问题及知识点，在此记录</p>
+<h4 id="通过-n-包管理器升级"><a href="#通过-n-包管理器升级" class="headerlink" title="通过 n 包管理器升级"></a>通过 n 包管理器升级</h4><p>清除 npm 缓存<br><code>npm cache clean -f</code><br>安装<br><code>npm install -g n</code><br>下载最新版本<br><code>n latest</code><br>下载稳定版<br><code>n stable</code><br>下载某个版本<br><code>n 版本号</code><br>切换版本<br><code>n</code></p>
+<h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h3><p>硬链接：每个文件都有一个硬链接，硬链接和文件没什么区别。<br>软链接（符号链接）：类似 window 的快捷方式，软链接可以关联一个目录，硬链接不行。</p>
+<p><strong>创建链接 ln</strong><br>-s 表示创建软链<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /usr/bin/npm /opt/soft/node-v14.15.0/bin/npm</span><br></pre></td></tr></table></figure></p>
+<p><strong>查看文件路径 ls -l</strong><br>如果文件或目录是软链，-&gt; 后面是链接的真实路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@3e5830d31dce bin]# ls -l | grep node</span><br><span class="line">lrwxrwxrwx   1 root  root          27 10月 29 19:34 n -&gt; ../lib/node_modules/n/bin/n</span><br><span class="line">lrwxrwxrwx   1 root  root          42 10月 29 20:49 node -&gt; /opt/soft/node-v14.15.0-linux-x64/bin/node</span><br><span class="line">lrwxrwxrwx   1 root  root          41 10月 29 21:06 npm -&gt; /opt/soft/node-v14.15.0-linux-x64/bin/npm</span><br><span class="line">lrwxrwxrwx   1 root  root          41 10月 29 21:07 npx -&gt; /opt/soft/node-v14.15.0-linux-x64/bin/npx</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/26/single-spa-source-code-analyze/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2020/03/26/single-spa-source-code-analyze/" class="post-title-link" itemprop="http://yoursite.com/index.html">single-spa 源码分析</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-03-26 14:43:51" itemprop="dateCreated datePublished" datetime="2020-03-26T14:43:51+08:00">2020-03-26</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/03/26/single-spa-source-code-analyze/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2020/03/26/single-spa-source-code-analyze/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在了解single-spa基本功能后，可以将其简单概括为：single-spa 的核心就是动态将子应用的资源文件插入到主应用中。那内部是如何管理子应用、如何做到子应用之间的动态切换。带着这些疑问探究 single-spa 源码。</p>
+<p>源码主要分为三部分：app 应用、Navigation 路由、生命周期。</p>
+<h2 id="application"><a href="#application" class="headerlink" title="application"></a>application</h2><h3 id="应用状态"><a href="#应用状态" class="headerlink" title="应用状态"></a>应用状态</h3><p>为了更好的管理 app，每个app在运行期间都有自己的状态<br>每个应用在整个运行期间都有自己的状态，根据不同状态做对应的处理。</p>
+<ul>
+<li>null ： app 不存在</li>
+<li>NOT_LOADED：已经注册还没加载</li>
+<li>LOADING_SOURCE_CODE：正在加载 app 代码（registerApplication 的第二个参数）</li>
+<li>NOT_BOOTSTRAPPED：已经加载还没启动，即未执行 app 的 bootstrap 生命周期函数</li>
+<li>BOOTSTRAPPING：正在启动，执行 app 的 bootstrap 生命周期函数，只执行一次</li>
+<li>NOT_MOUNTED：已经启动还没挂载</li>
+<li>MOUNTING： 正在挂载，执行 app 的 mount 函数</li>
+<li>MOUNTED：已经挂载</li>
+<li>UNMOUNTING：正在移除挂载，执行 app 的 unmount 函数</li>
+<li>UNLOADING： 正在卸载，还没完成</li>
+<li>SKIP_BECAUSE_BROKEN：执行期间出错</li>
+</ul>
+<h3 id="注册应用"><a href="#注册应用" class="headerlink" title="注册应用"></a>注册应用</h3><p>框架内部统一管理所有应用来进行应用之间的调度（应用的挂载卸载错误等处理），应用注册成功后，会放到内部统一管理应用的的数组 apps 里。<br><code>registerApplication：（appName，applicationOrLoadingFn，activeFn， customProps）</code></p>
+<ul>
+<li>appName： 应用唯一标识。</li>
+<li>applicationOrLoadingFn： <strong>入口 js 文件，这就需要子应用做一些处理，需要打包成特殊的文件格式进行加载</strong></li>
+<li>activeFn：什么时候激活应用，根据 url 进行匹配。</li>
+<li>customProps：给子应用传递的参数，例如登录信息权限控制等。</li>
+</ul>
+<p>注册成功之后的单个 app 信息如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">apps.push(&#123;</span><br><span class="line">    loadErrorTime: <span class="literal">null</span>,</span><br><span class="line">    name: appName,</span><br><span class="line">    loadImpl,</span><br><span class="line">    activeWhen: activityFn,</span><br><span class="line">    status: NOT_LOADED,</span><br><span class="line">    parcels: &#123;&#125;,</span><br><span class="line">    devtools: &#123;</span><br><span class="line">      overlays: &#123;</span><br><span class="line">        options: &#123;&#125;,</span><br><span class="line">        selectors: [],</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    customProps</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<p>除了注册传递的参数以外，single-spa 给每个 app 增加了状态 status。注册后的状态为 NOT_LOADED，表示已经注册但未加载。<br>注册成功后，会执行 reroute 方法，reroute 内部判断是否已经 start，如果未启动，则找到匹配的应用（不报错的、还未 load 的）进行<strong>预加载</strong>，为挂载做准备。如果已经启动，则取消已经挂载的，找到当前匹配的进行挂载，reroute 是整个 single-app 的核心，后面还会详细分析。</p>
+<h3 id="卸载应用"><a href="#卸载应用" class="headerlink" title="卸载应用"></a>卸载应用</h3><p><code>unregisterApplication</code> 会去调用 <code>unloadApplication</code>，然后在 apps 里找到对应的 app 将其删除。<br>在 <code>unloadApplication</code> 里，会先去看当前应用是否有正在被 <code>unload</code>，如果存在则直接返回。否则需要先 <code>unmount</code> 之后再去 <code>unload</code>。</p>
+<h2 id="Navigation"><a href="#Navigation" class="headerlink" title="Navigation"></a>Navigation</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'hashchange'</span>, urlReroute);</span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'popstate'</span>, urlReroute);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">urlReroute</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  reroute([], <span class="built_in">arguments</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>全局监听了 <code>hashchange</code> 和 <code>popstate</code> 事件来拦截 url 的变化，在路由事件到达应用框架（Vue、React）之前做应用的挂载卸载处理，当触发这两个事件后，也会执行 reroute，同时带上事件参数传递给 reroute。下面重点分析一下 reroute。</p>
+<h2 id="reroute"><a href="#reroute" class="headerlink" title="reroute"></a>reroute</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">reroute 接收两个参数</span></span><br><span class="line"><span class="comment">pendingPromises：表示正在队列中等待执行的 reroute。reroute 在执行期间，可能会有多个 reroute 被调用（路由触发或者应用注册）。</span></span><br><span class="line"><span class="comment">eventArguments：路由事件触发的 event。只有路由改变才会有这个参数</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">reroute</span>(<span class="params">pendingPromises = [], eventArguments</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// appChangeUnderway 是一个开关，用来表示 reroute 是否正处于执行期间。</span></span><br><span class="line">  <span class="comment">// 如果正处于执行期间还会有 reroute 要执行，则会将 reroute 放入队列里等待执行</span></span><br><span class="line">  <span class="keyword">if</span> (appChangeUnderway) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">      peopleWaitingOnAppChange.push(&#123;</span><br><span class="line">        resolve,</span><br><span class="line">        reject,</span><br><span class="line">        eventArguments,</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  appChangeUnderway = <span class="literal">true</span>;</span><br><span class="line">  <span class="comment">// wasNoOp 为 true 表示没有应用发生变更。</span></span><br><span class="line">  <span class="keyword">let</span> wasNoOp = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (isStarted()) &#123;</span><br><span class="line">    <span class="keyword">return</span> performAppChanges();</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> loadApps();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">loadApps</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> loadPromises = getAppsToLoad().map(toLoadPromise);</span><br><span class="line">      <span class="comment">// 获取要 load 的 app（未出错的命中的），如果有说明应用发生了变更</span></span><br><span class="line">      <span class="keyword">if</span> (loadPromises.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        wasNoOp = <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 执行 load 并且直接 finishUpAndReturn</span></span><br><span class="line">      <span class="comment">// 并不进行 mount，因为未 start，此时进行预加载</span></span><br><span class="line">      <span class="comment">// 即：页面上没有挂载该应用，但是会去请求对应的资源文件</span></span><br><span class="line">      <span class="comment">// 不会去调用应用文件里的bootstrap、mount、unmount等生命周期</span></span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">Promise</span></span><br><span class="line">        .all(loadPromises)</span><br><span class="line">        .then(finishUpAndReturn)</span><br><span class="line">        .catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">          callAllEventListeners();</span><br><span class="line">          <span class="keyword">throw</span> err;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">performAppChanges</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">window</span>.dispatchEvent(<span class="keyword">new</span> CustomEvent(<span class="string">"single-spa:before-routing-event"</span>, getCustomEventDetail()));</span><br><span class="line">      <span class="keyword">const</span> unloadPromises = getAppsToUnload().map(toUnloadPromise);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> unmountUnloadPromises = getAppsToUnmount()</span><br><span class="line">        .map(toUnmountPromise)</span><br><span class="line">        .map(<span class="function"><span class="params">unmountPromise</span> =&gt;</span> unmountPromise.then(toUnloadPromise));</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> allUnmountPromises = unmountUnloadPromises.concat(unloadPromises);</span><br><span class="line">      <span class="comment">// 获取要 unload 以及要 unmout 的 app，如果有表示应用发生了变更</span></span><br><span class="line">      <span class="comment">// 如果此时触发的是子应用内部的路由，则此时 allUnmountPromises 为[]，表示没有应用的卸载或挂载</span></span><br><span class="line">      <span class="keyword">if</span> (allUnmountPromises.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        wasNoOp = <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> unmountAllPromise = <span class="built_in">Promise</span>.all(allUnmountPromises);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> appsToLoad = getAppsToLoad();</span><br><span class="line">      <span class="comment">// 在其他应用 unmounting 期间将需要 load 的 app 执行 load、bootstrap（并行优势），等所有的 unmounting 都结束之后去挂载当前的 app</span></span><br><span class="line">      <span class="keyword">const</span> loadThenMountPromises = appsToLoad.map(<span class="function"><span class="params">app</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> toLoadPromise(app)</span><br><span class="line">          .then(toBootstrapPromise)</span><br><span class="line">          .then(<span class="function"><span class="params">app</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> unmountAllPromise</span><br><span class="line">              .then(<span class="function"><span class="params">()</span> =&gt;</span> toMountPromise(app))</span><br><span class="line">          &#125;)</span><br><span class="line">      &#125;)</span><br><span class="line">      <span class="comment">// 如果有要挂载的 app，也说明应用发生了变更</span></span><br><span class="line">      <span class="keyword">if</span> (loadThenMountPromises.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        wasNoOp = <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 获取已经 bootstrap 要去 mount 的 app，同上，等到其他 app unmounting 之后执行挂载</span></span><br><span class="line">      <span class="keyword">const</span> mountPromises = getAppsToMount()</span><br><span class="line">        .filter(<span class="function"><span class="params">appToMount</span> =&gt;</span> appsToLoad.indexOf(appToMount) &lt; <span class="number">0</span>)</span><br><span class="line">        .map(<span class="function"><span class="params">appToMount</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">return</span> toBootstrapPromise(appToMount)</span><br><span class="line">            .then(<span class="function"><span class="params">()</span> =&gt;</span> unmountAllPromise)</span><br><span class="line">            .then(<span class="function"><span class="params">()</span> =&gt;</span> toMountPromise(appToMount))</span><br><span class="line">        &#125;)</span><br><span class="line">      <span class="comment">// 同上</span></span><br><span class="line">      <span class="keyword">if</span> (mountPromises.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        wasNoOp = <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 所有要卸载的执行完之后，执行回调</span></span><br><span class="line">      <span class="keyword">return</span> unmountAllPromise</span><br><span class="line">        .catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">          callAllEventListeners();</span><br><span class="line">          <span class="keyword">throw</span> err;</span><br><span class="line">        &#125;)</span><br><span class="line">        .then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">          callAllEventListeners();</span><br><span class="line"></span><br><span class="line">          <span class="keyword">return</span> <span class="built_in">Promise</span></span><br><span class="line">            .all(loadThenMountPromises.concat(mountPromises))</span><br><span class="line">            .catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">              pendingPromises.forEach(<span class="function"><span class="params">promise</span> =&gt;</span> promise.reject(err));</span><br><span class="line">              <span class="keyword">throw</span> err;</span><br><span class="line">            &#125;)</span><br><span class="line">            .then(<span class="function"><span class="params">()</span> =&gt;</span> finishUpAndReturn(<span class="literal">false</span>))</span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">finishUpAndReturn</span>(<span class="params">callEventListeners=true</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> returnValue = getMountedApps();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (callEventListeners) &#123;</span><br><span class="line">      callAllEventListeners();</span><br><span class="line">    &#125;</span><br><span class="line">    pendingPromises.forEach(<span class="function"><span class="params">promise</span> =&gt;</span> promise.resolve(returnValue));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> appChangeEventName = wasNoOp ? <span class="string">"single-spa:no-app-change"</span>: <span class="string">"single-spa:app-change"</span>;</span><br><span class="line">      <span class="built_in">window</span>.dispatchEvent(<span class="keyword">new</span> CustomEvent(appChangeEventName, getCustomEventDetail()));</span><br><span class="line">      <span class="built_in">window</span>.dispatchEvent(<span class="keyword">new</span> CustomEvent(<span class="string">"single-spa:routing-event"</span>, getCustomEventDetail()));</span><br><span class="line">    &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">      setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> err;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 打开开关，执行队列里的 reroute</span></span><br><span class="line">    appChangeUnderway = <span class="literal">false</span>;</span><br><span class="line">    <span class="comment">// 虽然批量执行所有等待的 reroute，但这个地方还是需要递归的执行，因为在执行 reroute 期间可能又会有 reroute 进来</span></span><br><span class="line">    <span class="keyword">if</span> (peopleWaitingOnAppChange.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> nextPendingPromises = peopleWaitingOnAppChange;</span><br><span class="line">      peopleWaitingOnAppChange = [];</span><br><span class="line">      reroute(nextPendingPromises);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> returnValue;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">callAllEventListeners</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    pendingPromises.forEach(<span class="function"><span class="params">pendingPromise</span> =&gt;</span> &#123;</span><br><span class="line">      callCapturedEventListeners(pendingPromise.eventArguments);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    callCapturedEventListeners(eventArguments);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">getCustomEventDetail</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> result = &#123;<span class="attr">detail</span>: &#123;&#125;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (eventArguments &amp;&amp; eventArguments[<span class="number">0</span>]) &#123;</span><br><span class="line">      result.detail.originalEvent = eventArguments[<span class="number">0</span>]</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>画个简易的流程图如下：<br><img src="./single-spa-source-code-analyze/reroute.png" alt="reroute"></p>
+<h2 id="lifecycles"><a href="#lifecycles" class="headerlink" title="lifecycles"></a>lifecycles</h2><p>single-spa 的亮点除了顶层路由的设计，另一个亮点就是生命周期的设计。生命周期的设计使得主应用更好的控制子应用。整个生命周期状态变更如下:<br><img src="./single-spa-source-code-analyze/lifecycle.png" alt="lifecycle"></p>
+<p>app 出错的状态有两个：<code>SKIP_BECAUSE_BROKEN</code> 与 <code>LOAD_ERROR</code>。<code>SKIP_BECAUSE_BROKEN</code> 表示在状态变更时出错，阻止往下个状态变更，<code>LOAD_ERROR</code> 表示加载错误，此时会记录当前的时间戳，当路由再次导航到对应用时还会尝试去加载（时间间隔大于200ms）。<br>挂载阶段出错时，在状态变成 <code>SKIP_BECAUSE_BROKEN</code> 之前需要先将状态变成 <code>mounted</code>，因为出错后要执行 <code>toUnmountPromise</code> 卸载应用，而 <code>toUnmountPromise</code> 会判断如果状态不是 <code>MOUNTED</code> 时会跳过。</p>
+<h2 id="single-spa-react"><a href="#single-spa-react" class="headerlink" title="single-spa-react"></a>single-spa-react</h2><p>上面提到，在加载应用资源时，会去检查 app 的三个生命周期状态，single-spa 要求接入的应用都提供这三个生命周期，所以官方官方适配出了各个框架的工具。以single-spa-react 为例，react 应用的入口文件通过 single-spa-react 封装，暴露给 single-spa 三个生命周期函数，并且都是 Promise。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> defaultOpts = &#123;</span><br><span class="line">  <span class="comment">// required opts</span></span><br><span class="line">  React: <span class="literal">null</span>,</span><br><span class="line">  ReactDOM: <span class="literal">null</span>,</span><br><span class="line">  rootComponent: <span class="literal">null</span>,</span><br><span class="line">  loadRootComponent: <span class="literal">null</span>,</span><br><span class="line">  suppressComponentDidCatchWarning: <span class="literal">false</span>,</span><br><span class="line">  domElements: &#123;&#125;,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// optional opts</span></span><br><span class="line">  domElementGetter: <span class="literal">null</span>,</span><br><span class="line">  parcelCanUpdate: <span class="literal">true</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">singleSpaReact</span>(<span class="params">userOpts</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">const</span> opts = &#123;</span><br><span class="line">    ...defaultOpts,</span><br><span class="line">    ...userOpts,</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">const</span> lifecycles = &#123;</span><br><span class="line">    bootstrap: bootstrap.bind(<span class="literal">null</span>, opts),</span><br><span class="line">    mount: mount.bind(<span class="literal">null</span>, opts),</span><br><span class="line">    unmount: unmount.bind(<span class="literal">null</span>, opts),</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> lifecycles</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>bootstrap: 如果是 class 或者无状态组件，则直接返回。确保传入的是 React 根组件。</li>
+<li>mount: 找到 single-spa 传递给应用的 DOM 节点(domElementGetter)，执行 reactDomRender 进行渲染。</li>
+<li>unmount: 从 DOM 中移除 React 应用。</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/05/2019-reading-notes/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1705,386 +2060,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/14/you-don-t-know-javascript-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ruirui">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ruirui's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/05/14/you-don-t-know-javascript-2/" class="post-title-link" itemprop="http://yoursite.com/index.html">你不知道的Javascript（中卷）笔记</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-05-14 13:29:55" itemprop="dateCreated datePublished" datetime="2019-05-14T13:29:55+08:00">2019-05-14</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/05/14/you-don-t-know-javascript-2/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/14/you-don-t-know-javascript-2/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h2><p>typeof 判断类型，返回的是<strong>类型的字符串值</strong><br>特殊：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typeof</span> <span class="literal">null</span> === <span class="string">'object'</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>) </span>&#123;&#125; === <span class="string">'function'</span></span><br><span class="line"><span class="keyword">var</span> a</span><br><span class="line"><span class="keyword">typeof</span> a <span class="comment">// 'undefined'</span></span><br><span class="line"><span class="keyword">typeof</span> b <span class="comment">// 'undefined'  // 即使b未声明，也会返回undefined</span></span><br></pre></td></tr></table></figure></p>
-<p>函数是对象的一个子集，也有属性，比方说a.length，是声明的参数个数。<br>变量没有类型，但他们的值持有类型。</p>
-<h2 id="值"><a href="#值" class="headerlink" title="值"></a>值</h2><p>如果字符串键值能被强制类型转换为十进制数字的话，它就会被当做数字索引来处理。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = [];</span><br><span class="line">a[<span class="string">'13'</span>] = <span class="number">42</span>;</span><br><span class="line">a,length; <span class="comment">//14</span></span><br></pre></td></tr></table></figure></p>
-<p>字符串是类数组，具有 length 属性以及 indexof() 和 concat() 方法。<br>字符串是不可变的，也就是字符串的成员函数不会改变其原始值，数组是可变的。有的操作可以先”借用”数组的方法。<br>undefined 只有一个值，即 undefined，null 类型也只有一个值，即 Null。它们的名称既是类型也是值。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">null</span>：指空值；曾经赋过值，但目前没有值；是一个特殊的关键字，不是标识符</span><br><span class="line"><span class="literal">undefined</span>：指没有值，从未赋值；是一个标识符，可以被当做变量来使用和赋值</span><br></pre></td></tr></table></figure></p>
-<p>NaN 指”不是一个数字”，理解为”无效数值”、”失败数值”、”坏数值”。他和自身不相等，是唯一一个非自反的值，即 NaN != NaN 为true。<br>怎么判断一个值是 NaN 呢？ ES6 有工具函数<code>Number.isNaN()</code>可以判断。</p>
-<h2 id="原生函数"><a href="#原生函数" class="headerlink" title="原生函数"></a>原生函数</h2><p>所有 typeof 返回值为”object” 的对象都包含一个内部属性[[Class]]，这个属性无法直接访问。一般通过<code>Object.prototype.toString(...)</code>来查看。<br>基本类型是没有.length 和 .toString() 这样的属性和方法，需要通过<strong>封装类型</strong>才能访问，此时 Javascript 会自动为基本类型值包装一个封装对象。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">false</span>);</span><br><span class="line"><span class="keyword">if</span>(!a) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Oops'</span>); <span class="comment">// 执行不到这里</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>获取一个封装对象中的基本类型值，可以使用 valueOf() 函数。</p>
-<h2 id="强制类型转换"><a href="#强制类型转换" class="headerlink" title="强制类型转换"></a>强制类型转换</h2><h3 id="抽象值操作"><a href="#抽象值操作" class="headerlink" title="抽象值操作"></a>抽象值操作</h3><ul>
-<li>ToString<br>负责处理非字符串到字符串的强制类型转换<br>基本类型规则：null 转换为 “null”，undefined 转换为 “undefined”，true 转换为 “true”。<br>普通对象来说，除非自定义，否则 toString() 会返回内部属性[[Class]]的值，如”[[object Object]]”。<br>数组的 toString() 经过了重新定义，将所有单元字符串化后再用”,”进行连接。</li>
-<li>ToNumber<br>true 转换为1，false 转换为0，null 转换为0，undefined 转换为NaN。<br>对象（包括数组）会首先被转换为相应的基本类型值，如果返回的是非数字的基本类型值，再通过规则将其转换为数字。<br>将值转换为基本数据类型，ES规范会检查是否有 valueOf() 方法，如果有并且返回基本类型值，则使用该值进行强制类型转换，如果没有就使用toString()的返回值进行强制类型转换。</li>
-<li>ToBoolean<br>以下这些是假值：undefined、null、false、+0、-0 和 NaN、””。假值类型的布尔强制类型转换结果为 false。<br>假值对象：他们都是封装了假值类型的对象。<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">false</span>); <span class="comment">// true</span></span><br><span class="line"><span class="keyword">var</span> b = <span class="keyword">new</span> <span class="built_in">Number</span>(<span class="number">0</span>); <span class="comment">// true</span></span><br><span class="line"><span class="keyword">var</span> c = <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">""</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="显式强制类型转换"><a href="#显式强制类型转换" class="headerlink" title="显式强制类型转换"></a>显式强制类型转换</h3><ul>
-<li>字符串和数字的显示转换</li>
-</ul>
-<p>字符串和数字之间的转换是通过 String(…) 和 Number(…) 这两个内建函数（原生构造函数）来实现的，请注意它们前面没有 new 关键字，并不创建封装对象。<br>日期转换为数字</p>
-<h3 id="隐式强制类型转换"><a href="#隐式强制类型转换" class="headerlink" title="隐式强制类型转换"></a>隐式强制类型转换</h3><ul>
-<li><p>字符串和数字的隐士强制类型转换</p>
-<ul>
-<li>运算符能用于数字加法，也能用于字符串拼接，那么怎么判断执行哪个操作呢？<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> + <span class="string">'1'</span> <span class="comment">// 11</span></span><br><span class="line"><span class="number">1</span> + <span class="literal">true</span> <span class="comment">// 2</span></span><br><span class="line"><span class="number">1</span> + <span class="literal">false</span> <span class="comment">// 1</span></span><br><span class="line"><span class="number">1</span> + <span class="literal">undefined</span> <span class="comment">// NaN</span></span><br><span class="line"><span class="string">'a'</span> + <span class="literal">true</span> <span class="comment">//  atrue</span></span><br><span class="line"><span class="keyword">var</span> a = [<span class="number">1</span>, <span class="number">2</span>]</span><br><span class="line"><span class="keyword">var</span> b = [<span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line">a+b <span class="comment">// "1,23,4"</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p><strong>如果 + 的其中一个操作数是字符串（或者通过以下步骤可以得到字符串）则执行字符串拼接，否则执行数字加法</strong>。<br>步骤：如果其中一个操作数是对象（包括数组），对其首先进行 ToPrimitive 抽象操作，该抽象操作再调用[[DefaultValue]]，以数字作为上下文。</p>
-</li>
-<li><p>布尔值和数字的隐士强制类型转换</p>
-</li>
-<li></li>
-</ul>
-<h3 id="宽松相等和严格相等"><a href="#宽松相等和严格相等" class="headerlink" title="宽松相等和严格相等"></a>宽松相等和严格相等</h3><p>常见误区是：“==检查值是否相等，===检查值和类型是否相等”。<br><strong>正确解释是：“==允许在相等比较中进行强制类型转换，而===不允许”</strong>。</p>
-<ul>
-<li>字符串和数字之间的相等比较<br>x == y：x 是数字，y 是字符串，则将 字符串y 转换为数字（ToNumber(y)）进行判断。</li>
-<li>其他类型和布尔值的相等比较<br>x == y: x 是布尔值，则将布尔值 x 转换为数字（ToNumber(x)）进行判断。<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">var</span> y = <span class="string">"42"</span>;</span><br><span class="line">x == y  <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>首先将 x 转换为数字1，则接下来进行 1 == “42”的比较，”42”转换为数字42，最后变成 1== 42，则为 false。<br>建议：<strong>无论什么情况下都不要使用 == true 和 == false</strong></p>
-<ul>
-<li>null 和 undefined 的相等比较<br>x == y：x 为 null， y为 undefined，则结果为 true<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = dosomething();</span><br><span class="line"><span class="keyword">if</span>(a == <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>条件判断仅在 dosomething() 返回 null 和 undefined 时才成立，除此之外都不成立，包括0、 false 和 “” 这样的假值。</p>
-<ul>
-<li><p>对象和非对象直接的相等比较<br>x == y: x 是字符串或数字，y 是对象，则将 y 转换为 ToPrimitive(y) 进行比较。</p>
-</li>
-<li><p>安全运用隐士强制类型转换<br><strong> 如果两边值中有 true 或 false，千万不要使用 ==。</strong><br><strong> 如果两边值有[]、””或0，千万不要使用==。</strong></p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-       
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/03/vue-lifecycle-analysis/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ruirui">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ruirui's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/05/03/vue-lifecycle-analysis/" class="post-title-link" itemprop="http://yoursite.com/index.html">从源码角度理解 Vue 生命周期和响应式原理</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-05-03 15:22:15" itemprop="dateCreated datePublished" datetime="2019-05-03T15:22:15+08:00">2019-05-03</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/05/03/vue-lifecycle-analysis/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/03/vue-lifecycle-analysis/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    el: <span class="string">'#app'</span>,</span><br><span class="line">    data: &#123;</span><br><span class="line">        test: <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h2 id="beforeCreate-amp-amp-created"><a href="#beforeCreate-amp-amp-created" class="headerlink" title="beforeCreate &amp;&amp; created"></a>beforeCreate &amp;&amp; created</h2><p>在 new Vue() 创建实例时，会先执行 _init 方法进行初始化.<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/instance/index.js</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Vue</span> (<span class="params">options</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp;</span><br><span class="line">    !(<span class="keyword">this</span> <span class="keyword">instanceof</span> Vue)</span><br><span class="line">  ) &#123;</span><br><span class="line">    warn(<span class="string">'Vue is a constructor and should be called with the `new` keyword'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">this</span>._init(options)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/instance/init.js</span></span><br><span class="line">Vue.prototype._init = <span class="function"><span class="keyword">function</span> (<span class="params">options?: Object</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> vm: Component = <span class="keyword">this</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// merge options</span></span><br><span class="line">  vm._self = vm</span><br><span class="line">  initLifecycle(vm)</span><br><span class="line">  initEvents(vm)</span><br><span class="line">  initRender(vm)</span><br><span class="line">  callHook(vm, <span class="string">'beforeCreate'</span>)</span><br><span class="line">  initInjections(vm) <span class="comment">// resolve injections before data/props</span></span><br><span class="line">  initState(vm)</span><br><span class="line">  initProvide(vm) <span class="comment">// resolve provide after data/props</span></span><br><span class="line">  callHook(vm, <span class="string">'created'</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (vm.$options.el) &#123;</span><br><span class="line">    vm.$mount(vm.$options.el)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">initState</span> (<span class="params">vm: Component</span>) </span>&#123;</span><br><span class="line">  vm._watchers = []</span><br><span class="line">  <span class="keyword">const</span> opts = vm.$options</span><br><span class="line">  <span class="keyword">if</span> (opts.props) initProps(vm, opts.props)</span><br><span class="line">  <span class="keyword">if</span> (opts.methods) initMethods(vm, opts.methods)</span><br><span class="line">  <span class="keyword">if</span> (opts.data) &#123;</span><br><span class="line">    initData(vm)</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    observe(vm._data = &#123;&#125;, <span class="literal">true</span> <span class="comment">/* asRootData */</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (opts.computed) initComputed(vm, opts.computed)</span><br><span class="line">  <span class="keyword">if</span> (opts.watch &amp;&amp; opts.watch !== nativeWatch) &#123;</span><br><span class="line">    initWatch(vm, opts.watch)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面列出了 Vue 初始化时做的工作，在 beforeCreate 之前，主要是合并配置，初始化生命周期，初始化事件中心，初始化渲染。beforeCreate之后主要是 initState，initState 主要是初始化 props、data、methods、watch、computed，methods 等这些属性，在初始化完之后调用 create 钩子。所以在 beforeCreate 钩子函数被调用时，与上述属性相关的内容都不能访问，created 之后才可以访问。</p>
-<h2 id="beforeMounted-amp-amp-mounted"><a href="#beforeMounted-amp-amp-mounted" class="headerlink" title="beforeMounted &amp;&amp; mounted"></a>beforeMounted &amp;&amp; mounted</h2><p>在 created 之后，开始执行挂载 $mount。因为 $mount 和平台、构建方式都有关，Vue 原型上定义 $mount 主要有两处，一处是 Runtime 版（运行版） Vue 的入口文件。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/platforms/web/runtime/index.js</span></span><br><span class="line"><span class="comment">// public mount method</span></span><br><span class="line">Vue.prototype.$mount = <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  el?: string | Element,</span></span></span><br><span class="line"><span class="function"><span class="params">  hydrating?: boolean</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Component</span> </span>&#123;</span><br><span class="line">  el = el &amp;&amp; inBrowser ? query(el) : <span class="literal">undefined</span></span><br><span class="line">  <span class="keyword">return</span> mountComponent(<span class="keyword">this</span>, el, hydrating)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>通过 mountComponent 函数完成真正的挂载工作。<br>另一处是 Runtime + Compiler 版（完整版）的入口文件。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/platforms/web/entry-runtime-with-compiler.js</span></span><br><span class="line"><span class="keyword">const</span> mount = Vue.prototype.$mount</span><br><span class="line">Vue.prototype.$mount = <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  el?: string | Element,</span></span></span><br><span class="line"><span class="function"><span class="params">  hydrating?: boolean</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">return</span> mount.call(<span class="keyword">this</span>, el, hydrating)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这两个版本的区别如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 运行时+编译器</span></span><br><span class="line"><span class="comment">// 需要编译器</span></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  template: <span class="string">'&lt;div&gt;&#123;&#123; hi &#125;&#125;&lt;/div&gt;'</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 运行时版本</span></span><br><span class="line"><span class="comment">// 不需要编译器</span></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  render (h) &#123;</span><br><span class="line">    <span class="keyword">return</span> h(<span class="string">'div'</span>, <span class="keyword">this</span>.hi)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
-<p>完整版比运行时版多了编译器的处理，我们平时写项目时，vue-loader 会帮我们把 template 转化成 render 函数，采用运行时构建即刻。<br>将省略的编译器的部分展开分析<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">  el = el &amp;&amp; query(el)</span><br><span class="line"><span class="comment">/* istanbul ignore if */</span></span><br><span class="line"><span class="keyword">if</span> (el === <span class="built_in">document</span>.body || el === <span class="built_in">document</span>.documentElement) &#123;</span><br><span class="line">  process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp; warn(</span><br><span class="line">    <span class="string">`Do not mount Vue to &lt;html&gt; or &lt;body&gt; - mount to normal elements instead.`</span></span><br><span class="line">  )</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> options = <span class="keyword">this</span>.$options</span><br><span class="line"><span class="comment">// resolve template/el and convert to render function</span></span><br><span class="line"><span class="keyword">if</span> (!options.render) &#123;</span><br><span class="line">  <span class="keyword">let</span> template = options.template</span><br><span class="line">  <span class="comment">// 处理 template</span></span><br><span class="line">  <span class="keyword">if</span> (template) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> template === <span class="string">'string'</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (template.charAt(<span class="number">0</span>) === <span class="string">'#'</span>) &#123;</span><br><span class="line">        template = idToTemplate(template)</span><br><span class="line">        <span class="comment">/* istanbul ignore if */</span></span><br><span class="line">        <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp; !template) &#123;</span><br><span class="line">          warn(</span><br><span class="line">            <span class="string">`Template element not found or is empty: <span class="subst">$&#123;options.template&#125;</span>`</span>,</span><br><span class="line">            <span class="keyword">this</span></span><br><span class="line">          )</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (template.nodeType) &#123;</span><br><span class="line">      template = template.innerHTML</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span>) &#123;</span><br><span class="line">        warn(<span class="string">'invalid template option:'</span> + template, <span class="keyword">this</span>)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (el) &#123;</span><br><span class="line">    template = getOuterHTML(el)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (template) &#123;</span><br><span class="line">    <span class="comment">/* istanbul ignore if */</span></span><br><span class="line">    <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp; config.performance &amp;&amp; mark) &#123;</span><br><span class="line">      mark(<span class="string">'compile'</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> &#123; render, staticRenderFns &#125; = compileToFunctions(template, &#123;</span><br><span class="line">      outputSourceRange: process.env.NODE_ENV !== <span class="string">'production'</span>,</span><br><span class="line">      shouldDecodeNewlines,</span><br><span class="line">      shouldDecodeNewlinesForHref,</span><br><span class="line">      delimiters: options.delimiters,</span><br><span class="line">      comments: options.comments</span><br><span class="line">    &#125;, <span class="keyword">this</span>)</span><br><span class="line">    options.render = render</span><br><span class="line">    options.staticRenderFns = staticRenderFns</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* istanbul ignore if */</span></span><br><span class="line">    <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp; config.performance &amp;&amp; mark) &#123;</span><br><span class="line">      mark(<span class="string">'compile end'</span>)</span><br><span class="line">      measure(<span class="string">`vue <span class="subst">$&#123;<span class="keyword">this</span>._name&#125;</span> compile`</span>, <span class="string">'compile'</span>, <span class="string">'compile end'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
-<p>首先挂载点不能是 body 或 html 元素，接着看是否有渲染函数 render，如果有则直接调用运行时版的 $mount，如果没有则先将 template 或 el 处理成字符串，再通过调用 compileToFunctions 成渲染函数 render。接着去执行真正的挂载函数 mountComponent。</p>
-<h3 id="mountComponent"><a href="#mountComponent" class="headerlink" title="mountComponent"></a>mountComponent</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/instance/lifecycle.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">mountComponent</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  vm: Component,</span></span></span><br><span class="line"><span class="function"><span class="params">  el: ?Element,</span></span></span><br><span class="line"><span class="function"><span class="params">  hydrating?: boolean</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Component</span> </span>&#123;</span><br><span class="line">  vm.$el = el</span><br><span class="line">  <span class="keyword">if</span> (!vm.$options.render) &#123;</span><br><span class="line">    vm.$options.render = createEmptyVNode</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">  callHook(vm, <span class="string">'beforeMount'</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> updateComponent</span><br><span class="line">  <span class="comment">/* istanbul ignore if */</span></span><br><span class="line">  <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp; config.performance &amp;&amp; mark) &#123;</span><br><span class="line">    updateComponent = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    updateComponent = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      vm._update(vm._render(), hydrating)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">new</span> Watcher(vm, updateComponent, noop, &#123;</span><br><span class="line">    before () &#123;</span><br><span class="line">      <span class="keyword">if</span> (vm._isMounted &amp;&amp; !vm._isDestroyed) &#123;</span><br><span class="line">        callHook(vm, <span class="string">'beforeUpdate'</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, <span class="literal">true</span> <span class="comment">/* isRenderWatcher */</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// manually mounted instance, call mounted on self</span></span><br><span class="line">  <span class="comment">// mounted is called for render-created child components in its inserted hook</span></span><br><span class="line">  <span class="keyword">if</span> (vm.$vnode == <span class="literal">null</span>) &#123;</span><br><span class="line">    vm._isMounted = <span class="literal">true</span></span><br><span class="line">    callHook(vm, <span class="string">'mounted'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> vm</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>render 函数必须存在，否则会报警告，如果 render 存在首先调用 beforeMount 钩子，接着根据不同的环境定义 <strong>updateComponent</strong> 方法</p>
-<h3 id="updateComponent"><a href="#updateComponent" class="headerlink" title="updateComponent"></a>updateComponent</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">updateComponent = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  vm._update(vm._render(), hydrating)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>updateComponent 方法中 vm._render 方法<strong>生成虚拟 Node</strong>，最终调用 vm._update 将<strong>虚拟 Node 渲染成真正的 DOM</strong>，_update 在首次渲染和数据更新时都会调用，核心方法是 <em>patch</em> ，将新虚拟节点和旧虚拟节点进行对比。<br>那什么时候调用 updateComponent 方法呢？ 实例化一个 Watcher，将 updateComponent 作为参数传递进去，<br>在之前<a href="/2017/10/20/vue-dynamic-data-binding-5/">实现简单的MVVM</a>中分析，初始化 Watcher 时，会通过传入的表达式（观察目标）进行一次求值，从而触发属性的 getter 属性进行依赖收集。对应到这里看源码对 Watcher 定义<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/observer/watcher.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Watcher</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">constructor</span> (</span><br><span class="line">    vm: Component,</span><br><span class="line">    expOrFn: string | Function,</span><br><span class="line">    cb: Function,</span><br><span class="line">    options?: ?Object,</span><br><span class="line">    isRenderWatcher?: boolean</span><br><span class="line">  ) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> expOrFn === <span class="string">'function'</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.getter = expOrFn</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.getter = parsePath(expOrFn)</span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">this</span>.getter) &#123;</span><br><span class="line">            <span class="keyword">this</span>.getter = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">            process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp; warn(</span><br><span class="line">            <span class="string">`Failed watching path: "<span class="subst">$&#123;expOrFn&#125;</span>" `</span> +</span><br><span class="line">            <span class="string">'Watcher only accepts simple dot-delimited paths. '</span> +</span><br><span class="line">            <span class="string">'For full control, use a function instead.'</span>,</span><br><span class="line">            vm</span><br><span class="line">            )</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.value = <span class="keyword">this</span>.lazy</span><br><span class="line">      ? <span class="literal">undefined</span></span><br><span class="line">      : <span class="keyword">this</span>.get() <span class="comment">// 注意这里</span></span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">  get () &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>实例化 Watcher时，第一个参数是当前组件实例对象，第二个参数 expOrFn 是 updateComponent函数，第三个参数是回调 noop 空函数，但不代表数据更新时什么都不做，因为数据更新时，还会再去获取新的值（也就是对观察目标求值），同时触发回调。获取新值时也不会再去进行依赖收集，因为 Dep.target 已经设置为 null。 第四个参数 isRenderWatcher 为 true，表示是渲染 Watcher。初始化时，因为 updateComponent 是函数，将其赋值给 getter 属性，接着去执行 Watcher 的 get() 方法，并将 get 得到的 value 值赋值给该观察者实例对象的 value 属性，也就是说 <code>this.value</code> 里存的是观察目标的值。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">get () &#123;</span><br><span class="line">   pushTarget(<span class="keyword">this</span>)</span><br><span class="line">   <span class="keyword">let</span> value</span><br><span class="line">   <span class="keyword">const</span> vm = <span class="keyword">this</span>.vm</span><br><span class="line">   <span class="keyword">try</span> &#123;</span><br><span class="line">     value = <span class="keyword">this</span>.getter.call(vm, vm)</span><br><span class="line">   &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">     <span class="comment">// ...</span></span><br><span class="line">   &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">     <span class="comment">// ...</span></span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> value    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>和<a href="/2017/10/20/vue-dynamic-data-binding-5/">之前分析</a>的类似，执行 get() 方法时，Dep.target 指向当前的渲染 Watcher，使用 pushTarget 方法先将此 Watcher 添加进 Dep 的观察者对象列表中（也就是进行依赖收集），执行 <code>value = this.getter.call(vm, vm)</code> this.getter()对应的就是 updateComponent 方法，<code>vm._update(vm._render(), hydrating)</code> 渲染函数 render 在生成虚拟 DOM 的过程中会访问 vm 中的数据，从而触发 Observer 观察者中属性的 getter 方法，进行依赖收集。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Dep</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Dep.target = <span class="literal">null</span></span><br><span class="line"><span class="keyword">const</span> targetStack = []</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">pushTarget</span> (<span class="params">_target: ?Watcher</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (Dep.target) targetStack.push(Dep.target)</span><br><span class="line">  Dep.target = _target</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">popTarget</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  Dep.target = targetStack.pop()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>每个属性都有一个对应的 dep 对象，在触发属性的 getter 时会调用 dep.depend() 方法，也就会执行 <code>Dep.target.addDep(this)</code>，<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/observer/dep.js</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dep</span> </span>&#123;</span><br><span class="line">  addDep (dep: Dep) &#123;</span><br><span class="line">    <span class="keyword">const</span> id = dep.id</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.newDepIds.has(id)) &#123;</span><br><span class="line">        <span class="keyword">this</span>.newDepIds.add(id)</span><br><span class="line">        <span class="keyword">this</span>.newDeps.push(dep)</span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">this</span>.depIds.has(id)) &#123;</span><br><span class="line">        dep.addSub(<span class="keyword">this</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  depend () &#123;</span><br><span class="line">    <span class="keyword">if</span> (Dep.target) &#123;</span><br><span class="line">        Dep.target.addDep(<span class="keyword">this</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>addDep 将观察者加入到该属性对应的 Dep 实例的 subs 数组中，用来收集观察者并避免添加重复依赖。</p>
-<h3 id="总结挂载过程"><a href="#总结挂载过程" class="headerlink" title="总结挂载过程"></a><strong>总结挂载过程</strong></h3><ul>
-<li>根据平台不同，将 template 转化为 render 函数</li>
-<li>触发 beforeMount 钩子</li>
-<li>实例化渲染 Watcher，执行 vm._render 函数生成虚拟 DOM，执行 vm._update 将虚拟 DOM 转化为真实 DOM，在这过程中进行了依赖收集</li>
-<li>触发 mounted 钩子， 组件挂载成功</li>
-</ul>
-<h2 id="beforeUpdate-amp-amp-update"><a href="#beforeUpdate-amp-amp-update" class="headerlink" title="beforeUpdate &amp;&amp; update"></a>beforeUpdate &amp;&amp; update</h2><p>还是看这段代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Watcher(vm, updateComponent, noop, &#123;</span><br><span class="line">    before () &#123;</span><br><span class="line">      <span class="keyword">if</span> (vm._isMounted) &#123;</span><br><span class="line">        callHook(vm, <span class="string">'beforeUpdate'</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, <span class="literal">true</span> <span class="comment">/* isRenderWatcher */</span>)</span><br></pre></td></tr></table></figure></p>
-<p>初始化挂载的时候，因为 _isMounted 为 false，所以不会触发 beforeUpdate。当挂载成功，某个响应式属性更新时，会调用对应属性 dep 实例的 notify 方法，通知所有的订阅者更新调用 update 方法。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/observer/dep.js</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dep</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  notify () &#123;</span><br><span class="line">  <span class="comment">// stabilize the subscriber list first</span></span><br><span class="line">    <span class="keyword">const</span> subs = <span class="keyword">this</span>.subs.slice()</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, l = subs.length; i &lt; l; i++) &#123;</span><br><span class="line">      subs[i].update()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>update 做了什么呢？<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/observer/watcher.js</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Watcher</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  update () &#123;</span><br><span class="line">    <span class="comment">/* istanbul ignore else */</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.lazy) &#123;</span><br><span class="line">      <span class="keyword">this</span>.dirty = <span class="literal">true</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.sync) &#123;</span><br><span class="line">      <span class="keyword">this</span>.run()</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      queueWatcher(<span class="keyword">this</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>如果观察者是异步更新，调用 queueWatcher 方法<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/observer/scheduler.js</span></span><br><span class="line"><span class="keyword">const</span> queue: <span class="built_in">Array</span>&lt;Watcher&gt; = []</span><br><span class="line"><span class="keyword">let</span> has: &#123; [key: number]: ?<span class="literal">true</span> &#125; = &#123;&#125;</span><br><span class="line"><span class="keyword">let</span> waiting = <span class="literal">false</span></span><br><span class="line"><span class="keyword">let</span> flushing = <span class="literal">false</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Push a watcher into the watcher queue.</span></span><br><span class="line"><span class="comment"> * Jobs with duplicate IDs will be skipped unless it's</span></span><br><span class="line"><span class="comment"> * pushed when the queue is being flushed.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">queueWatcher</span> (<span class="params">watcher: Watcher</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> id = watcher.id</span><br><span class="line">  <span class="keyword">if</span> (has[id] == <span class="literal">null</span>) &#123;</span><br><span class="line">    has[id] = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">if</span> (!flushing) &#123;</span><br><span class="line">      queue.push(watcher)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// if already flushing, splice the watcher based on its id</span></span><br><span class="line">      <span class="comment">// if already past its id, it will be run next immediately.</span></span><br><span class="line">      <span class="keyword">let</span> i = queue.length - <span class="number">1</span></span><br><span class="line">      <span class="keyword">while</span> (i &gt; index &amp;&amp; queue[i].id &gt; watcher.id) &#123;</span><br><span class="line">        i--</span><br><span class="line">      &#125;</span><br><span class="line">      queue.splice(i + <span class="number">1</span>, <span class="number">0</span>, watcher)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// queue the flush</span></span><br><span class="line">    <span class="keyword">if</span> (!waiting) &#123;</span><br><span class="line">      waiting = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp; !config.async) &#123;</span><br><span class="line">        flushSchedulerQueue()</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      nextTick(flushSchedulerQueue)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>当 queueWatcher 函数被调用时，会将该观察者放入队列 queue 中，并维护一个映射关系避免重复添加观察者，在 nextTick 中执行 flushSchedulerQueue。flushing 是一个标志，当观察者加入时队列正在更新时，放到队尾等待更新。wating 也是一个标志位，避免同时调用 nextTick。关于 nextTick 解析 查看之前的这篇<a href="/2019/01/24/vue-nextTick/">Vue.nextTick 源码解析</a><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">flushSchedulerQueue</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="comment">// 获取到 updatedQueue</span></span><br><span class="line">  callUpdatedHooks(updatedQueue)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">callUpdatedHooks</span> (<span class="params">queue</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> i = queue.length</span><br><span class="line">  <span class="keyword">while</span> (i--) &#123;</span><br><span class="line">    <span class="keyword">const</span> watcher = queue[i]</span><br><span class="line">    <span class="keyword">const</span> vm = watcher.vm</span><br><span class="line">    <span class="keyword">if</span> (vm._watcher === watcher &amp;&amp; vm._isMounted) &#123;</span><br><span class="line">      callHook(vm, <span class="string">'updated'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>flushSchedulerQueue 函数的作用之一是将观察者统一执行更新，在这个过程中还会通过this.get()一次观察目标的值，触发 watcher 回调进行渲染。当获取到已经更新的 watcher 之后，调用 callUpdatedHooks 函数，对数组遍历，当 watcher 是当前 watcher 而且已经挂载成功，执行 updated 钩子表示更新完成。</p>
-<h3 id="总结更新过程"><a href="#总结更新过程" class="headerlink" title="总结更新过程"></a>总结更新过程</h3><ul>
-<li>调用 beforeUpdate 钩子</li>
-<li>触发属性 setter </li>
-<li>调用 dep.notify 方法 </li>
-<li>通知 watcher 调用 update() </li>
-<li>queueWatcher(nextTick(flushSchedulerQueue)) </li>
-<li>updated钩子</li>
-</ul>
-<h2 id="beforeDestroy-amp-destroyed"><a href="#beforeDestroy-amp-destroyed" class="headerlink" title="beforeDestroy &amp; destroyed"></a>beforeDestroy &amp; destroyed</h2><p>组件销毁阶段，先调用 beforeDestroy 钩子，接着执行一系列销毁动作，包括删掉 watcher，vnode等，最后执行 destroyed<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">Vue.prototype.$destroy = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> vm: Component = <span class="keyword">this</span></span><br><span class="line">    <span class="keyword">if</span> (vm._isBeingDestroyed) &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    callHook(vm, <span class="string">'beforeDestroy'</span>)</span><br><span class="line">    vm._isBeingDestroyed = <span class="literal">true</span></span><br><span class="line">    <span class="comment">// remove self from parent</span></span><br><span class="line">    <span class="keyword">const</span> parent = vm.$parent</span><br><span class="line">    <span class="keyword">if</span> (parent &amp;&amp; !parent._isBeingDestroyed &amp;&amp; !vm.$options.abstract) &#123;</span><br><span class="line">      remove(parent.$children, vm)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// teardown watchers</span></span><br><span class="line">    <span class="keyword">if</span> (vm._watcher) &#123;</span><br><span class="line">      vm._watcher.teardown()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> i = vm._watchers.length</span><br><span class="line">    <span class="keyword">while</span> (i--) &#123;</span><br><span class="line">      vm._watchers[i].teardown()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// remove reference from data ob</span></span><br><span class="line">    <span class="comment">// frozen object may not have observer.</span></span><br><span class="line">    <span class="keyword">if</span> (vm._data.__ob__) &#123;</span><br><span class="line">      vm._data.__ob__.vmCount--</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// call the last hook...</span></span><br><span class="line">    vm._isDestroyed = <span class="literal">true</span></span><br><span class="line">    <span class="comment">// invoke destroy hooks on current rendered tree</span></span><br><span class="line">    vm.__patch__(vm._vnode, <span class="literal">null</span>)</span><br><span class="line">    <span class="comment">// fire destroyed hook</span></span><br><span class="line">    callHook(vm, <span class="string">'destroyed'</span>)</span><br><span class="line">    <span class="comment">// turn off all instance listeners.</span></span><br><span class="line">    vm.$off()</span><br><span class="line">    <span class="comment">// remove __vue__ reference</span></span><br><span class="line">    <span class="keyword">if</span> (vm.$el) &#123;</span><br><span class="line">      vm.$el.__vue__ = <span class="literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// release circular reference (#6759)</span></span><br><span class="line">    <span class="keyword">if</span> (vm.$vnode) &#123;</span><br><span class="line">      vm.$vnode.parent = <span class="literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-       
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2135,7 +2110,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">33</span>
+                    <span class="site-state-item-count">35</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2149,8 +2124,6 @@
                 <div class="site-state-item site-state-tags">
                   <a href="/tags/index.html">
                     
-                    
-                      
                     
                       
                     
