@@ -120,7 +120,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/12/28/node-outof-memory/8option.png">
 <meta property="og:image" content="http://yoursite.com/2020/12/28/node-outof-memory/10option.png">
 <meta property="og:image" content="http://yoursite.com/2020/12/28/node-outof-memory/14option.png">
-<meta property="og:updated_time" content="2021-02-18T04:58:05.380Z">
+<meta property="og:updated_time" content="2021-02-18T05:05:41.553Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Node 内存溢出 —— OOM">
 <meta name="twitter:description" content="起因前几天被叫去排查一个老系统的线上问题，现象是服务不稳定，偶尔不可访问，查看监控发现服务偶尔重启，在重启前会出现内存升高一段时间，查看报错日志，在每次重启前会报 OOM（out of memory），并且每次 OOM 之前都会访问同一个接口， 线下模拟请求这个接口，发现是因为 response 数据量太大导致内存溢出，贴出报错情况。 FATAL ERROR: CALL_AND_RETRY_LAS">
@@ -423,9 +423,9 @@
 <p>通常在内存使用量快满时，进行垃圾回收（具体机制参考<a href="/2021/01/02/v8-memory">V8 内存体系与垃圾回收</a>），内存越大，越不容易执行垃圾回收，执行一次垃圾回收耗费时间也越长，内存越少，垃圾回收越快，效率越高，所以程序减少内存使用，可以提升服务性能。</p>
 <h3 id="什么情况下会耗尽内存？"><a href="#什么情况下会耗尽内存？" class="headerlink" title="什么情况下会耗尽内存？"></a>什么情况下会耗尽内存？</h3><p>如果试图装载一个比可用内存还要大的数据，就会出现内存不够的情况，导致<strong>内存溢出</strong>，进程退出。<br>另一种情况是<strong>内存泄露</strong>，本该被回收的变量，没有被回收，常驻在内存里，内存使用量会随着时间的推移而增长，最终导致内存耗尽。<br>可以通过图示来辨别内存问题<br><img src="difference.png" alt="difference"></p>
 <h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><p>一、 产品上解决<br>数据量太大，浏览器加载及处理耗费时间太长也会导致页面卡顿，影响用户体验。</p>
-<p>二、扩充内存<br>设置 <code>--max-old-space-size=4096</code> 扩充为 4G 内存，<br>注意：是下划线还是横杠，取决于 node 版本号，通过 <code>node --v8-options</code> 命令来看 V8 参数。我试了几个版本</p>
+<p>二、扩充内存<br>设置 <code>--max-old-space-size=4096</code> 扩充为 4G 内存，<br>注意：是下划线还是中横线，取决于 node 版本号，通过 <code>node --v8-options</code> 命令来看 V8 参数。我试了几个版本</p>
 <p>8版本是下划线<br><img src="8option.png" alt="8option"></p>
-<p>10版本是横杠<br><img src="10option.png" alt="10option"></p>
+<p>10版本是中横线<br><img src="10option.png" alt="10option"></p>
 <p>14版本是下划线<br><img src="14option.png" alt="14option"></p>
 <p>这里太坑了！！Node 版本不考虑参数兼容性，因为本地 Node 版本和线上机器 Node 版本不一致，本地测试通过发现线上没生效，找了好久原因ಥ_ಥ。</p>
 <p>三、 流式解析<br>使用 buffer，buffer内存的分配是c++层面完成的，不会利用V8的堆内存。</p>
