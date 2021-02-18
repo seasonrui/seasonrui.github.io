@@ -311,6 +311,180 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/01/18/http-sign/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2021/01/18/http-sign/" class="post-title-link" itemprop="http://yoursite.com/index.html">请求签名</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-01-18 13:11:48" itemprop="dateCreated datePublished" datetime="2021-01-18T13:11:48+08:00">2021-01-18</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/01/18/http-sign/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2021/01/18/http-sign/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近参与公司一个重要的数据产品，因为数据安全级别高，常用的权限控制方式无法防止用户通过接口工具进行恶意访问，故设计此方案用于保证接口安全</p>
+<h2 id="加密分类"><a href="#加密分类" class="headerlink" title="加密分类"></a>加密分类</h2><h4 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h4><p>会话前双方约定一个固定的密钥，客户端用此密钥进行加密，服务端用此密钥进行解密。<br>特点：算法公开，计算量小，<strong>加密速度快</strong>。<br>常见算法：AES。</p>
+<h4 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h4><p>两个密钥：公钥和私钥，客户端使用公钥进行加密，服务端用私钥进行解密。<br>特点：加密和解密时间长、<strong>速度慢</strong>，只适合对少量的数据进行加密。<br>使用场景：https 会话前期、CA 数字证书、信息加密等。<br>常见算法：RSA。</p>
+<h4 id="Hash-算法"><a href="#Hash-算法" class="headerlink" title="Hash 算法"></a>Hash 算法</h4><p>把任意长度的输入，通过 hash 算法，变换成固定长度的输出。<br>特点：<strong>不可逆</strong>，易计算。<br>使用场景：文件或字符串一致性校验、数字签名、鉴权协议。<br>常见算法：MD5</p>
+<h2 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h2><p><img src="flow.jpg" alt="flow"></p>
+<h2 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h2><h3 id="client-端（浏览器）"><a href="#client-端（浏览器）" class="headerlink" title="client 端（浏览器）"></a>client 端（浏览器）</h3><ul>
+<li><p>请求参数params 处理</p>
+<ul>
+<li><p>GET 请求<br>因为 get 请求传输到服务端是没有数据类型的，即服务端收到的都是字符串。所以使用 url 键值对的格式生成字符串。</p>
+</li>
+<li><p>POST、PUT、DELETE 请求</p>
+<ol>
+<li>如果 content-type 是 application/json，服务端接收到的是有数据类型的，故将 body 进行 json.stringify 序列化即可</li>
+<li>如果 content-type 是 application/x-www-form-urlencoded，服务端收到的是类似 url 编码的形式，使用类似 GET 请求的方式处理</li>
+<li>如果 content-type 是 multipart/form-data，为文件上传，这里不做处理</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>签名加密里 timestamp 作用<br>server 端方案一里：使用 timestamp 用来防止接口重复利用。<br>server 端方案二里：使用 timestamp 保证每次发请求的 sign 唯一。</li>
+</ul>
+<h3 id="server-端（node）"><a href="#server-端（node）" class="headerlink" title="server 端（node）"></a>server 端（node）</h3><ul>
+<li>方案一：<br>使用 timestamp 来防止接口被重复利用，客户端发请求时带上当前时间的时间戳，服务端接收到 timestamp 后与当前时间进行对比，如果时间差大于3分钟，则认为是无效请求。<br>而因为客户端时间（也是浏览器端时间）不能保证是标准时间，所以此方案可能会导致。故采用方案二:</li>
+<li>方案二：<br>使用 redis 将每次请求过来的 sign 进行存储，如果接收到的请求 sign 存在于 redis 里，则认为是无效请求，保证每个请求只能被用一次。</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/28/node-outof-memory/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1894,181 +2068,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/23/you-don-t-know-javascript-3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ruirui">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ruirui's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/05/23/you-don-t-know-javascript-3/" class="post-title-link" itemprop="http://yoursite.com/index.html">你不知道的Javascript（下卷）笔记</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-05-23 17:51:23" itemprop="dateCreated datePublished" datetime="2019-05-23T17:51:23+08:00">2019-05-23</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/05/23/you-don-t-know-javascript-3/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/23/you-don-t-know-javascript-3/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="深入编程"><a href="#深入编程" class="headerlink" title="深入编程"></a>深入编程</h2><p>Javascript 是<strong>解释型</strong>的，实际上是<strong>动态编译</strong>程序，然后立即执行编译后的代码。<br>编写代码是为了给开发者阅读的，代码应该解释为什么，而非是什么。</p>
-<h2 id="深入-Javascript"><a href="#深入-Javascript" class="headerlink" title="深入 Javascript"></a>深入 Javascript</h2><p>Javascript 中”假”值的列表：</p>
-<ul>
-<li>“” （空字符串）</li>
-<li>0, -0, NaN （无效数字）</li>
-<li>null、undefined</li>
-<li>false</li>
-</ul>
-<p>任何不在”假”值列表中的值都是”真”值，例如[],{}等。<br>在Jvascript中，闭包最常见的应用是模块模式。模块模式允许你定义外部不可见的私有实现细节（变量、函数），同时也可以提供允许从外部访问的公开API。</p>
-<h2 id="ES6及更新版本"><a href="#ES6及更新版本" class="headerlink" title="ES6及更新版本"></a>ES6及更新版本</h2><p>transpiling：通过transpiling（transformation+compiling，转换+编译）的技术，将ES6代码转化为等价（或近似）的可以在ES5环境下工作的代码。<br>let+for<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> funcs = [];</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">    funcs.push(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(i);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line">funcs[<span class="number">3</span>](); <span class="comment">// 3</span></span><br></pre></td></tr></table></figure></p>
-<p>for循环头部的let i 不只是为for循环本身声明了一个i，而是为循环的每一次迭代都重新声明了一个新的i。这意味着loop迭代内部创建的闭包封闭的是每次迭代中的变量。</p>
-<h3 id="spread-rest"><a href="#spread-rest" class="headerlink" title="spread/rest"></a>spread/rest</h3><p>ES6引入的新的运算符…，通常称为spread/rest运算符，取决于在哪/如何被使用。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// spread</span></span><br><span class="line"><span class="keyword">var</span> a = [<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>];</span><br><span class="line"><span class="keyword">var</span> b = [<span class="number">1</span>, ...a, <span class="number">5</span>];</span><br><span class="line"><span class="built_in">console</span>.log(b);   <span class="comment">// [1,2,3,4,5]</span></span><br></pre></td></tr></table></figure></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// rest</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">x, y, ...z</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(x, y, z)</span><br><span class="line">&#125;</span><br><span class="line">foo(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>) <span class="comment">// 1 2 [3, 4, 5]</span></span><br><span class="line"><span class="comment">// 如果没有明明参数的话，会收集所有的参数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(args);</span><br><span class="line">&#125;</span><br><span class="line">foo(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>); <span class="comment">// [1,2,3,4,5]</span></span><br></pre></td></tr></table></figure>
-<p>这种用法最好的一点是，为类数组 arguments 提供了非常可靠的替代形式。</p>
-<h3 id="箭头函数"><a href="#箭头函数" class="headerlink" title="箭头函数"></a>箭头函数</h3><p>箭头函数<strong>总是</strong>函数表达式，并不存在箭头函数声明，箭头函数是匿名函数表达式，它们没有用于递归或者事件绑定/解绑定的命名引用。<br>箭头函数的<strong>主要设计目的</strong>是以特定的方式改变this的行为特性。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> controller = &#123;</span><br><span class="line">    makeRequest: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">        btn.addEventListner(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="comment">// </span></span><br><span class="line">            self.makeRequest(...);</span><br><span class="line">        &#125;, <span class="literal">false</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>因为 this 是动态的，通过变量 self 依赖于词法作用域的可预测性。在箭头函数内部，this 绑定不是动态的，是词法的。这是箭头函数的主要设计特性。<br>除了词法 this，箭头函数还有词法 arguments，它们没有自己的 arguments 数组，而是继承自父层–词法 super 和 new.target 也是一样。</p>
-<h2 id="代码组织"><a href="#代码组织" class="headerlink" title="代码组织"></a>代码组织</h2><h3 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h3><ul>
-<li>ES6 使用基于文件的模块，也就是一个文件一个模块。</li>
-<li>ES6 模块的 API 是静态的。也就是说，需要在模块的公开 API 中静态定义所有最高层导出，之后无法补充。</li>
-<li>ES6 模块是单例。</li>
-<li>模块的公开 API 暴露的属性和方法并不仅仅是普通的值或引用的赋值。他们是到内部模块定义中的标识符的实际绑定（几乎类似于指针）。</li>
-<li>导入模块和静态请求加载（如果还没加载的话）这个模块是一样的。</li>
-</ul>
-<p>import 和 export 都必须出现在使用它们的最顶层作用域。举例来说，不能把 import 或 export 放在 if 条件中，它必须出现在所有代码块和函数的外面。<br>比较下面两段代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> foo;</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> &#123; foo <span class="keyword">as</span> <span class="keyword">default</span> &#125;;</span><br></pre></td></tr></table></figure>
-<p>第一段代码中，导出的是此刻到函数表达式的绑定，而不是标识符foo，也就是说，export default… 接受的是一个表达式，如果之后 foo 赋了一个不同的值，模块导入得到的仍然是原来导出的函数，而不是新的值。<br>第二段代码，默认导出绑定实际上绑定到 foo 标识符而不是它的值，所以如果之后修改了 foo 的值，导入的值也会更新。</p>
-<h4 id="模块依赖环"><a href="#模块依赖环" class="headerlink" title="模块依赖环"></a>模块依赖环</h4><p>import 语句使用外部环境（浏览器、Node.js等）提供的独立机制，来实际把模块标识符字符串解析成可用的指令，用于寻找和加载所需的模块，这个机制就是系统<strong>模块加载器</strong>。浏览器中环境提供的模块加载器会把模块标识符解析为URL，在Node.js这种服务器上就解析为本地文件系统路径。</p>
-<h3 id="类"><a href="#类" class="headerlink" title="类"></a>类</h3><p>// TODO</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-       
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2119,7 +2118,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-count">37</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
