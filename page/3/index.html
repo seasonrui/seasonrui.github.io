@@ -311,6 +311,194 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/20/implement-native-bind-function/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/12/20/implement-native-bind-function/" class="post-title-link" itemprop="http://yoursite.com/page/3/index.html">实现原生 bind 函数</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-12-20 17:00:19" itemprop="dateCreated datePublished" datetime="2018-12-20T17:00:19+08:00">2018-12-20</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/20/implement-native-bind-function/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2018/12/20/implement-native-bind-function/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>bind() 方法会创建一个新函数，称为绑定函数，当调用这个绑定函数时，绑定函数会以创建它时传入 bind() 方法的第一个参数作为 this，传入 bind() 方法的第二个以及以后的参数加上绑定函数运行时本身的参数按照顺序作为原函数的参数来调用原函数。</p>
+</blockquote>
+<p>看 MDN 上关于bind的用法如下：</p>
+<ol>
+<li>创建绑定函数<br> bind() 最简单的用法是创建一个函数，不管怎么调用，函数都有同样的 this 值。</li>
+<li>偏函数<br> bind() 的另一个最简单的用法是使一个函数拥有预设的初始参数。只要将这些参数（如果有的话）作为bind()的参数写在 this 后面。<br> 例如：<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addArguments</span>(<span class="params">arg1, arg2</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> arg1 + arg2</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> result1 = addArguments(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line"><span class="comment">// 创建一个函数，它拥有预设的第一个参数</span></span><br><span class="line"><span class="keyword">var</span> addThirtySeven = addArguments.bind(<span class="literal">null</span>, <span class="number">37</span>); </span><br><span class="line"><span class="keyword">var</span> result2 = addThirtySeven(<span class="number">5</span>); <span class="comment">// 37 + 5 = 42</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>上述37就是预设参数，函数 addThirtySeven 被调用时传入的参数会和之前的预设参数(37)一起传入 addThirtySeven 中。</p>
+<ol start="3">
+<li>作为构造函数使用的绑定函数。<br>返回的函数可以作为构造函数使用（也就是可以用 new 创建）<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Point</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.x = x;</span><br><span class="line">  <span class="keyword">this</span>.y = y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Point.prototype.toString = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; </span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>.x + <span class="string">','</span> + <span class="keyword">this</span>.y; </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> emptyObj = &#123;&#125;;</span><br><span class="line"><span class="keyword">var</span> YAxisPoint = Point.bind(emptyObj, <span class="number">0</span><span class="comment">/*x*/</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以用 new 创建</span></span><br><span class="line"><span class="keyword">var</span> axisPoint = <span class="keyword">new</span> YAxisPoint(<span class="number">5</span>);</span><br><span class="line">axisPoint.toString(); <span class="comment">// '0, 5'</span></span><br><span class="line"></span><br><span class="line">axisPoint <span class="keyword">instanceof</span> Point; <span class="comment">// true</span></span><br><span class="line">axisPoint <span class="keyword">instanceof</span> YAxisPoint; <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 仍然能作为一个普通函数来调用</span></span><br><span class="line">YAxisPoint(<span class="number">13</span>);</span><br><span class="line">emptyObj.x + <span class="string">','</span> + emptyObj.y;   <span class="comment">//  '0,13'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>所以要是实现一个bind函数需要实现以下几个点：</p>
+<ol>
+<li>创建一个新函数，替换 this 并返回新函数。</li>
+<li>可以设置预设参数并不会丢失预设参数。</li>
+<li>可以当做构造函数调用且有正确的this指向。</li>
+</ol>
+<p>首先用猴子补丁<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Function</span>.prototype.bind = <span class="built_in">Function</span>.prototype.bind || bind;</span><br></pre></td></tr></table></figure></p>
+<p>实现第一点：创建一个函数并返回新函数，将传入的第一个参数作为函数的 this 指向，使用 apply 或 call 来实现。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bind</span> (<span class="params">context</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> self.apply(context, <span class="built_in">arguments</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>举例：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="keyword">this</span>); <span class="comment">// 指向 obj</span></span><br><span class="line">   <span class="keyword">return</span> <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">   a: <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line">fn.bind(obj, <span class="number">1</span>, <span class="number">2</span>)(); <span class="comment">// []</span></span><br><span class="line">fn.bind(obj, <span class="number">1</span>, <span class="number">2</span>)(<span class="number">3</span>); <span class="comment">// [3]</span></span><br></pre></td></tr></table></figure></p>
+<p>实现了绑定指定的 this 并返回新函数，也看到传入别的参数会丢失。接着实现第二点：可以设置预设参数，并且将预设参数以及之后调用的参数按顺序传入原函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bind</span> (<span class="params">context</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">var</span> args = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>); <span class="comment">// arguments是类数组，把类数组对象转化成数组，因为apply里传的参数是数组。因为第一个arguments第一个参数是context，所以需要截取后面的参数。</span></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> innerArgs = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>);</span><br><span class="line">        <span class="keyword">var</span> finalArgs = args.concat(innerArgs); <span class="comment">// 将 bind 传入的参数和调用返回函数传入的参数一起传入原函数中</span></span><br><span class="line">        <span class="keyword">return</span> self.apply(context, finalArgs)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>举例：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>) ;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// args是[1,2] innerArgs是[]</span></span><br><span class="line">fn.bind(<span class="literal">null</span>, <span class="number">1</span>, <span class="number">2</span>)(); <span class="comment">// [1,2] </span></span><br><span class="line"><span class="comment">// args是[1,2] innerArgs是[3]</span></span><br><span class="line">fn.bind(<span class="literal">null</span>, <span class="number">1</span>, <span class="number">2</span>)(<span class="number">3</span>); <span class="comment">// [1,2,3]</span></span><br></pre></td></tr></table></figure></p>
+<p>第三点：bind 绑定的函数可以当做构造函数来使用。<br>那现在如果用 new 创建的话会是什么情况呢？<br>举例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Point</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.x = x;</span><br><span class="line">  <span class="keyword">this</span>.y = y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> emptyObj = &#123;&#125;;</span><br><span class="line"><span class="keyword">var</span> YAxisPoint = Point.bind(emptyObj, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> axisPoint = <span class="keyword">new</span> YAxisPoint(<span class="number">5</span>);</span><br><span class="line">axisPoint.x <span class="comment">// undefined</span></span><br><span class="line">axisPoint.y <span class="comment">// undefined</span></span><br><span class="line"></span><br><span class="line">emptyObj.x <span class="comment">// 0</span></span><br><span class="line">emptyObj.x <span class="comment">// 5</span></span><br><span class="line"></span><br><span class="line">axisPoint <span class="keyword">instanceof</span> Point; <span class="comment">// false</span></span><br><span class="line">axisPoint <span class="keyword">instanceof</span> YAxisPoint; <span class="comment">// true axisPoint是YAxisPoint的实例，但不是Point的实例</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，用 new 创建对象实例时，并没有将构造函数的 this 指向实例化对象，bind 绑定的还是 emptyObj，目前和普通函数调用没有区别。<br>那 <code>new YAxisPoint()</code>时又做了什么呢？var a = new A()，new 一个对象主要做了这些操作：</p>
+<ol>
+<li>创建一个对象。</li>
+<li>将对象的 [[prototype]] 属性指向构造函数的原型对象上（一定是构造函数的原型对象）。</li>
+<li>把新对象绑定到构造函数的 this。</li>
+<li>如果函数没有返回其他对象，那么 new 表达式中的函数调用会自动返回这个新对象。</li>
+</ol>
+<p>所以，如果用 new 调用的时候，执行第二步会将新对象的 [[prototype]] 属性指向构造函数（YAxisPoint）的原型对象，所以<code>axisPoint instanceof YAxisPoint</code>是 true，而构造函数 YAxisPoint() 是<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> innerArgs = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>);</span><br><span class="line">    <span class="keyword">var</span> finalArgs = args.concat(innerArgs); </span><br><span class="line">    <span class="keyword">return</span> self.apply(context, finalArgs)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>context 是调用 bind 时传进去的 empty，调用 Point 函数的还是 empty，也就是说上下文指向的是传入的empty，并没有把新对象 axisPoint 绑定上，所以会发现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">emptyObj.x // 0</span><br><span class="line">emptyObj.x // 5</span><br><span class="line">axisPoint.x // undefined</span><br><span class="line">axisPoint.y // undefined</span><br></pre></td></tr></table></figure></p>
+<p>所以我们现在要做的是，如果是 new 创建的对象，需要把调用函数的 this 指向新对象（也就是构造函数 this，看下面分析），那怎么判断是 new 调用的构造函数呢？我们来打印一下调用时 this 的指向。加上 new 调用的判断：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bind</span> (<span class="params">context</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">var</span> args = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">var</span> resultFunc =  <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>);  <span class="comment">// 打印this</span></span><br><span class="line">        <span class="keyword">var</span> innerArgs = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>);</span><br><span class="line">        <span class="keyword">var</span> finalArgs = args.concat(innerArgs);</span><br><span class="line">        <span class="keyword">return</span> self.apply(context, finalArgs)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> resultFunc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>发现如果是普通函数调用，this 指向的是全局的 Window 对象 <code>Window {postMessage: ƒ, blur: ƒ, focus: ƒ, close: ƒ, parent: Window, …}</code>，如果是 new 调用，this 指向的是 resultFunc 这个函数<code>resultFunc {}</code>。<br> 再反过来看 new 一个对象的过程第三步：<strong>把新对象绑定到构造函数的 this</strong>，也正好说明了这点：new调用时，this指向的是构造函数的this。<br> <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bind</span> (<span class="params">context</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">var</span> args = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">var</span> resultFunc =  <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> innerArgs = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>);</span><br><span class="line">        <span class="keyword">var</span> finalArgs = args.concat(innerArgs);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span> <span class="keyword">instanceof</span> resultFunc) &#123;</span><br><span class="line">            <span class="keyword">return</span> self.apply(<span class="keyword">this</span>, finalArgs)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> self.apply(context, finalArgs)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;     </span><br><span class="line">    <span class="keyword">return</span> resultFunc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p> 看到axisPoint可以正常赋值，但是<code>axisPoint instanceof Point</code>为 false<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">axisPoint.x <span class="comment">// 0</span></span><br><span class="line">axisPoint.y <span class="comment">// 5</span></span><br><span class="line">axisPoint <span class="keyword">instanceof</span> Point <span class="comment">// false</span></span><br></pre></td></tr></table></figure></p>
+<p>还需要将构造函数的原型指向原本调用函数 self 的原型，所以需要加上<code>resultFunc.prototype = self.prototype</code>。而一般实现这种继承都需要加入一个中间函数，否则改变 resultFunc.prototype 会改变 self.prototype 的值。所以最终代码为：<br> <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bind</span> (<span class="params">context</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">var</span> args = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">var</span> resultFunc =  <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> innerArgs = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>);</span><br><span class="line">        <span class="keyword">var</span> finalArgs = args.concat(innerArgs);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span> <span class="keyword">instanceof</span> resultFunc) &#123;</span><br><span class="line">            <span class="keyword">return</span> self.apply(<span class="keyword">this</span>, finalArgs)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> self.apply(context, finalArgs)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;     </span><br><span class="line">    <span class="keyword">var</span> F = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line">    F.prototype = self.prototype;</span><br><span class="line">    resultFunc.prototype = <span class="keyword">new</span> F();</span><br><span class="line">    <span class="keyword">return</span> resultFunc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/07/flex-grow-child-not-filling-height-of-parent/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1902,290 +2090,6 @@ app2.data.name.lastName = &apos;blablabla&apos;;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/01/vue-dynamic-data-binding-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ruirui">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ruirui's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/09/01/vue-dynamic-data-binding-2/" class="post-title-link" itemprop="http://yoursite.com/page/3/index.html">Vue 动态数据绑定（二）-- 深度监听</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2017-09-01 09:30:03" itemprop="dateCreated datePublished" datetime="2017-09-01T09:30:03+08:00">2017-09-01</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/09/01/vue-dynamic-data-binding-2/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/09/01/vue-dynamic-data-binding-2/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="http://ife.baidu.com/2017/course/detail/id/20" target="_blank" rel="noopener">任务说明地址</a></p>
-<blockquote>
-<p><strong>任务描述</strong><br>这是“动态数据绑定”系列的第二题。在第一题的基础上，我们继续考虑以下难点：<br>如果传入参数对象是一个“比较深”的对象（也就是其属性值也可能是对象），那该怎么办呢？举个例子。</p>
-</blockquote>
-<pre><code>// 一个“比较深”的对象：某些属性的值也是一个对象
-let obj = {
- a: 1,
- b: 2,
- c: {
-     d: 3,
-     e: 4
- }
-}
-</code></pre><blockquote>
-<p>如果设置新的值是一个对象的话，新设置的对象的属性是否能继续响应 getter 和 setter。举个例子。</p>
-</blockquote>
-<pre><code>let app1 = new Observer({
-         name: &apos;youngwind&apos;,
-         age: 25
- });
-app1.data.name = {
-         lastName: &apos;liang&apos;,
-         firstName: &apos;shaofeng&apos;
- };
-app1.data.name.lastName;
- // 这里还需要输出 &apos;你访问了 lastName &apos;
-app1.data.name.firstName = &apos;lalala&apos;;
- // 这里还需要输出 &apos;你设置了firstName, 新的值为 lalala&apos;
-</code></pre><blockquote>
-<p>考虑传递回调函数。在实际应用中，当特定数据发生改变的时候，我们是希望做一些特定的事情的，而不是每一次都只能打印出一些信息。所以，我们需要支持传入回调函数的功能。举个例子。</p>
-</blockquote>
-<pre><code>let app1 = new Observer({
-         name: &apos;youngwind&apos;,
-         age: 25
- });
- // 你需要实现 $watch 这个 API
- app1.$watch(&apos;age&apos;, function(age) {
-         console.log(`我的年纪变了，现在已经是：${age}岁了`)
- });
- app1.data.age = 100; // 输出：&apos;我的年纪变了，现在已经是100岁了&apos;
-</code></pre><hr>
-<blockquote>
-<p>如果传入参数对象是一个“比较深”的对象（也就是其属性值也可能是对象），那该怎么办呢？</p>
-</blockquote>
-<p>即如果传入的又是一个对象呢？需要将“深对象”也绑定 get、set 方法，想到用递归的方法，对属性进行判断，如果属性值是对象，则重新 new 一个 Observer 出来。即：</p>
-<pre><code>Observer.prototype.makeObserver = function(data) {
-  for(var i in data) {
-    if(data.hasOwnProperty(i)) {
-      if(typeof data[i] === &apos;object&apos;) {
-        new Observer(data[i]);
-      }
-      this.getset(i, data[i]);
-    }
-  }
-}
-</code></pre><blockquote>
-<p>如果设置新的值是一个对象的话，新设置的对象的属性是否能继续响应 getter 和 setter 呢？</p>
-</blockquote>
-<p>例如：</p>
-<pre><code>let app = new Observer({
-    basicInfo: {
-        name: &apos;ruirui&apos;,
-        age: 25
-    },
-    address: &apos;Beijing&apos;
-})
-//要实现的结果如下
-app.data.basicInfo = {like: &apos;movie&apos;}//你设置了basicInfo，新的basicInfo为{like: &apos;movie&apos;}
-app.data.basicInfo.like //你访问了basicInfo，你访问了like
-</code></pre><p>同上，需要在 set 中进行判断，如果是对象，重新 new 一个 Observer。</p>
-<blockquote>
-<p>考虑传递回调函数。在实际应用中，当特定数据发生改变的时候，我们是希望做一些特定的事情，而不是每一次只能打印出来一些信息，所以，我们需要支持传入回调函数的功能。</p>
-</blockquote>
-<p>对属性绑定回调函数，需要的时候触发。即：每次 $watch 一个属性相当于注册一个监听事件，每次属性发生改变（set）的时候触发该事件。采用<strong>发布-订阅</strong>模式，实现一个自定义事件，可以对一个属性注册多个事件，触发的时候依次调用。</p>
-<pre><code>function Event() {
-  this.events = {};
-}
-Event.prototype.on = function (attr, callback) {
-  if (this.events[attr]){
-    this.events[attr].push(callback);
-  } else {
-    this.events[attr] = [callback];
-  }
-}
-Event.prototype.emit = function (attr, newval) {
-  console.log(this.events); // 每一层的event都是独立的，深层对象属性触发的时候可以看出this.events里为空。
-  for(var item in this.events) {
-    if(item === attr) {
-      this.events[attr].forEach(function(item) {
-        item(newval);
-      })
-    }
-  }
-}
-</code></pre><p>这样的话，每次 new 一个 Observer 实例时，就 new 一个 Event 实例管理所有的事件。在 set 中触发事件<br><a href="https://jsfiddle.net/ruirui/0a7rfbg2/" target="_blank" rel="noopener">Demo</a></p>
-<pre><code>function Observer(data) {
-  this.data = data;
-  this.makeObserver(data);
-  this.eventsBus = new Event();
-}
-Observer.prototype.makeObserver = function(data) {
-  for(var i in data) {
-    if(data.hasOwnProperty(i)) {
-      if(typeof data[i] === &apos;object&apos;) {
-        new Observer(data[i]);
-      }
-      this.getset(i, data[i]);
-    }
-  }
-}
-Observer.prototype.getset = function(i, value) {
-  let val = value;
-  let that = this;
-  Object.defineProperty(this.data, i, {
-    configurable: true,
-    enumerable: true,
-    get: function () {
-      console.log(&apos;你访问了&apos; + i);
-      return val;
-    },
-    set: function (newval) {
-      console.log(&apos;你设置了&apos; + i + &apos;,新的值为&apos; + newval);
-      if(typeof newval === &apos;object&apos;) {
-        new Observer(newval);
-      }
-      // 触发
-      that.eventsBus.emit(i, newval);
-      val = newval;
-    }
-  })
-}
-Observer.prototype.$watch = function (attr,callback){
-    // 注册一个监听事件
-    this.eventsBus.on(attr, callback);
-}
-</code></pre><p>至此，完成了事件监听。</p>
-<p>目前只能注册监听对象到第一层属性，深层对象属性的监听未完成，看下回分析。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-       
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2236,7 +2140,7 @@ Observer.prototype.$watch = function (attr,callback){
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">35</span>
+                    <span class="site-state-item-count">36</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2304,7 +2208,7 @@ Observer.prototype.$watch = function (attr,callback){
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

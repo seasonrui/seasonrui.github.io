@@ -311,6 +311,290 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/01/vue-dynamic-data-binding-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2017/09/01/vue-dynamic-data-binding-2/" class="post-title-link" itemprop="http://yoursite.com/page/4/index.html">Vue 动态数据绑定（二）-- 深度监听</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-09-01 09:30:03" itemprop="dateCreated datePublished" datetime="2017-09-01T09:30:03+08:00">2017-09-01</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/01/vue-dynamic-data-binding-2/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/09/01/vue-dynamic-data-binding-2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="http://ife.baidu.com/2017/course/detail/id/20" target="_blank" rel="noopener">任务说明地址</a></p>
+<blockquote>
+<p><strong>任务描述</strong><br>这是“动态数据绑定”系列的第二题。在第一题的基础上，我们继续考虑以下难点：<br>如果传入参数对象是一个“比较深”的对象（也就是其属性值也可能是对象），那该怎么办呢？举个例子。</p>
+</blockquote>
+<pre><code>// 一个“比较深”的对象：某些属性的值也是一个对象
+let obj = {
+ a: 1,
+ b: 2,
+ c: {
+     d: 3,
+     e: 4
+ }
+}
+</code></pre><blockquote>
+<p>如果设置新的值是一个对象的话，新设置的对象的属性是否能继续响应 getter 和 setter。举个例子。</p>
+</blockquote>
+<pre><code>let app1 = new Observer({
+         name: &apos;youngwind&apos;,
+         age: 25
+ });
+app1.data.name = {
+         lastName: &apos;liang&apos;,
+         firstName: &apos;shaofeng&apos;
+ };
+app1.data.name.lastName;
+ // 这里还需要输出 &apos;你访问了 lastName &apos;
+app1.data.name.firstName = &apos;lalala&apos;;
+ // 这里还需要输出 &apos;你设置了firstName, 新的值为 lalala&apos;
+</code></pre><blockquote>
+<p>考虑传递回调函数。在实际应用中，当特定数据发生改变的时候，我们是希望做一些特定的事情的，而不是每一次都只能打印出一些信息。所以，我们需要支持传入回调函数的功能。举个例子。</p>
+</blockquote>
+<pre><code>let app1 = new Observer({
+         name: &apos;youngwind&apos;,
+         age: 25
+ });
+ // 你需要实现 $watch 这个 API
+ app1.$watch(&apos;age&apos;, function(age) {
+         console.log(`我的年纪变了，现在已经是：${age}岁了`)
+ });
+ app1.data.age = 100; // 输出：&apos;我的年纪变了，现在已经是100岁了&apos;
+</code></pre><hr>
+<blockquote>
+<p>如果传入参数对象是一个“比较深”的对象（也就是其属性值也可能是对象），那该怎么办呢？</p>
+</blockquote>
+<p>即如果传入的又是一个对象呢？需要将“深对象”也绑定 get、set 方法，想到用递归的方法，对属性进行判断，如果属性值是对象，则重新 new 一个 Observer 出来。即：</p>
+<pre><code>Observer.prototype.makeObserver = function(data) {
+  for(var i in data) {
+    if(data.hasOwnProperty(i)) {
+      if(typeof data[i] === &apos;object&apos;) {
+        new Observer(data[i]);
+      }
+      this.getset(i, data[i]);
+    }
+  }
+}
+</code></pre><blockquote>
+<p>如果设置新的值是一个对象的话，新设置的对象的属性是否能继续响应 getter 和 setter 呢？</p>
+</blockquote>
+<p>例如：</p>
+<pre><code>let app = new Observer({
+    basicInfo: {
+        name: &apos;ruirui&apos;,
+        age: 25
+    },
+    address: &apos;Beijing&apos;
+})
+//要实现的结果如下
+app.data.basicInfo = {like: &apos;movie&apos;}//你设置了basicInfo，新的basicInfo为{like: &apos;movie&apos;}
+app.data.basicInfo.like //你访问了basicInfo，你访问了like
+</code></pre><p>同上，需要在 set 中进行判断，如果是对象，重新 new 一个 Observer。</p>
+<blockquote>
+<p>考虑传递回调函数。在实际应用中，当特定数据发生改变的时候，我们是希望做一些特定的事情，而不是每一次只能打印出来一些信息，所以，我们需要支持传入回调函数的功能。</p>
+</blockquote>
+<p>对属性绑定回调函数，需要的时候触发。即：每次 $watch 一个属性相当于注册一个监听事件，每次属性发生改变（set）的时候触发该事件。采用<strong>发布-订阅</strong>模式，实现一个自定义事件，可以对一个属性注册多个事件，触发的时候依次调用。</p>
+<pre><code>function Event() {
+  this.events = {};
+}
+Event.prototype.on = function (attr, callback) {
+  if (this.events[attr]){
+    this.events[attr].push(callback);
+  } else {
+    this.events[attr] = [callback];
+  }
+}
+Event.prototype.emit = function (attr, newval) {
+  console.log(this.events); // 每一层的event都是独立的，深层对象属性触发的时候可以看出this.events里为空。
+  for(var item in this.events) {
+    if(item === attr) {
+      this.events[attr].forEach(function(item) {
+        item(newval);
+      })
+    }
+  }
+}
+</code></pre><p>这样的话，每次 new 一个 Observer 实例时，就 new 一个 Event 实例管理所有的事件。在 set 中触发事件<br><a href="https://jsfiddle.net/ruirui/0a7rfbg2/" target="_blank" rel="noopener">Demo</a></p>
+<pre><code>function Observer(data) {
+  this.data = data;
+  this.makeObserver(data);
+  this.eventsBus = new Event();
+}
+Observer.prototype.makeObserver = function(data) {
+  for(var i in data) {
+    if(data.hasOwnProperty(i)) {
+      if(typeof data[i] === &apos;object&apos;) {
+        new Observer(data[i]);
+      }
+      this.getset(i, data[i]);
+    }
+  }
+}
+Observer.prototype.getset = function(i, value) {
+  let val = value;
+  let that = this;
+  Object.defineProperty(this.data, i, {
+    configurable: true,
+    enumerable: true,
+    get: function () {
+      console.log(&apos;你访问了&apos; + i);
+      return val;
+    },
+    set: function (newval) {
+      console.log(&apos;你设置了&apos; + i + &apos;,新的值为&apos; + newval);
+      if(typeof newval === &apos;object&apos;) {
+        new Observer(newval);
+      }
+      // 触发
+      that.eventsBus.emit(i, newval);
+      val = newval;
+    }
+  })
+}
+Observer.prototype.$watch = function (attr,callback){
+    // 注册一个监听事件
+    this.eventsBus.on(attr, callback);
+}
+</code></pre><p>至此，完成了事件监听。</p>
+<p>目前只能注册监听对象到第一层属性，深层对象属性的监听未完成，看下回分析。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/28/vue-dynamic-data-binding-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1292,7 +1576,7 @@ app2.data.major = &apos;science&apos;  // 你设置了major，新的值为 scien
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">35</span>
+                    <span class="site-state-item-count">36</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -1360,7 +1644,7 @@ app2.data.major = &apos;science&apos;  // 你设置了major，新的值为 scien
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
