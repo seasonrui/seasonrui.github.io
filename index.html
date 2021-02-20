@@ -14,7 +14,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang>
+<html class="theme-next gemini use-motion" lang>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -84,7 +84,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Gemini',
     version: '6.5.0',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: false,
@@ -269,9 +269,6 @@
   
 
   
-    
-
-  
 
   
 </nav>
@@ -291,6 +288,9 @@
     <main id="main" class="main">
       <div class="main-inner">
         <div class="content-wrap">
+          
+            
+
           
           <div id="content" class="content">
             
@@ -608,177 +608,6 @@
 <p>14版本是下划线<br><img src="14option.png" alt="14option"></p>
 <p>这里太坑了！！Node 版本不考虑参数兼容性，因为本地 Node 版本和线上机器 Node 版本不一致，本地测试通过发现线上没生效，找了好久原因ಥ_ಥ。</p>
 <p>三、 流式解析<br>使用 buffer，buffer内存的分配是c++层面完成的，不会利用V8的堆内存。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-       
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/30/react-useeffect-hook/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ruirui">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ruirui's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2020/11/30/react-useeffect-hook/" class="post-title-link" itemprop="http://yoursite.com/index.html">【译】React Hooks 系列 —— useEffect</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2020-11-30 14:32:50" itemprop="dateCreated datePublished" datetime="2020-11-30T14:32:50+08:00">2020-11-30</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2020/11/30/react-useeffect-hook/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2020/11/30/react-useeffect-hook/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>翻译来源：<a href="https://www.robinwieruch.de/react-useeffect-hook" target="_blank" rel="noopener">How to useEffect in React</a>，为了阅读体验，本文采用意译</p>
-<p>在这个教程里，我们将学习如何使用 React useEffect Hook。<br>先看一个例子，有两个组件，父组件使用 useState 来管理状态，子组件消费这个状态并且使用回调函数来修改这个状态。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">const</span> App = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> [toggle, setToggle] = React.useState(<span class="literal">true</span>);</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">const</span> handleToggle = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    setToggle(!toggle);</span><br><span class="line">  &#125;;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">return</span> &lt;Toggler toggle=&#123;toggle&#125; onToggle=&#123;handleToggle&#125; /&gt;;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">const Toggler = (&#123; toggle, onToggle &#125;) =&gt; &#123;</span><br><span class="line">  return (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;button type="button" onClick=&#123;onToggle&#125;&gt;</span><br><span class="line">        Toggle</span><br><span class="line">      &lt;/button&gt;</span><br><span class="line"> </span><br><span class="line">      &#123;toggle &amp;&amp; &lt;div&gt;Hello React&lt;/div&gt;&#125;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">export default App;</span><br></pre></td></tr></table></figure>
-<p>子组件 Toggler 根据从父组件传递过来的 toggle 状态有条件的渲染”Hello React”。本质上，useEffect 为函数式组件增添了执行副作用的能力，当组件挂载、渲染或者重新渲染时，useEffect 将会被执行，下面我们将更进一步，通过不同的场景来说明它的用法。</p>
-<h2 id="ALWAYS-——-每次渲染都执行"><a href="#ALWAYS-——-每次渲染都执行" class="headerlink" title="ALWAYS —— 每次渲染都执行"></a>ALWAYS —— 每次渲染都执行</h2><p>下面的例子使用 useEffect 传递一个副作用函数作为参数。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Toggler = <span class="function">(<span class="params">&#123; toggle, onToggle &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  React.useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'I run on every render: mount + update.'</span>);</span><br><span class="line">  &#125;);</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;button type=<span class="string">"button"</span> onClick=&#123;onToggle&#125;&gt;</span><br><span class="line">        Toggle</span><br><span class="line">      &lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp"> </span></span><br><span class="line"><span class="regexp">      &#123;toggle &amp;&amp; &lt;div&gt;Hello React&lt;/</span>div&gt;&#125;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  );</span></span><br><span class="line"><span class="regexp">&#125;;</span></span><br></pre></td></tr></table></figure>
-<p>这是使用 useEffect 最直接的方式——传递一个函数，这个函数将在每次 render 的时候执行，也就是说，这个函数在第一次 render（组件 mount） 及之后 re-render (组件更新) 时都会执行。</p>
-<h2 id="MOUNT-——-只在挂载时执行"><a href="#MOUNT-——-只在挂载时执行" class="headerlink" title="MOUNT —— 只在挂载时执行"></a>MOUNT —— 只在挂载时执行</h2><p>如果想要在组件第一次 render 时执行（也就是 mount 时），需要传递第二个参数给 useEffect。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Toggler = <span class="function">(<span class="params">&#123; toggle, onToggle &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  React.useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'I run only on the first render: mount.'</span>);</span><br><span class="line">  &#125;, []);</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;button type=<span class="string">"button"</span> onClick=&#123;onToggle&#125;&gt;</span><br><span class="line">        Toggle</span><br><span class="line">      &lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp"> </span></span><br><span class="line"><span class="regexp">      &#123;toggle &amp;&amp; &lt;div&gt;Hello React&lt;/</span>div&gt;&#125;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  );</span></span><br><span class="line"><span class="regexp">&#125;;</span></span><br></pre></td></tr></table></figure>
-<p>第二个参数是依赖数组（这里是空），如果依赖数组是空，说明副作用执行时是没有依赖，意味着只会在第一次 render 时执行一次。</p>
-<h2 id="UPDATE-——-组件更新时执行"><a href="#UPDATE-——-组件更新时执行" class="headerlink" title="UPDATE —— 组件更新时执行"></a>UPDATE —— 组件更新时执行</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Toggler = <span class="function">(<span class="params">&#123; toggle, onToggle &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  React.useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'I run only if toggle changes (and on mount).'</span>);</span><br><span class="line">  &#125;, [toggle]);</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;button type=<span class="string">"button"</span> onClick=&#123;onToggle&#125;&gt;</span><br><span class="line">        Toggle</span><br><span class="line">      &lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp"> </span></span><br><span class="line"><span class="regexp">      &#123;toggle &amp;&amp; &lt;div&gt;Hello React&lt;/</span>div&gt;&#125;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  );</span></span><br><span class="line"><span class="regexp">&#125;;</span></span><br></pre></td></tr></table></figure>
-<p>仅当依赖数组的值改变时，会执行 useEffect 里的函数，需要说明的是，副作用函数在第一次渲染时该函数也会执行。</p>
-<h2 id="ONLY-ON-UPDATE-——-仅在更新时执行"><a href="#ONLY-ON-UPDATE-——-仅在更新时执行" class="headerlink" title="ONLY ON UPDATE —— 仅在更新时执行"></a>ONLY ON UPDATE —— 仅在更新时执行</h2><p>前面的例子 useEffect 副作用函数都会在第一次 render 的时候执行，那如果想要只在更新时执行 useEffect 里的函数，应该怎么做呢？我们可以使用 useRef Hook。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Toggler = <span class="function">(<span class="params">&#123; toggle, onToggle &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> didMount = React.useRef(<span class="literal">false</span>);</span><br><span class="line"> </span><br><span class="line">  React.useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (didMount.current) &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'I run only if toggle changes.'</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      didMount.current = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, [toggle]);</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;button type=<span class="string">"button"</span> onClick=&#123;onToggle&#125;&gt;</span><br><span class="line">        Toggle</span><br><span class="line">      &lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp"> </span></span><br><span class="line"><span class="regexp">      &#123;toggle &amp;&amp; &lt;div&gt;Hello React&lt;/</span>div&gt;&#125;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  );</span></span><br><span class="line"><span class="regexp">&#125;;</span></span><br></pre></td></tr></table></figure>
-<p>增加条件判断语句，当 re-render 时，再执行真正的回调。</p>
-<h2 id="ONLY-ONCE-——-仅在更新时执行一次"><a href="#ONLY-ONCE-——-仅在更新时执行一次" class="headerlink" title="ONLY ONCE —— 仅在更新时执行一次"></a>ONLY ONCE —— 仅在更新时执行一次</h2><p>正如上面看到的，如果传递一个空的依赖数组，useEffect 副作用函数会只执行一次，但只是在组件第一次 render 的时候执行，如果想要在一个变量改变一次的时候执行一次，该怎么做呢？</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Toggler = <span class="function">(<span class="params">&#123; toggle, onToggle &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> calledOnce = React.useRef(<span class="literal">false</span>);</span><br><span class="line"> </span><br><span class="line">  React.useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (calledOnce.current) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> (toggle === <span class="literal">false</span>) &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'I run only once if toggle is false.'</span>);</span><br><span class="line"> </span><br><span class="line">      calledOnce.current = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, [toggle]);</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;button type=<span class="string">"button"</span> onClick=&#123;onToggle&#125;&gt;</span><br><span class="line">        Toggle</span><br><span class="line">      &lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp"> </span></span><br><span class="line"><span class="regexp">      &#123;toggle &amp;&amp; &lt;div&gt;Hello React&lt;/</span>div&gt;&#125;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  );</span></span><br><span class="line"><span class="regexp">&#125;;</span></span><br></pre></td></tr></table></figure>
-<p>和前一个例子一样，增加标志位，一旦满足条件，标志位为 false，就不再执行。 </p>
-<h2 id="CLEANUP-——-清除-useEffect"><a href="#CLEANUP-——-清除-useEffect" class="headerlink" title="CLEANUP —— 清除 useEffect"></a>CLEANUP —— 清除 useEffect</h2><p>有时你需要在组件 re-render 时清理 effect。幸运的是这是 useEffect 的内置特性，下面的例子展示了一个带有 useEffect 的计数器实现</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">const</span> App = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> [timer, setTimer] = React.useState(<span class="number">0</span>);</span><br><span class="line"> </span><br><span class="line">  React.useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> interval = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> setTimer(timer + <span class="number">1</span>), <span class="number">1000</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> clearInterval(interval);</span><br><span class="line">  &#125;, [timer]);</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">return</span> &lt;div&gt;&#123;timer&#125;&lt;/div&gt;;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> App;</span><br></pre></td></tr></table></figure>
-<p>当组件第一次渲染时，它创建了一个计时器，一旦间隔发生变化，timer+1，当这个状态改变后，useEffect 回调函数将再次运行并设置另一个 setInterval 间隔，所以需要在每次执行前，清除掉这个 setInterval。上面代码实际上每个 setInterval 函数只会运行 1 秒，然后被清除。</p>
-<h2 id="UNMOUNT-——-卸载"><a href="#UNMOUNT-——-卸载" class="headerlink" title="UNMOUNT —— 卸载"></a>UNMOUNT —— 卸载</h2><p>React 会在组件卸载的时候执行清除操作，这对 setInterval 或者其他使用内存对象在卸载时需要停止运行的函数来说是有意义的，如果你的 effect 返回一个函数，React 将会在执行清除操作时调用它</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">const</span> App = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> [timer, setTimer] = React.useState(<span class="number">0</span>);</span><br><span class="line"> </span><br><span class="line">  React.useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> interval = setInterval(</span><br><span class="line">      () =&gt; setTimer(<span class="function">(<span class="params">currentTimer</span>) =&gt;</span> currentTimer + <span class="number">1</span>),</span><br><span class="line">      <span class="number">1000</span></span><br><span class="line">    );</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> clearInterval(interval);</span><br><span class="line">  &#125;, []);</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">return</span> &lt;div&gt;&#123;timer&#125;&lt;/div&gt;;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> App;</span><br></pre></td></tr></table></figure>
-<p>上述例子，useState hook 使用函数而不是值来更新状态。<code>setTimer((currentTimer) =&gt; currentTimer + 1)</code> 函数以当前计时器作为参数。因此，我们不再需要从外部提供 timer 值，只在 mount 时执行一次，在组件卸载时调用清除函数。</p>
 
           
         
@@ -2092,6 +1921,162 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/01/linux-command-record/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/06/01/linux-command-record/" class="post-title-link" itemprop="http://yoursite.com/index.html">整理 Linux 常用命令</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-06-01 13:00:19" itemprop="dateCreated datePublished" datetime="2019-06-01T13:00:19+08:00">2019-06-01</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/06/01/linux-command-record/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2019/06/01/linux-command-record/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="查看某个端口号被什么程序占用并杀掉此进程："><a href="#查看某个端口号被什么程序占用并杀掉此进程：" class="headerlink" title="查看某个端口号被什么程序占用并杀掉此进程："></a>查看某个端口号被什么程序占用并杀掉此进程：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 查看某个端口的网络连接情况：`lsof -i:&lt;port&gt;`</span><br><span class="line">2. 根据返回结果中的进程号检查进程名称 `ps -ef | grep &lt;pid&gt;`</span><br><span class="line">3. 确认进程无误后杀掉该进程 `kill -9 &lt;pid&gt;`</span><br></pre></td></tr></table></figure>
+<h3 id="scp-复制"><a href="#scp-复制" class="headerlink" title="scp 复制"></a>scp 复制</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 文件</span><br><span class="line">scp local_file remote_username@remote_ip:remote_folder</span><br><span class="line"># 整个目录</span><br><span class="line">scp -r local_folder remote_username@remote_ip:remote_folder</span><br></pre></td></tr></table></figure>
+<h3 id="查看某个ip的端口号是否连通"><a href="#查看某个ip的端口号是否连通" class="headerlink" title="查看某个ip的端口号是否连通"></a>查看某个ip的端口号是否连通</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">telnet &lt;ip&gt; &lt;port&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="查看本机出口网络ip"><a href="#查看本机出口网络ip" class="headerlink" title="查看本机出口网络ip"></a>查看本机出口网络ip</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl ip.gs</span><br></pre></td></tr></table></figure>
+<h3 id="压缩-tar-gz"><a href="#压缩-tar-gz" class="headerlink" title="压缩 tar.gz"></a>压缩 tar.gz</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zcvf xxx.tar.gz xxx/</span><br></pre></td></tr></table></figure>
+<h3 id="解压-tar-gz"><a href="#解压-tar-gz" class="headerlink" title="解压 tar.gz"></a>解压 tar.gz</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf xxx.tar.gz</span><br></pre></td></tr></table></figure>
+<h3 id="给一个文件添加可执行权限"><a href="#给一个文件添加可执行权限" class="headerlink" title="给一个文件添加可执行权限"></a>给一个文件添加可执行权限</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod +x xxx.sh</span><br></pre></td></tr></table></figure>
+<h3 id="查看磁盘使用情况"><a href="#查看磁盘使用情况" class="headerlink" title="查看磁盘使用情况"></a>查看磁盘使用情况</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df -h</span><br></pre></td></tr></table></figure>
+<h3 id="查看内存使用情况"><a href="#查看内存使用情况" class="headerlink" title="查看内存使用情况"></a>查看内存使用情况</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">free -h</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -2142,7 +2127,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-count">37</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2230,12 +2215,30 @@
 
 
 
-  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.5.0</div>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v6.5.0</div>
 
 
 
 
         
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="Total Visitors">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="Total Views">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
 
 
 
@@ -2322,6 +2325,13 @@
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script>
+
+
 
   
 

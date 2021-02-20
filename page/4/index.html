@@ -14,7 +14,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang>
+<html class="theme-next gemini use-motion" lang>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -84,7 +84,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Gemini',
     version: '6.5.0',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: false,
@@ -269,9 +269,6 @@
   
 
   
-    
-
-  
 
   
 </nav>
@@ -292,167 +289,12 @@
       <div class="main-inner">
         <div class="content-wrap">
           
+            
+
+          
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/10/vue-dynamic-data-binding-4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="ruirui">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ruirui's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/09/10/vue-dynamic-data-binding-4/" class="post-title-link" itemprop="http://yoursite.com/page/4/index.html">Vue 动态数据绑定（四）-- 解析器 Compile</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2017-09-10 13:46:26" itemprop="dateCreated datePublished" datetime="2017-09-10T13:46:26+08:00">2017-09-10</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/09/10/vue-dynamic-data-binding-4/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/09/10/vue-dynamic-data-binding-4/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="http://ife.baidu.com/2017/course/detail/id/22" target="_blank" rel="noopener">任务说明地址</a></p>
-<blockquote>
-<p>将页面中代码片段<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 页面中原本的 html 模板片段 --&gt;</span><br><span class="line">&lt;div id=&quot;app&quot;&gt;</span><br><span class="line">    &lt;p&gt;姓名：&#123;&#123;user.name&#125;&#125;&lt;/p&gt;</span><br><span class="line">    &lt;p&gt;年龄：&#123;&#123;user.age&#125;&#125;&lt;/p&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<blockquote>
-<p>渲染成实际效果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 最终在页面中渲染出来的结果 --&gt;</span><br><span class="line">&lt;div id=&quot;app&quot;&gt;</span><br><span class="line">    &lt;p&gt;姓名：youngwind&lt;/p&gt;</span><br><span class="line">    &lt;p&gt;年龄：25&lt;/p&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<p>所以问题的关键：<strong>怎么实现一个解析器进行模板渲染</strong>?</p>
-<p>简单的思路：深度遍历DOM模板，找到&#123;&#123;&#125;&#125;进行解析替换。<br>按照此思路实现一个简单的版本：<br>代码 <a href="https://jsfiddle.net/ruirui/mnkdjhpf/" target="_blank" rel="noopener">Demo</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">function Compile(el, vm) &#123;</span><br><span class="line">  this.el = el;</span><br><span class="line">  this.vm = vm;</span><br><span class="line">  this.render();</span><br><span class="line">&#125;</span><br><span class="line">Compile.prototype.render = function () &#123;</span><br><span class="line">  var el = document.querySelector(this.el);</span><br><span class="line">  this.compile(el);</span><br><span class="line">&#125;</span><br><span class="line">Compile.prototype.compile = function (el) &#123;</span><br><span class="line">  // 递归遍历所有的dom子元素 找到 &#123;&#123;&#125;&#125; 进行替换</span><br><span class="line"></span><br><span class="line">  var childNodes = el.childNodes;</span><br><span class="line">  childNodes.forEach((item) =&gt; &#123;</span><br><span class="line">    </span><br><span class="line">    if(item.nodeType === 1) &#123; // 元素节点</span><br><span class="line">      this.compile(item);</span><br><span class="line">    &#125; else if (item.nodeType === 3) &#123; // 文本内容</span><br><span class="line">      console.log(item.nodeValue);</span><br><span class="line">      var value = item.nodeValue.trim();</span><br><span class="line">      var reg = /&#123;&#123;(.*?)&#125;&#125;/;</span><br><span class="line">      if (value &amp;&amp; reg.test(value)) &#123;</span><br><span class="line">        this.compileText(item, reg.exec(value)[1]);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line">Compile.prototype.compileText = function(node, exp) &#123;</span><br><span class="line">  var newVal = this.parse(exp.trim())(this.vm.data);</span><br><span class="line">  node.textContent = typeof newVal == &apos;undefined&apos; ? &apos;&apos; : newVal;</span><br><span class="line">&#125;</span><br><span class="line">Compile.prototype.parse = function (exp) &#123; // 多层路径进行解析</span><br><span class="line">  if (/[^\w.$]/.test(exp)) return; </span><br><span class="line">  </span><br><span class="line">    var exps = exp.split(&apos;.&apos;);</span><br><span class="line">    return function(obj) &#123;</span><br><span class="line">      for (var i = 0, len = exps.length; i &lt; len; i++) &#123;</span><br><span class="line">          if (!obj) return;</span><br><span class="line">          obj = obj[exps[i]];</span><br><span class="line">      &#125;</span><br><span class="line">      return obj;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上述实现方法是找到DOM直接替换，在遍历解析的时候有多次操作DOM节点，为了提高性能和效率，考虑用文档碎片fragment的方式。初始化时将节点转换成 fragment，解析完成再整体添加到真实的DOM节点中。</p>
-<p>代码 <a href="https://jsfiddle.net/ruirui/phwoq2zk/" target="_blank" rel="noopener">DEMO</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function Compile(el, vm) &#123;</span><br><span class="line">  this.el = el;</span><br><span class="line">  this.vm = vm;</span><br><span class="line">  this.fragement = this.nodeToFragment(document.querySelector(this.el));</span><br><span class="line">  this.compile(this.fragement);</span><br><span class="line">  document.querySelector(this.el).appendChild(this.fragement);</span><br><span class="line">&#125;</span><br><span class="line">Compile.prototype.nodeToFragment = function(el) &#123;</span><br><span class="line">  var fragment = document.createDocumentFragment();</span><br><span class="line">  var child = el.firstChild;</span><br><span class="line">  while (child) &#123;</span><br><span class="line">    fragment.appendChild(child); // 将Dom元素移入fragment中 注意： append的时候 原来的dom会删掉挂载在文档碎片上</span><br><span class="line">    child = el.firstChild;</span><br><span class="line">  &#125;</span><br><span class="line">  return fragment;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-       
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
     
       
 
@@ -1910,7 +1752,7 @@ app2.data.major = &apos;science&apos;  // 你设置了major，新的值为 scien
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-count">37</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -1998,12 +1840,30 @@ app2.data.major = &apos;science&apos;  // 你设置了major，新的值为 scien
 
 
 
-  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.5.0</div>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v6.5.0</div>
 
 
 
 
         
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="Total Visitors">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="Total Views">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
 
 
 
@@ -2090,6 +1950,13 @@ app2.data.major = &apos;science&apos;  // 你设置了major，新的值为 scien
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script>
+
+
 
   
 
