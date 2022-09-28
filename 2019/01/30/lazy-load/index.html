@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.0" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="tags">
+<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta property="og:site_name" content="ruirui&#39;s blog">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-09-30T15:10:00.074Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tags">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.0.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/tags/">
+
+
+
+
+
+  <title>细说图片懒加载（LazyLoad） | ruirui's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ruirui's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">ruirui's 备忘录</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/30/lazy-load/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">细说图片懒加载（LazyLoad）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-30T16:43:50+08:00">2019-01-30</time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>LazyLoad（懒加载），顾名思义，等到需要加载的时候再加载，主要是针对图片加载的优化，目前对页面加载速度来说，影响最大的还是图片。对于图片过多的页面，在图片出现在视野中的时候再加载，未出现在视野内的暂时不加载，这样在页面性能上会有很大的提升。</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=&quot;default.jpg&quot; data-src=&quot;http://season.jpanj.com/001.jpg&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<p>src指向默认图片或loading，设置data-src属性(自定义属性)为真实图片地址，监听滚动事件，当图片到达可视区域时，再将src值替换成data-src的值。</p>
+<h2 id="简单实现"><a href="#简单实现" class="headerlink" title="简单实现"></a>简单实现</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;title&gt;Lazy-Load&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">  &lt;style&gt;</span></span><br><span class="line"><span class="regexp">    img &#123;</span></span><br><span class="line"><span class="regexp">      display:block;</span></span><br><span class="line"><span class="regexp">      width: 200px;</span></span><br><span class="line"><span class="regexp">      height:200px;</span></span><br><span class="line"><span class="regexp">      background-color: gray;</span></span><br><span class="line"><span class="regexp">      margin-top: 20px;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>style&gt;</span><br><span class="line">&lt;<span class="regexp">/head&gt;</span></span><br><span class="line"><span class="regexp">&lt;body&gt;</span></span><br><span class="line"><span class="regexp">  &lt;div class="container"&gt;</span></span><br><span class="line"><span class="regexp">    &lt;img class="pic" alt="加载中" data-src="http:/</span><span class="regexp">/season.jpanj.com/</span><span class="number">001.</span>jpg<span class="string">"&gt;</span></span><br><span class="line"><span class="string">    &lt;img class="</span>pic<span class="string">" alt="</span>加载中<span class="string">" data-src="</span>http:<span class="comment">//season.jpanj.com/002.jpg"&gt;</span></span><br><span class="line">    &lt;img <span class="class"><span class="keyword">class</span></span>=<span class="string">"pic"</span> alt=<span class="string">"加载中"</span> data-src=<span class="string">"http://season.jpanj.com/003.jpg"</span>&gt;</span><br><span class="line">    &lt;img <span class="class"><span class="keyword">class</span></span>=<span class="string">"pic"</span> alt=<span class="string">"加载中"</span> data-src=<span class="string">"http://season.jpanj.com/004.jpg"</span>&gt;</span><br><span class="line">    &lt;img <span class="class"><span class="keyword">class</span></span>=<span class="string">"pic"</span> alt=<span class="string">"加载中"</span> data-src=<span class="string">"http://season.jpanj.com/005.jpg"</span>&gt;</span><br><span class="line">    &lt;img <span class="class"><span class="keyword">class</span></span>=<span class="string">"pic"</span> alt=<span class="string">"加载中"</span> data-src=<span class="string">"http://season.jpanj.com/006.jpg"</span>&gt;</span><br><span class="line">    &lt;img <span class="class"><span class="keyword">class</span></span>=<span class="string">"pic"</span> alt=<span class="string">"加载中"</span> data-src=<span class="string">"http://season.jpanj.com/007.jpg"</span>&gt;</span><br><span class="line">    &lt;img <span class="class"><span class="keyword">class</span></span>=<span class="string">"pic"</span> alt=<span class="string">"加载中"</span> data-src=<span class="string">"http://season.jpanj.com/008.jpg"</span>&gt;</span><br><span class="line">    &lt;img <span class="class"><span class="keyword">class</span></span>=<span class="string">"pic"</span> alt=<span class="string">"加载中"</span> data-src=<span class="string">"http://season.jpanj.com/009.jpg"</span>&gt;</span><br><span class="line">    &lt;img <span class="class"><span class="keyword">class</span></span>=<span class="string">"pic"</span> alt=<span class="string">"加载中"</span> data-src=<span class="string">"http://season.jpanj.com/010.jpg"</span>&gt;</span><br><span class="line">    &lt;img <span class="class"><span class="keyword">class</span></span>=<span class="string">"pic"</span> alt=<span class="string">"加载中"</span> data-src=<span class="string">"http://season.jpanj.com/011.jpg"</span>&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>body&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">    <span class="keyword">const</span> imgs = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'img'</span>);</span><br><span class="line">    <span class="keyword">const</span> viewHeight = <span class="built_in">window</span>.innerHeight || <span class="built_in">document</span>.documentElement.clientHeight;</span><br><span class="line">    <span class="keyword">let</span> num = <span class="number">0</span>; <span class="comment">// 避免每次都从第一张图片开始检查</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">lazyload</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> i = num; i &lt; imgs.length; i++) &#123;</span><br><span class="line">            <span class="keyword">let</span> distance = viewHeight - imgs[i].getBoundingClientRect().top;</span><br><span class="line">            <span class="keyword">if</span>(distance &gt;= <span class="number">0</span> )&#123; <span class="comment">// 到达可视区域内</span></span><br><span class="line">                imgs[i].src = imgs[i].getAttribute(<span class="string">'data-src'</span>);</span><br><span class="line">                num = i + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">window</span>.addEventListener(<span class="string">'scroll'</span>, lazyload, <span class="literal">false</span>);</span><br><span class="line">    lazyload();</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p>js 实现的关键是判断图片到达可视区域，有两个关键的值：<strong>可视区域的高度</strong>和<strong>元素距离可视区域顶部的距离</strong>。当可视区域高度大于等于元素距离可视区域顶部的距离时，说明图片元素出现，需要将图片地址替换成真实的地址。<br><strong>可视区域的高度</strong>：<code>window.innerHeight || document.documentElement.clientHeight</code>。<br><strong>元素距离可视区域顶部的距离</strong>：<code>getBoundingClientRect()</code> 获取元素的尺寸，<code>top</code>属性获取距离顶部的高度。<br><a href="https://jsfiddle.net/ruirui/b4opkgxu/" target="_blank" rel="noopener">展示效果</a><br>打开控制台可以看出，当img滚动到当前视野范围内时，img的src属性被赋值给真实的图片地址。</p>
+<p><img src="lazy-load.png" alt="lazy-load"></p>
+<p>上述实现了基本的懒加载功能，但是有个关键点：scroll 事件！如果用户在滚动条到达底部的时候页面未加载出来时，频繁滚动滚动条，那浏览器就会频繁计算是否到达底部，而这种频繁触发事件导致页面大量的计算是特别消耗性能的，会引发页面的抖动甚至卡顿，所以我们需要对此类似的事件例如鼠标事件（mousemove等），键盘事件（keyup、keydown等）进行优化，控制事件被触发的频率。</p>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p>先引入两个概念：函数节流（throttle）与函数防抖（debounce）。</p>
+<h3 id="函数节流"><a href="#函数节流" class="headerlink" title="函数节流"></a>函数节流</h3><p>核心思想：某段时间内，不管触发了多少回调，都只执行第一次。<br>对于上面图片处理则是：在固定的时间间隔内（例如300ms内），不管滚动条触发几次，都只执行第一次触发事件的回调，后面的自动忽略，300ms为一个周期。</p>
+<p>实现就是：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fn是事件回调, interval表示时间间隔</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">throttle</span>(<span class="params">fn, interval</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> last = <span class="number">0</span>; <span class="comment">// 上次触发回调的时间</span></span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">let</span> context = <span class="keyword">this</span>; <span class="comment">// 调用时this上下文</span></span><br><span class="line">      <span class="keyword">let</span> args = <span class="built_in">arguments</span>; <span class="comment">// 调用时传入的参数</span></span><br><span class="line">      <span class="keyword">let</span> now = +<span class="keyword">new</span> <span class="built_in">Date</span>(); <span class="comment">// 触发本次事件的回调</span></span><br><span class="line">  </span><br><span class="line">      <span class="keyword">if</span> (now - last &gt;= interval) &#123; <span class="comment">// 判断上次触发时间和本次触发时间间隔是否小于规定间隔</span></span><br><span class="line">          last = now;</span><br><span class="line">          fn.apply(context, args);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> better_scroll = throttle(lazyload, <span class="number">300</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'scroll'</span>, better_scroll);</span><br></pre></td></tr></table></figure></p>
+<p><a href="https://jsfiddle.net/ruirui/5dm1z06b/" target="_blank" rel="noopener">实现效果</a><br>打开控制台，在触发回调的时候，会明显看到打印出来的触发信息频率变少。<br><img src="lazy-load-throttle.png" alt="lazy-load-throttle"></p>
+<h3 id="函数防抖"><a href="#函数防抖" class="headerlink" title="函数防抖"></a>函数防抖</h3><p>核心思想：某段时间内，不管触发了多少回调，都只执行最后一次。<br>可以看到和函数节流的根本区别是：执行回调是以哪次为主。函数防抖典型的应用场景是文本输入的 ajax 验证，判断用户段时间内不输入再去验证，减少请求次数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">debounce</span>(<span class="params">fn, delay</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> timer = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> context = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">let</span> args = <span class="built_in">arguments</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 每次事件被触发时，都去清除之前的旧定时器</span></span><br><span class="line">    <span class="keyword">if</span>(timer) &#123;</span><br><span class="line">        clearTimeout(timer)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 设立新定时器</span></span><br><span class="line">    timer = setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      fn.apply(context, args)</span><br><span class="line">    &#125;, delay)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> better_scroll = debounce(lazyload, <span class="number">300</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'scroll'</span>, better_scroll);</span><br></pre></td></tr></table></figure>
+<p><a href="https://jsfiddle.net/ruirui/jkfeuw24/" target="_blank" rel="noopener">实现效果</a><br>在快速滚动到某个位置后来回滚动滚动条，会发现图片长时间未加载，出现“卡顿”现象。因为用户频繁滚动滚动条，那每次计时器都清零，向后推迟300ms，回调函数就会一直推迟没有反应。<br>所以函数防抖需要设置一个最小延迟时间，如果时间间隔大于设置的最小时间间隔，则必须触发回调。也就是将函数节流与函数防抖结合起来。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">throttle</span>(<span class="params">fn, delay</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> last = <span class="number">0</span>, timer = <span class="literal">null</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; </span><br><span class="line">    <span class="keyword">let</span> context = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">let</span> args = <span class="built_in">arguments</span>;</span><br><span class="line">    <span class="keyword">let</span> now = +<span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (now - last &lt; delay) &#123; <span class="comment">// 当时间间隔小于设置的时间间隔，则设置一个新的定时器</span></span><br><span class="line">       clearTimeout(timer)</span><br><span class="line">       timer = setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">          last = now;</span><br><span class="line">          fn.apply(context, args);</span><br><span class="line">        &#125;, delay)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">// 如果超过，则进行回调</span></span><br><span class="line">        last = now;</span><br><span class="line">        fn.apply(context, args);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> better_scroll = throttle(lazyload, <span class="number">300</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'scroll'</span>, better_scroll);</span><br></pre></td></tr></table></figure></p>
+<p><a href="https://jsfiddle.net/ruirui/jL7po3by/" target="_blank" rel="noopener">实现效果</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/24/vue-nextTick/" rel="next" title="Vue.nextTick 源码解析">
+                <i class="fa fa-chevron-left"></i> Vue.nextTick 源码解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/18/you-don-t-know-javascript-1/" rel="prev" title="你不知道的Javascript（上卷）笔记">
+                你不知道的Javascript（上卷）笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">ruirui</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单实现"><span class="nav-number">2.</span> <span class="nav-text">简单实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">3.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#函数节流"><span class="nav-number">3.1.</span> <span class="nav-text">函数节流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数防抖"><span class="nav-number">3.2.</span> <span class="nav-text">函数防抖</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ruirui</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

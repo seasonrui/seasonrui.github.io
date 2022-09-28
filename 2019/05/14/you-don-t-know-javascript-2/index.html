@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.0" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="tags">
+<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta property="og:site_name" content="ruirui&#39;s blog">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-09-30T15:10:00.074Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tags">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.0.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/tags/">
+
+
+
+
+
+  <title>你不知道的Javascript（中卷）笔记 | ruirui's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ruirui's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">ruirui's 备忘录</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/14/you-don-t-know-javascript-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">你不知道的Javascript（中卷）笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-14T13:29:55+08:00">2019-05-14</time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h2><p>typeof 判断类型，返回的是<strong>类型的字符串值</strong><br>特殊：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typeof</span> <span class="literal">null</span> === <span class="string">'object'</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>) </span>&#123;&#125; === <span class="string">'function'</span></span><br><span class="line"><span class="keyword">var</span> a</span><br><span class="line"><span class="keyword">typeof</span> a <span class="comment">// 'undefined'</span></span><br><span class="line"><span class="keyword">typeof</span> b <span class="comment">// 'undefined'  // 即使b未声明，也会返回undefined</span></span><br></pre></td></tr></table></figure></p>
+<p>函数是对象的一个子集，也有属性，比方说a.length，是声明的参数个数。<br>变量没有类型，但他们的值持有类型。</p>
+<h2 id="值"><a href="#值" class="headerlink" title="值"></a>值</h2><p>如果字符串键值能被强制类型转换为十进制数字的话，它就会被当做数字索引来处理。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = [];</span><br><span class="line">a[<span class="string">'13'</span>] = <span class="number">42</span>;</span><br><span class="line">a,length; <span class="comment">//14</span></span><br></pre></td></tr></table></figure></p>
+<p>字符串是类数组，具有 length 属性以及 indexof() 和 concat() 方法。<br>字符串是不可变的，也就是字符串的成员函数不会改变其原始值，数组是可变的。有的操作可以先”借用”数组的方法。<br>undefined 只有一个值，即 undefined，null 类型也只有一个值，即 Null。它们的名称既是类型也是值。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">null</span>：指空值；曾经赋过值，但目前没有值；是一个特殊的关键字，不是标识符</span><br><span class="line"><span class="literal">undefined</span>：指没有值，从未赋值；是一个标识符，可以被当做变量来使用和赋值</span><br></pre></td></tr></table></figure></p>
+<p>NaN 指”不是一个数字”，理解为”无效数值”、”失败数值”、”坏数值”。他和自身不相等，是唯一一个非自反的值，即 NaN != NaN 为true。<br>怎么判断一个值是 NaN 呢？ ES6 有工具函数<code>Number.isNaN()</code>可以判断。</p>
+<h2 id="原生函数"><a href="#原生函数" class="headerlink" title="原生函数"></a>原生函数</h2><p>所有 typeof 返回值为”object” 的对象都包含一个内部属性[[Class]]，这个属性无法直接访问。一般通过<code>Object.prototype.toString(...)</code>来查看。<br>基本类型是没有.length 和 .toString() 这样的属性和方法，需要通过<strong>封装类型</strong>才能访问，此时 Javascript 会自动为基本类型值包装一个封装对象。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">false</span>);</span><br><span class="line"><span class="keyword">if</span>(!a) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Oops'</span>); <span class="comment">// 执行不到这里</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>获取一个封装对象中的基本类型值，可以使用 valueOf() 函数。</p>
+<h2 id="强制类型转换"><a href="#强制类型转换" class="headerlink" title="强制类型转换"></a>强制类型转换</h2><h3 id="抽象值操作"><a href="#抽象值操作" class="headerlink" title="抽象值操作"></a>抽象值操作</h3><ul>
+<li>ToString<br>负责处理非字符串到字符串的强制类型转换<br>基本类型规则：null 转换为 “null”，undefined 转换为 “undefined”，true 转换为 “true”。<br>普通对象来说，除非自定义，否则 toString() 会返回内部属性[[Class]]的值，如”[[object Object]]”。<br>数组的 toString() 经过了重新定义，将所有单元字符串化后再用”,”进行连接。</li>
+<li>ToNumber<br>true 转换为1，false 转换为0，null 转换为0，undefined 转换为NaN。<br>对象（包括数组）会首先被转换为相应的基本类型值，如果返回的是非数字的基本类型值，再通过规则将其转换为数字。<br>将值转换为基本数据类型，ES规范会检查是否有 valueOf() 方法，如果有并且返回基本类型值，则使用该值进行强制类型转换，如果没有就使用toString()的返回值进行强制类型转换。</li>
+<li>ToBoolean<br>以下这些是假值：undefined、null、false、+0、-0 和 NaN、””。假值类型的布尔强制类型转换结果为 false。<br>假值对象：他们都是封装了假值类型的对象。<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">false</span>); <span class="comment">// true</span></span><br><span class="line"><span class="keyword">var</span> b = <span class="keyword">new</span> <span class="built_in">Number</span>(<span class="number">0</span>); <span class="comment">// true</span></span><br><span class="line"><span class="keyword">var</span> c = <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">""</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="显式强制类型转换"><a href="#显式强制类型转换" class="headerlink" title="显式强制类型转换"></a>显式强制类型转换</h3><ul>
+<li>字符串和数字的显示转换</li>
+</ul>
+<p>字符串和数字之间的转换是通过 String(…) 和 Number(…) 这两个内建函数（原生构造函数）来实现的，请注意它们前面没有 new 关键字，并不创建封装对象。<br>日期转换为数字</p>
+<h3 id="隐式强制类型转换"><a href="#隐式强制类型转换" class="headerlink" title="隐式强制类型转换"></a>隐式强制类型转换</h3><ul>
+<li><p>字符串和数字的隐士强制类型转换</p>
+<ul>
+<li>运算符能用于数字加法，也能用于字符串拼接，那么怎么判断执行哪个操作呢？<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> + <span class="string">'1'</span> <span class="comment">// 11</span></span><br><span class="line"><span class="number">1</span> + <span class="literal">true</span> <span class="comment">// 2</span></span><br><span class="line"><span class="number">1</span> + <span class="literal">false</span> <span class="comment">// 1</span></span><br><span class="line"><span class="number">1</span> + <span class="literal">undefined</span> <span class="comment">// NaN</span></span><br><span class="line"><span class="string">'a'</span> + <span class="literal">true</span> <span class="comment">//  atrue</span></span><br><span class="line"><span class="keyword">var</span> a = [<span class="number">1</span>, <span class="number">2</span>]</span><br><span class="line"><span class="keyword">var</span> b = [<span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line">a+b <span class="comment">// "1,23,4"</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>如果 + 的其中一个操作数是字符串（或者通过以下步骤可以得到字符串）则执行字符串拼接，否则执行数字加法</strong>。<br>步骤：如果其中一个操作数是对象（包括数组），对其首先进行 ToPrimitive 抽象操作，该抽象操作再调用[[DefaultValue]]，以数字作为上下文。</p>
+</li>
+<li><p>布尔值和数字的隐士强制类型转换</p>
+</li>
+<li></li>
+</ul>
+<h3 id="宽松相等和严格相等"><a href="#宽松相等和严格相等" class="headerlink" title="宽松相等和严格相等"></a>宽松相等和严格相等</h3><p>常见误区是：“==检查值是否相等，===检查值和类型是否相等”。<br><strong>正确解释是：“==允许在相等比较中进行强制类型转换，而===不允许”</strong>。</p>
+<ul>
+<li>字符串和数字之间的相等比较<br>x == y：x 是数字，y 是字符串，则将 字符串y 转换为数字（ToNumber(y)）进行判断。</li>
+<li>其他类型和布尔值的相等比较<br>x == y: x 是布尔值，则将布尔值 x 转换为数字（ToNumber(x)）进行判断。<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">var</span> y = <span class="string">"42"</span>;</span><br><span class="line">x == y  <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>首先将 x 转换为数字1，则接下来进行 1 == “42”的比较，”42”转换为数字42，最后变成 1== 42，则为 false。<br>建议：<strong>无论什么情况下都不要使用 == true 和 == false</strong></p>
+<ul>
+<li>null 和 undefined 的相等比较<br>x == y：x 为 null， y为 undefined，则结果为 true<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = dosomething();</span><br><span class="line"><span class="keyword">if</span>(a == <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>条件判断仅在 dosomething() 返回 null 和 undefined 时才成立，除此之外都不成立，包括0、 false 和 “” 这样的假值。</p>
+<ul>
+<li><p>对象和非对象直接的相等比较<br>x == y: x 是字符串或数字，y 是对象，则将 y 转换为 ToPrimitive(y) 进行比较。</p>
+</li>
+<li><p>安全运用隐士强制类型转换<br><strong> 如果两边值中有 true 或 false，千万不要使用 ==。</strong><br><strong> 如果两边值有[]、””或0，千万不要使用==。</strong></p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/03/vue-lifecycle-analysis/" rel="next" title="从源码角度理解 Vue 生命周期和响应式原理">
+                <i class="fa fa-chevron-left"></i> 从源码角度理解 Vue 生命周期和响应式原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/22/docker-command/" rel="prev" title="Docker 常用命令整理">
+                Docker 常用命令整理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">ruirui</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#类型"><span class="nav-number">1.</span> <span class="nav-text">类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#值"><span class="nav-number">2.</span> <span class="nav-text">值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原生函数"><span class="nav-number">3.</span> <span class="nav-text">原生函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#强制类型转换"><span class="nav-number">4.</span> <span class="nav-text">强制类型转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#抽象值操作"><span class="nav-number">4.1.</span> <span class="nav-text">抽象值操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#显式强制类型转换"><span class="nav-number">4.2.</span> <span class="nav-text">显式强制类型转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#隐式强制类型转换"><span class="nav-number">4.3.</span> <span class="nav-text">隐式强制类型转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#宽松相等和严格相等"><span class="nav-number">4.4.</span> <span class="nav-text">宽松相等和严格相等</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ruirui</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

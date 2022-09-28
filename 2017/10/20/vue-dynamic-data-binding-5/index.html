@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.0" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="tags">
+<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta property="og:site_name" content="ruirui&#39;s blog">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-09-30T15:10:00.074Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tags">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.0.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/tags/">
+
+
+
+
+
+  <title>Vue 动态数据绑定（五）-- 实现简单的 MVVM | ruirui's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ruirui's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">ruirui's 备忘录</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/20/vue-dynamic-data-binding-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Vue 动态数据绑定（五）-- 实现简单的 MVVM</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-20T13:46:26+08:00">2017-10-20</time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="http://ife.baidu.com/2017/course/detail/id/24" target="_blank" rel="noopener">任务说明地址</a></p>
+<p>现在要实现最后一步了，如何在数据发生改变的时候，重新渲染 DOM。之前已经实现了数据绑定，模板渲染，现在考虑如何将这两者结合起来。<br>先上一张经典图来说明 vue 实现原理：<br><img src="vue.png" alt="vue"></p>
+<p>Vue 数据绑定原理主要是通过数据劫持结合发布者-订阅者模式方式来实现的。每个实例对象属性都有相应的 watcher 实例对象，在渲染的时候记录属性依赖，数据更新的时候通知 watcher 重新渲染。在这主要有几个重要的概念：</p>
+<ul>
+<li><strong>Observer 监听器</strong>：主要对响应式对象的属性添加 getter/setter 方法，用于依赖收集和派发更新。</li>
+<li><strong>Compile 解析器</strong>：实现模板指令的解析，以及绑定更新函数。</li>
+<li><strong>Dep 订阅器</strong>：收集响应式对象的依赖关系，管理所有的观察者。</li>
+<li><strong>Watcher 观察者</strong>：收到更新通知进行视图更新。</li>
+</ul>
+<h2 id="Observer"><a href="#Observer" class="headerlink" title="Observer"></a>Observer</h2><p>在之前实现的 Observer 里加入订阅器 Dep，实现观察者的管理。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Observer</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.data = data;</span><br><span class="line">  <span class="keyword">if</span>(<span class="built_in">Array</span>.isArray(data))&#123;</span><br><span class="line">    <span class="comment">// 暂不考虑数组</span></span><br><span class="line">  &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.makeObserver(data);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Observer.prototype.makeObserver = <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i <span class="keyword">in</span> data) &#123;</span><br><span class="line">    <span class="keyword">if</span> (data.hasOwnProperty(i)) &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">typeof</span> data[i] === <span class="string">'object'</span>) &#123;</span><br><span class="line">        <span class="keyword">new</span> Observer(data[i]); <span class="comment">// 递归添加</span></span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.getset(i, data[i]);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Observer.prototype.getset = <span class="function"><span class="keyword">function</span> (<span class="params">i, value</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> val = value;</span><br><span class="line">  <span class="keyword">let</span> self = <span class="keyword">this</span>;</span><br><span class="line">  <span class="keyword">var</span> dep = <span class="keyword">new</span> Dep(); <span class="comment">// 每个属性都有一个唯一的Dep与它对应</span></span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(<span class="keyword">this</span>.data, i, &#123;</span><br><span class="line">    configurable: <span class="literal">true</span>,</span><br><span class="line">    enumerable: <span class="literal">true</span>,</span><br><span class="line">    get: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'你访问了'</span> + i);</span><br><span class="line">      <span class="keyword">if</span>(Dep.target)&#123; <span class="comment">// 注意：这里进行收集依赖</span></span><br><span class="line">        dep.addSub(Dep.target);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> val;</span><br><span class="line">    &#125;,</span><br><span class="line">    set: <span class="function"><span class="keyword">function</span> (<span class="params">newval</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'你设置了'</span> + i + <span class="string">',新的值为'</span> + newval);</span><br><span class="line">      <span class="keyword">if</span>(val === newval) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      val = newval;</span><br><span class="line">      <span class="keyword">if</span>(<span class="keyword">typeof</span> newval === <span class="string">'object'</span>) &#123;</span><br><span class="line">        <span class="keyword">new</span> Observer(val);</span><br><span class="line">      &#125;</span><br><span class="line">      dep.notify(); <span class="comment">// 通知订阅器的所有watcher更新</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>每个属性都有一个订阅器 Dep 与其对应，用来管理该属性的所有观察者。<br><strong>依赖收集</strong>是什么意思呢？对于一个模板 &#123;&#123; user.name &#125;&#125;，那么他的依赖就有 user.name 这个变量，<strong>依赖收集就是确定数据与视图的依赖关系</strong>。在触发 getter 的时候进行依赖收集，注意这里有一个重点：只有在 Dep.target 有值的时候才会进行依赖收集。也就是说，真正是因为 Vue 内部初始化数据的时候才去收集依赖，其他时候访问变量触发的 getter 就不进行收集，直接返回 value。 Dep.target是什么呢，看下面分析。<br><strong>派发更新</strong>：当数据改变了，调用该属性 Dep 订阅器的 notify 方法，通知该订阅器的所有 watcher 去更新视图。例如，页面上有两处访问了 user.name，那么 user.name 的订阅器里就会有两个 watcher ，当数据更新的时候，会通知这两个 watcher 进行更新。</p>
+<h2 id="Dep"><a href="#Dep" class="headerlink" title="Dep"></a>Dep</h2><p>Dep 是依赖收集的容器，是一个 class。实际上是对 Watcher 的一种管理，记录哪些 Watcher 订阅了自己变化并在更新时进行通知。Dep 有个静态属性 target，是全局唯一的 Watcher。Dep 主要实现添加依赖 addSub 和通知 watcher 的更新 notify。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Dep</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.subs = []; <span class="comment">// 观察者合集</span></span><br><span class="line">&#125;</span><br><span class="line">Dep.target = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 向subs数组添加依赖</span></span><br><span class="line">Dep.prototype.addSub = <span class="function"><span class="keyword">function</span> (<span class="params">sub</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.subs.push(sub);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通知所有订阅者更新</span></span><br><span class="line">Dep.prototype.notify = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.subs.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">    item.update();</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="Watcher"><a href="#Watcher" class="headerlink" title="Watcher"></a>Watcher</h2><p>Watcher 是观察者，在初始化的时候需要将自己添加进订阅器 Dep 中，那如何添加呢？Observer 中的 getter 进行依赖收集的时候会执行添加观察者 Watcher 的操作，所以在初始化的时候只要触发了对应的 getter 就可以，也就是去获取一次属性值。如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Watcher</span>(<span class="params">vm, exp, cb</span>) </span>&#123;</span><br><span class="line">  Dep.target = <span class="keyword">this</span>; <span class="comment">// Watcher 初始化的时候，将Dep.target指向全局唯一的 Watcher</span></span><br><span class="line">  <span class="keyword">this</span>.vm = vm;</span><br><span class="line">  <span class="keyword">this</span>.cb = cb;</span><br><span class="line">  <span class="keyword">this</span>.exp = exp;</span><br><span class="line">  <span class="keyword">this</span>.get(); <span class="comment">// 获取值的时候会触发属性的 getter，这样就将观察者加入了订阅器中，然后清空Dep.target。</span></span><br><span class="line">  Dep.target = <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br><span class="line">Watcher.prototype.get = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> CompileUtil.parse(<span class="keyword">this</span>.exp)(<span class="keyword">this</span>.vm.data); </span><br><span class="line">&#125;</span><br><span class="line">Watcher.prototype.update = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="comment">// 观察者进行更新</span></span><br><span class="line">  <span class="keyword">this</span>.newVal = <span class="keyword">this</span>.get(); <span class="comment">// 获取新值，这个时候已经不会再将观察者加入订阅器中了，因为 Dep.target 已经为 null。</span></span><br><span class="line">  <span class="keyword">this</span>.cb(<span class="keyword">this</span>.newVal)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在初始化的时候Dep.target指向唯一的观察者，触发属性的 getter 添加监听，最后将 Dep.target 清空。<br>这儿有个 CompileUtil.parse 为了解析深层属性，返回最终的值。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">CompileUtil.parse = <span class="function"><span class="keyword">function</span>(<span class="params">exp</span>) </span>&#123; <span class="comment">// 解析多层路径</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="regexp">/[^\w.$]/</span>.test(exp)) <span class="keyword">return</span>; </span><br><span class="line">  <span class="keyword">var</span> exps = exp.split(<span class="string">'.'</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = exps.length; i &lt; len; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!obj) <span class="keyword">return</span>;</span><br><span class="line">        obj = obj[exps[i]];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Compile"><a href="#Compile" class="headerlink" title="Compile"></a>Compile</h2><p>Compile解析器主要工作是两点</p>
+<ol>
+<li>解析模板指令，初始化模板视图。</li>
+<li>绑定模板指令节点与更新方法，初始化订阅器。</li>
+</ol>
+<p>上节编译器 Compile 只是实现了第一点，现在要加上初始化的时候绑定更新的功能，在初始化视图的时候，初始化一个 watcher，此时将此 watcher 添加进该属性的 Dep 中，同时绑定更新函数，这样在数据更新的时候，调用此更新函数。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Compile.prototype.compileText = <span class="function"><span class="keyword">function</span> (<span class="params">node, exp</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 匹配 &#123;&#123; &#125;&#125;替换</span></span><br><span class="line">  <span class="keyword">let</span> self = <span class="keyword">this</span>;</span><br><span class="line">  <span class="keyword">var</span> newVal = CompileUtil.parse(exp)(<span class="keyword">this</span>.vm.data);</span><br><span class="line">  <span class="keyword">this</span>.updateText(node, newVal); <span class="comment">// 初始化视图</span></span><br><span class="line">  <span class="keyword">new</span> Watcher(<span class="keyword">this</span>.vm, exp, <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;  <span class="comment">// 生成订阅器并绑定更新函数</span></span><br><span class="line">    self.updateText(node, value);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line">Compile.prototype.updateText = <span class="function"><span class="keyword">function</span> (<span class="params">node, value</span>) </span>&#123; <span class="comment">// 只实现简单的替换</span></span><br><span class="line">  node.textContent = <span class="keyword">typeof</span> value == <span class="string">'undefined'</span> ? <span class="string">''</span> : value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后，实现 vue 的初始化，根据上图，需要绑定 Observe 和 Compile 。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Vue</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.el = obj.el;</span><br><span class="line">  <span class="keyword">this</span>.data = obj.data;</span><br><span class="line">  <span class="keyword">new</span> Observer(<span class="keyword">this</span>.data);</span><br><span class="line">  <span class="keyword">new</span> Compile(<span class="keyword">this</span>.el, <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实现<a href="https://jsfiddle.net/ruirui/5jmtoL7u/" target="_blank" rel="noopener">代码</a></p>
+<p>效果如下：</p>
+<p><img src="demo.gif" alt="mvvm"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/vue/" rel="tag"># vue</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/10/vue-dynamic-data-binding-4/" rel="next" title="Vue 动态数据绑定（四）-- 解析器 Compile">
+                <i class="fa fa-chevron-left"></i> Vue 动态数据绑定（四）-- 解析器 Compile
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/22/promise/" rel="prev" title="Promise 踩坑记">
+                Promise 踩坑记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">ruirui</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Observer"><span class="nav-number">1.</span> <span class="nav-text">Observer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dep"><span class="nav-number">2.</span> <span class="nav-text">Dep</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Watcher"><span class="nav-number">3.</span> <span class="nav-text">Watcher</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Compile"><span class="nav-number">4.</span> <span class="nav-text">Compile</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ruirui</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

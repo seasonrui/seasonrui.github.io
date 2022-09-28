@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.0" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="tags">
+<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta property="og:site_name" content="ruirui&#39;s blog">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-09-30T15:10:00.074Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tags">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.0.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/tags/">
+
+
+
+
+
+  <title>Node 实践前端 HTTP 缓存 | ruirui's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ruirui's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">ruirui's 备忘录</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/10/http-cache/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Node 实践前端 HTTP 缓存</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-10T14:48:47+08:00">2019-01-10</time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>总结了 HTTP 缓存机制，为了加深理解，用 Node 实践了 HTTP 缓存。<br>本文demo地址: <a href="https://github.com/seasonrui/demo-for-blog/tree/master/node-cache-practice" target="_blank" rel="noopener">https://github.com/seasonrui/demo-for-blog/tree/master/node-cache-practice</a></p>
+<p><strong>缓存优先级</strong>：</p>
+<ul>
+<li>service worker</li>
+<li>memory cache</li>
+<li>disk cache</li>
+<li>网络请求<br>浏览器会一级级从上到下找，直到找到为止。</li>
+</ul>
+<h2 id="service-worker"><a href="#service-worker" class="headerlink" title="service worker"></a>service worker</h2><blockquote>
+<p>Service workers 本质上充当Web应用程序与浏览器之间的代理服务器，也可以在网络可用时作为浏览器和网络间的代理。它们旨在（除其他之外）使得能够创建有效的离线体验，拦截网络请求并基于网络是否可用以及更新的资源是否驻留在服务器上来采取适当的动作。他们还允许访问推送通知和后台同步API。</p>
+</blockquote>
+<h2 id="memory-cache"><a href="#memory-cache" class="headerlink" title="memory cache"></a>memory cache</h2><p>内存中的缓存，几乎所有请求都会浏览器自动加入 memory cache 中，是浏览器自身的机制，不受开发者控制。关闭 tab 页即失效。 </p>
+<h2 id="disk-cache"><a href="#disk-cache" class="headerlink" title="disk cache"></a>disk cache</h2><p>存储在硬盘上的缓存，是持久存储的。会根据 http 头信息来判断哪些资源是可以缓存的。平时说的<strong>强制缓存</strong>，<strong>协商缓存</strong>都是此类缓存。</p>
+<h3 id="强制缓存"><a href="#强制缓存" class="headerlink" title="强制缓存"></a>强制缓存</h3><p>利用 http 响应头中的 Expires 和 Cache-Control 两个字段来控制，表示资源的缓存时间。</p>
+<h4 id="Expires"><a href="#Expires" class="headerlink" title="Expires"></a>Expires</h4><p>是 HTTP/1.0 的规范，表示的是<strong>绝对时间</strong>，值是一个GMT格式的时间字符串。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Expires: Fri Jan 11 2019 14:03:22 GMT</span><br></pre></td></tr></table></figure></p>
+<p>告诉浏览器，在这个时间之前，都不需要再次请求。<br>因为是绝对时间，所以如果客户端和服务器时间不一致，会导致浏览器判断缓存失效。</p>
+<h4 id="Cache-Control"><a href="#Cache-Control" class="headerlink" title="Cache-Control"></a>Cache-Control</h4><p>是 HTTP/1.1 的规范，表示的是<strong>相对时间</strong>，常用值如下：</p>
+<ul>
+<li>max-age：表示相对有效时间，主要就是根据这个字段来判断时间。</li>
+<li>no-cache：不使用本地缓存，使用协商缓存，主要目的是为了防止从缓存中读取过期资源。</li>
+<li>no-store：真正意义上的”不走缓存”，禁止浏览器及任何中间件缓存资源。</li>
+<li>public：可以被浏览器，CDN 等缓存。</li>
+<li>private：只能被用户终端浏览器缓存，不允许 CDN 等服务器对其缓存。</li>
+</ul>
+<p>Expires 可以和 Cache-Control 一起使用，Cache-Control 优先级更高。</p>
+<h4 id="例子1-max-age"><a href="#例子1-max-age" class="headerlink" title="例子1: max-age"></a><a href="https://github.com/seasonrui/demo-for-blog/tree/master/node-cache-practice/max-age" target="_blank" rel="noopener">例子1: max-age</a></h4><p>一个简单的index.html页面，引入index.css。设置Cache-control: max-age=120，缓存两分钟。</p>
+<ol>
+<li>第一次请求<br><img src="demo1-1.png" alt="demo"><br>正常走网络请求。</li>
+<li>刷新当前页面<br><img src="demo1-2.png" alt="demo"><br>看到请求 from memory cache，因为浏览器自动将请求加入到memory cache中，耗时0ms。</li>
+<li>关闭当前 tab，打开新的 tab 页。<br><img src="demo1-3.png" alt="demo"><br>因为关闭 tab，memory cache 清空。接着去看 disk cache，因为设置了强制缓存2分钟，所以会看到 from disk cache，耗时比memory cache多。<br>当设置 max-age 为 0 时，每次都会重新请求。</li>
+</ol>
+<h4 id="例子2-no-cache"><a href="#例子2-no-cache" class="headerlink" title="例子2: no-cache"></a><a href="https://github.com/seasonrui/demo-for-blog/tree/master/node-cache-practice/no-cache" target="_blank" rel="noopener">例子2: no-cache</a></h4><p>服务器设置响应为 Cache-Control: no-cache。<br>index.html 页面引入多个资源，相同的资源都引入两次。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">  &lt;link rel=&quot;icon&quot; href=&quot;data:;base64,=&quot;&gt;</span><br><span class="line">  &lt;script src=&quot;./index.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &lt;script src=&quot;./index.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &lt;link rel=&quot;stylesheet&quot; href=&quot;./index.css&quot;/&gt;</span><br><span class="line">  &lt;link rel=&quot;stylesheet&quot; href=&quot;./index.css&quot;/&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;img src=&quot;./1.jpeg&quot;&gt;</span><br><span class="line">&lt;img src=&quot;./1.jpeg&quot;&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">  setTimeout(function () &#123;</span><br><span class="line">    let img = document.createElement(&apos;img&apos;)</span><br><span class="line">    img.src = &apos;./1.jpeg&apos;</span><br><span class="line">    document.body.appendChild(img)</span><br><span class="line">  &#125;, 1000)</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>发现同步请求和异步请求都只请求了一次，也就是说no-cache不会影响本次请求的缓存，只是说下次请求需要协商缓存，本次如果有多个浏览器还是会缓存。<br><img src="demo2-1.png" alt="demo2-1"><br><strong>max-age=0</strong>和<strong>no-cache</strong>在浏览器实现上看基本一样，但是max-age为0表示的是到期需要重新验证，而no-cache表示每次必须向服务端验证。</p>
+<h4 id="例子3-no-store"><a href="#例子3-no-store" class="headerlink" title="例子3: no-store"></a><a href="https://github.com/seasonrui/demo-for-blog/tree/master/node-cache-practice/no-store" target="_blank" rel="noopener">例子3: no-store</a></h4><p>服务器设置响应为Cache-Control: no-store<br>代码同 no-cache 一样，发现不管同步还是异步请求每个请求都不缓存，<br><img src="demo3-1.png" alt="demo2-1"></p>
+<h3 id="协商缓存（对比缓存）"><a href="#协商缓存（对比缓存）" class="headerlink" title="协商缓存（对比缓存）"></a>协商缓存（对比缓存）</h3><p>当强制缓存失效，就需要使用对比缓存，由服务器判断缓存资源是否可用，浏览器与服务器通过特定的标识来判断，分别是以下两组字段（成对出现）：</p>
+<h4 id="Last-Modified-amp-If-Modified-Since"><a href="#Last-Modified-amp-If-Modified-Since" class="headerlink" title="Last-Modified &amp; If-Modified-Since"></a>Last-Modified &amp; If-Modified-Since</h4><p>浏览器第一次请求时，服务器返回的 header 中加上 Last-Modified，表示资源最后一次修改时间。<br>当浏览器再次请求时，请求头中会带上 If-Modify-Since，值是第一次请求返回的 Last-Modified 值，服务器收到请求会，会根据此字段进行比对，如果相等，表示未修改，返回304；反之，返回200状态码，并且返回数据。<br>缺点是：</p>
+<ol>
+<li>如果文件被服务器动态修改，但是内容并没有修改，此时因为文件的更新时间是最新的，所以缓存起不到作用。</li>
+<li>If-Modified-Since能检测到的粒度是s级的，如果资源更新时间是秒以下的单位，则不起作用。</li>
+</ol>
+<h4 id="例子4-Last-Modified"><a href="#例子4-Last-Modified" class="headerlink" title="例子4: Last-Modified"></a><a href="https://github.com/seasonrui/demo-for-blog/tree/master/node-cache-practice/last-modified" target="_blank" rel="noopener">例子4: Last-Modified</a></h4><p>服务器设置Cache-Control: no-cache，响应头带上Last-Modified。<br>第一次请求。<br> <img src="demo4-1.png" alt="demo4-1"></p>
+<p>第二次请求会带上If-Modified-Since，值为第一次请求返回的Last-Modified值，服务器对比两次时间，如果相等就返回304，不一致就返回内容和Last-Modified。<br> <img src="demo4-2.png" alt="demo4-2"><br>打开新标签页，还是会携带If-Modified-Since进行判断。</p>
+<h4 id="ETag-amp-If-None-Match"><a href="#ETag-amp-If-None-Match" class="headerlink" title="ETag &amp; If-None-Match"></a>ETag &amp; If-None-Match</h4><p>为了解决上述问题，出现了新的字段 ETag &amp; If-None-Match。<br>ETag 存储的是文件唯一标识，判断流程与 Last-Modified 一样。Last-Modified 可以和 ETag 一起使用，ETag 优先级更高。</p>
+<h4 id="例子5：Etag"><a href="#例子5：Etag" class="headerlink" title="例子5：Etag"></a><a href="https://github.com/seasonrui/demo-for-blog/tree/master/node-cache-practice/etag" target="_blank" rel="noopener">例子5：Etag</a></h4><p>同 Last-Modified 过程一样，区别是 Last-Modified 值是精确到秒的时间。Etag 是文件的唯一标识。<br> <img src="demo5-1.png" alt="demo5-1"><br> <img src="demo5-2.png" alt="demo5-2"><br>修改一个js文件，刷新页面会发现返回200。并带上新的Etag信息以便下次请求时更新用。<br> <img src="demo5-4.png" alt="demo5-4"><br> <img src="demo5-3.png" alt="demo5-3"></p>
+<p>以上就是所有的缓存机制，但如果什么都没设置呢，浏览器会怎么处理？<br>对于这种情况，浏览器会采用一个启发式的算法，通常会取响应头中的 Date 减去 Last-Modified 值的 10% 作为缓存时间。</p>
+<h2 id="刷新"><a href="#刷新" class="headerlink" title="刷新"></a>刷新</h2><p>URL回车：正常请求，查看 disk cache 中是否有匹配，没有则直接请求。<br>普通刷新：（F5) (Command + R): 当前 tab 没关闭，所以 memory cache 是可用的。会忽略 Expires/Cache-Control 的设置，向服务器发送请求，Last-Modified/Etag 还是有效的。<br>强制刷新：(Ctrl + F5) (Command + Shift + R)：请求头会自动带上Cache-Control: no-cache，表示浏览器不使用缓存，服务器返回 200 和最新内容。</p>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><h3 id="频繁变动的资源"><a href="#频繁变动的资源" class="headerlink" title="频繁变动的资源"></a>频繁变动的资源</h3><p>对于频繁变动的资源，就需要使用协商缓存了，也就是需要设置响应头 Cache-Control：no-cache，配合 Etag 或 Last-modified，每次都从服务器验证。</p>
+<h3 id="不经常变化的资源"><a href="#不经常变化的资源" class="headerlink" title="不经常变化的资源"></a>不经常变化的资源</h3><p>通常设置 Cache-control 的 max-age 为较大的值，缓存时间长点，为了解决更新的问题，对文件名上进行 hash 处理。这样在更新的时候，HTML引入的文件名更新，之前的缓存失效。</p>
+<p>参考文章： <a href="https://juejin.im/post/5c22ee806fb9a049fb43b2c5" target="_blank" rel="noopener">https://juejin.im/post/5c22ee806fb9a049fb43b2c5</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/24/iframe-print/" rel="next" title="iframe 打印页面局部内容">
+                <i class="fa fa-chevron-left"></i> iframe 打印页面局部内容
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/24/vue-nextTick/" rel="prev" title="Vue.nextTick 源码解析">
+                Vue.nextTick 源码解析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">ruirui</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#service-worker"><span class="nav-number">1.</span> <span class="nav-text">service worker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#memory-cache"><span class="nav-number">2.</span> <span class="nav-text">memory cache</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#disk-cache"><span class="nav-number">3.</span> <span class="nav-text">disk cache</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#强制缓存"><span class="nav-number">3.1.</span> <span class="nav-text">强制缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Expires"><span class="nav-number">3.1.1.</span> <span class="nav-text">Expires</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cache-Control"><span class="nav-number">3.1.2.</span> <span class="nav-text">Cache-Control</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例子1-max-age"><span class="nav-number">3.1.3.</span> <span class="nav-text">例子1: max-age</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例子2-no-cache"><span class="nav-number">3.1.4.</span> <span class="nav-text">例子2: no-cache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例子3-no-store"><span class="nav-number">3.1.5.</span> <span class="nav-text">例子3: no-store</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协商缓存（对比缓存）"><span class="nav-number">3.2.</span> <span class="nav-text">协商缓存（对比缓存）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Last-Modified-amp-If-Modified-Since"><span class="nav-number">3.2.1.</span> <span class="nav-text">Last-Modified &amp; If-Modified-Since</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例子4-Last-Modified"><span class="nav-number">3.2.2.</span> <span class="nav-text">例子4: Last-Modified</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ETag-amp-If-None-Match"><span class="nav-number">3.2.3.</span> <span class="nav-text">ETag &amp; If-None-Match</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例子5：Etag"><span class="nav-number">3.2.4.</span> <span class="nav-text">例子5：Etag</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#刷新"><span class="nav-number">4.</span> <span class="nav-text">刷新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">5.</span> <span class="nav-text">使用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#频繁变动的资源"><span class="nav-number">5.1.</span> <span class="nav-text">频繁变动的资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不经常变化的资源"><span class="nav-number">5.2.</span> <span class="nav-text">不经常变化的资源</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ruirui</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

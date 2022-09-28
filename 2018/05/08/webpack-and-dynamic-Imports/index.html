@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.0" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="tags">
+<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta property="og:site_name" content="ruirui&#39;s blog">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-09-30T15:10:00.074Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tags">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.0.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/tags/">
+
+
+
+
+
+  <title>『译』Webpack Import 异步加载 | ruirui's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ruirui's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">ruirui's 备忘录</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/08/webpack-and-dynamic-Imports/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">『译』Webpack Import 异步加载</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-08T11:03:13+08:00">2018-05-08</time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>原文链接：<a href="https://medium.com/front-end-hacking/webpack-and-dynamic-imports-doing-it-right-72549ff49234" target="_blank" rel="noopener">Webpack and Dynamic Imports: Doing it Right</a></p>
+<h2 id="webpack和异步加载"><a href="#webpack和异步加载" class="headerlink" title="webpack和异步加载"></a>webpack和异步加载</h2><p>在webpackv1中，我们推荐使用AMD的require或者webpack的require.ensure来实现动态加载模块。但在这篇文章，我们将介绍webpackV2支持的<a href="https://doc.webpack-china.org/api/module-methods/#import-" target="_blank" rel="noopener">ES2015 dynamic import方式</a>来加载模块，需要用到babel插件和webpack一些特性。</p>
+<h2 id="基础用法"><a href="#基础用法" class="headerlink" title="基础用法"></a>基础用法</h2><p>语法比较简单：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import(&quot;module/foo&quot;).then(foo =&gt; console.log(foo.default))</span><br></pre></td></tr></table></figure>
+<p>上面的代码将在运行时加载foo模块，打印出模块的默认输出。import接收一个字符串参数。</p>
+<h2 id="动态加载模块的语法"><a href="#动态加载模块的语法" class="headerlink" title="动态加载模块的语法"></a>动态加载模块的语法</h2><p>假设你的应用在移动端和PC端有不用的展现方式，只有一种响应式的设计不能满足要求的，那么就需要在不同的设备上加载不同的页面去渲染。作为一个聪明的开发者，如果用户使用的是移动端那么你是不希望去加载PC端的代码，反之亦然。那么将会用以下方式处理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">export default function pageLoader(platform) &#123;</span><br><span class="line">  switch (platform=&quot;desktop&quot;) &#123;</span><br><span class="line">    case &quot;mobile&quot;:</span><br><span class="line">      return import(&quot;components/MyMobileComponent&quot;);</span><br><span class="line"></span><br><span class="line">    case &quot;desktop&quot;:</span><br><span class="line">      return import(&quot;components/MyDesktopComponent&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>“但是，这只是一个简单的例子，真正项目里不会只有一个页面要处理”</p>
+<p>所以，尽管我们使用了组件的动态加载方式，但还是不够灵活，让我们重构一下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">export default function pageLoader(platform, componentName) &#123;</span><br><span class="line">  switch (platform=&quot;desktop&quot;) &#123;</span><br><span class="line">    case &quot;mobile&quot;:</span><br><span class="line">      return import(`components/mobile/$&#123;componentName&#125;`);</span><br><span class="line">    case &quot;desktop&quot;:</span><br><span class="line">      return import(`components/desktop/$&#123;componentName&#125;`);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>“还是不太好，应用不只是支持这两个设备，以后可能会支持更多的设备”</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const load = (platform=&quot;desktop&quot;) =&gt; componentName =&gt; import(`components/$&#123;platform&#125;/$&#123;componentName&#125;`);</span><br><span class="line">export const loadDesktopComponent = load(&quot;desktop&quot;);</span><br><span class="line">export const loadMobileComponent = load(&quot;mobile&quot;);</span><br><span class="line"></span><br><span class="line">export default load;</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，我们采用了更优雅的方法。可以适用任何我们想用的平台。</p>
+<h2 id="加载文件存在的问题"><a href="#加载文件存在的问题" class="headerlink" title="加载文件存在的问题"></a>加载文件存在的问题</h2><p>在webpack中通常我们处理图片的方式是使用file-loader，file-loader会将文件路径映射到模块内。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import(`assets/images/$&#123;imageName&#125;.jpg`).then( src =&gt; ... )</span><br></pre></td></tr></table></figure>
+<p>现在存在的问题是：如果你想要动态加载一个文件，像这个例子中的图片，webpack会生成一个额外的chunk：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">webpackJsonp([4],&#123;</span><br><span class="line"></span><br><span class="line">/***/ 850:</span><br><span class="line">/***/ (function(module, exports, __webpack_require__) &#123;</span><br><span class="line"></span><br><span class="line">module.exports = __webpack_require__.p + &quot;6089b36e59a28c41600c17626366cde0.jpg&quot;;</span><br><span class="line"></span><br><span class="line">/***/ &#125;)</span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line">//# sourceMappingURL=4.chunk.a6e0a95123529f9afcc5.js.map</span><br></pre></td></tr></table></figure>
+<p>所以最大的问题是： 当你请求一个异步加载的图片时，会先发一个网络请求去请求该模块的chunk，再去请求图片。每个图片都需要请求两次才能加载成功，如果使用https的话那么就更糟糕了。</p>
+<p>那么如何解决这个问题呢：</p>
+<h2 id="webpack“神奇的注释”"><a href="#webpack“神奇的注释”" class="headerlink" title="webpack“神奇的注释”"></a>webpack“神奇的注释”</h2><p>webpack为动态引入增加了一个非常好的特性：神奇的注释。在配置中添加一些注释，以告诉webpack如何创建并加载该chunk。</p>
+<h3 id="Webpack-Mode"><a href="#Webpack-Mode" class="headerlink" title="Webpack Mode"></a>Webpack Mode</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import(/* webpackMode: &quot;eager&quot; */ `assets/images/$&#123;imageName&#125;.jpg`)</span><br></pre></td></tr></table></figure>
+<p>这将使webpack把该异步加载的chunk加入到其父chunk中，不再去单独创建一个chunk。这种方式下，所有的文件路径在父chunk加载的时候就加载进来了。<br>webpack有四种模式（lazy，lazy-once，eager，weak）来处理异步加载。具体看<a href="https://doc.webpack-china.org/api/module-methods/" target="_blank" rel="noopener">这里</a>。</p>
+<h3 id="Webpack-Chunk名称"><a href="#Webpack-Chunk名称" class="headerlink" title="Webpack Chunk名称"></a>Webpack Chunk名称</h3><p>“hey，我注意到webpack将异步加载的模块命名为数字，这样调试起来有点麻烦，因为我不知道某个特定的chunk是否加载！”</p>
+<p>我们既然可以控制加载方式，那么也可以通过注释去改变chunk的名称，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import(/* webpackChunkName: &quot;foo-image&quot; */ &quot;assets/images/foo.jpg&quot;);</span><br><span class="line">import(/* webpackChunkName: &quot;bar-module&quot; */ &quot;modules/bar&quot;);</span><br></pre></td></tr></table></figure>
+<h3 id="Prefetch-Preload"><a href="#Prefetch-Preload" class="headerlink" title="Prefetch/Preload"></a>Prefetch/Preload</h3><p>注：这个特性在webpackV4.6之后才有</p>
+<p>如果你使用的是http2，那么<a href="https://http2.github.io/faq/#why-is-http2-multiplexed" target="_blank" rel="noopener">最好将大chunk分割成小的chunk</a>。所以，最好的方式是将异步加载的chunk和父chunk分开并且在请求图片前加载好图片的chunk。<br>那就需要用webpackPrefetch: true来替代webpackMode: eager。</p>
+<p>“那么Prefetch和Preload有什么区别吗？”</p>
+<p>webpack的文档解释的更详细：</p>
+<blockquote>
+<ul>
+<li>A preloaded chunk starts loading in parallel to the parent chunk. A prefetched chunk starts after the parent chunk finish.<br>preload：异步chunk和其父chunk是并行加载的。prefetch：异步chunk是在父chunk加载完之后再加载的。</li>
+<li>A preloaded chunk has medium priority and instantly downloaded. A prefetched chunk is downloaded in browser idle time.<br>preload：异步chunk在浏览器中有中等优先级，会立即下载。prefetch：异步chunk会在浏览器空闲的时候下载。</li>
+<li>A preloaded chunk should be instantly requested by the parent chunk. A prefetched chunk can be used anytime in the future.<br>preload：异步chunk在父chunk加载完之后会立刻发起请求。prefetch：异步chunk会在父chunk加载完之后的任意时间发起。</li>
+<li>Browser support is different.</li>
+</ul>
+</blockquote>
+<p>浏览器支持是有差异的</p>
+<p>因为prefetch chunk会在浏览器空闲的时候加载，所以可以加数字注释说明chunk加载的顺序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 0 is same as true</span><br><span class="line">import(/* webpackPrefetch: 0 */ &quot;assets/images/foo.jpg&quot;);</span><br><span class="line">// this loads first as 1 &gt; 0 (or true)</span><br><span class="line">import(/* webpackPrefetch: 1 */ &quot;modules/bar&quot;);</span><br><span class="line">// this one will be the last!</span><br><span class="line">import(/* webpackPrefetch: -100 */ &quot;modules/slowpoke&quot;);</span><br></pre></td></tr></table></figure>
+<p>顺序将是：bar&gt;foo&gt;slowpoke。</p>
+<h2 id="深入研究代码分割"><a href="#深入研究代码分割" class="headerlink" title="深入研究代码分割"></a>深入研究代码分割</h2><p>如果你想要深入研究在单页应用中是如何进行懒加载的，可以看我之前的两篇文章，虽然是用react作为例子的，你可以在任何基于SPA的框架/库中运用相同的思想：</p>
+<p><a href="https://medium.com/front-end-hacking/lazy-loading-with-react-and-webpack-2-8e9e586cf442" target="_blank" rel="noopener">Lazy Loading with React and Webpack 2</a></p>
+<p><a href="https://medium.com/front-end-hacking/lazy-loading-with-react-redux-and-webpack-2-35ad6fc1b640" target="_blank" rel="noopener">Lazy Loading with React + Redux and Webpack 2</a></p>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><p>代码分割是一个强大的功能，可以使应用变得更快，更智能的去加载依赖关系。但是正如uncle Ben曾经说的：”with great power comes great responsibility” 。了解工具是如何工作的才能最大限度发挥他的性能，希望这篇文章能对你有所帮助！</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/webpack/" rel="tag"># webpack</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/22/promise/" rel="next" title="Promise 踩坑记">
+                <i class="fa fa-chevron-left"></i> Promise 踩坑记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/28/observer-pattern/" rel="prev" title="从一道题理解观察者模式（自定义事件）">
+                从一道题理解观察者模式（自定义事件） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">ruirui</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#webpack和异步加载"><span class="nav-number">1.</span> <span class="nav-text">webpack和异步加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础用法"><span class="nav-number">2.</span> <span class="nav-text">基础用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态加载模块的语法"><span class="nav-number">3.</span> <span class="nav-text">动态加载模块的语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加载文件存在的问题"><span class="nav-number">4.</span> <span class="nav-text">加载文件存在的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#webpack“神奇的注释”"><span class="nav-number">5.</span> <span class="nav-text">webpack“神奇的注释”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Webpack-Mode"><span class="nav-number">5.1.</span> <span class="nav-text">Webpack Mode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Webpack-Chunk名称"><span class="nav-number">5.2.</span> <span class="nav-text">Webpack Chunk名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Prefetch-Preload"><span class="nav-number">5.3.</span> <span class="nav-text">Prefetch/Preload</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深入研究代码分割"><span class="nav-number">6.</span> <span class="nav-text">深入研究代码分割</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结束语"><span class="nav-number">7.</span> <span class="nav-text">结束语</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ruirui</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

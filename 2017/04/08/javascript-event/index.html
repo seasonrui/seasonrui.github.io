@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.0" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="tags">
+<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta property="og:site_name" content="ruirui&#39;s blog">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-09-30T15:10:00.074Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tags">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.0.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/tags/">
+
+
+
+
+
+  <title>Javascript 事件 | ruirui's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ruirui's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">ruirui's 备忘录</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/08/javascript-event/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Javascript 事件</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-08T10:55:56+08:00">2017-04-08</time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="事件流"><a href="#事件流" class="headerlink" title="事件流"></a>事件流</h2><p>IE事件冒泡流：即事件最开始由最具体的元素接收，然后逐级向上传播至最不具体的那个节点（文档）。<br>事件捕获流：与事件冒泡流相反，由最不具体的元素接收，传至最具体的元素节点。</p>
+<h2 id="事件处理程序"><a href="#事件处理程序" class="headerlink" title="事件处理程序"></a>事件处理程序</h2><p><strong>1. HTML事件处理程序</strong><br><strong>缺点</strong>：html和js紧密耦合在一起，js代码和html代码都需要修改<br><strong>2. DOM0级事件处理程序</strong><br><strong>方法</strong>：把一个函数赋值给一个事件的处理程序属性<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var btn = document.getElementById(&apos;btn&apos;);</span><br><span class="line">//指定事件处理程序</span><br><span class="line">btn.onclick=function()&#123;</span><br><span class="line">    alert(&quot;hello&quot;);</span><br><span class="line">&#125;</span><br><span class="line">//取消时，将时间处理程序属性设置为null即可</span><br><span class="line">btn.onclick = null;</span><br></pre></td></tr></table></figure></p>
+<p><strong>作用域</strong>：DOM0事件处理程序被认为是元素的方法，所以其作用域为元素的作用域，即<strong>this引用当前元素</strong>。<br><strong>处理阶段</strong>：事件处理程序会在事件流的<strong>冒泡阶段</strong>被处理。<br><strong>调用情况</strong>：只能绑定一个事件处理函数，后面的会覆盖掉前面的<br><strong>3. DOM2级事件处理程序</strong><br><strong>方法</strong>：添加事件addEventListener()；移除事件removeEventlistener()<br>三个参数：要注册处理程序的事件类型（不包括前缀‘on’）、事件处理程序函数、布尔值（是否在捕获阶段处理事件，默认false）。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var btn = document.getElementById(&apos;btn&apos;);</span><br><span class="line">btn.addEventListener(&apos;click&apos;,showMes,false);//不加on</span><br><span class="line">btn.removeEventListener(&apos;click&apos;,showMes,false);</span><br></pre></td></tr></table></figure></p>
+<p><strong>作用域：</strong>与DOM0级的一样，为元素的作用域，<strong>this引用当前元素</strong>。<br><strong>处理阶段：</strong> DOM2级事件处理程序规定事件流的三个阶段：事件捕获阶段，处于目标阶段，事件冒泡阶段。注意第三个参数，以第三个参数区分捕获阶段处理还是冒泡阶段处理。目前事件捕获只能用于以addEventListener()注册且第三个参数是true的事件处理程序中。<br><strong>调用情况：</strong>同一个事件处理程序可以绑定两次，一次用于事件捕获，一次用于事件冒泡；若绑定的是同一个事件处理程序，并且都为事件冒泡或事件捕获，则只能绑定一次；不同的事件处理函数可以绑定多个，按顺序触发。<br><strong>4. IE事件处理程序</strong><br><strong>方法：</strong>添加事件attachEvent()；移除事件detachEvent()<br><strong>两个参数：</strong>事件类型（加上前缀‘on’）、处理程序函数（因为IE8以及更早的版本只支持事件冒泡，不支持事件捕获）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var btn = document.getElementById(&apos;btn&apos;);</span><br><span class="line">btn.attachEvent(&apos;onclick&apos;,showMes);//加上on</span><br><span class="line">btn.detachEvent(&apos;onclick&apos;,showMes);</span><br></pre></td></tr></table></figure>
+<p><strong>作用域：</strong> <strong>this值为全局（window）对象</strong>。<br><strong>调用情况：</strong> 允许相同的事件处理程序注册多次，当特定的事件类型发生时，注册函数的调用次数和注册次数一样（匿名函数）；同一个事件处理函数只能绑定一次（非匿名函数）</p>
+<h2 id="事件对象"><a href="#事件对象" class="headerlink" title="事件对象"></a>事件对象</h2><p>在触发DOM上的事件时都会产生一个事件对象event，它包含着所有和事件有关的信息，调用事件处理程序时会把事件对象作为一个参数（有一个例外）。<br><strong>DOM中的事件对象属性</strong></p>
+<ul>
+<li>type属性：用于获取事件类型(click…)  event.type</li>
+<li>target属性：触发事件的目标元素，是不变的</li>
+<li>stopPropagation()方法：阻止事件传播，可以在事件传播期间的任何时间调用。</li>
+<li>preventDefault()方法：取消事件默认行为</li>
+</ul>
+<p><strong>IE中的事件对象属性</strong></p>
+<ul>
+<li>type属性：用于获取事件类型(click…)  event.type</li>
+<li>srcElement属性：触发事件的目标元素</li>
+<li>cancleBubble属性：阻止事件传播，因为IE8之前版本不支持事件捕获，所以事件传播即为事件冒泡。设置为true表示阻止冒泡</li>
+<li>returnValue属性：阻止事件默认行为，设置为false阻止事件默认行为</li>
+</ul>
+<h2 id="事件委托"><a href="#事件委托" class="headerlink" title="事件委托"></a>事件委托</h2><p>事件的代理是靠事件的<strong>冒泡机制</strong>实现的。可以避免对特定的每个节点添加事件监听，将事件监听绑定到父元素上。<br><strong>优点：</strong> 1.可以大量节省内存占用，减少事件注册 2.可以实现当新增子对象时无需再次对其绑定事件，对于动态内容尤为合适。</p>
+<h2 id="封装事件处理程序"><a href="#封装事件处理程序" class="headerlink" title="封装事件处理程序"></a>封装事件处理程序</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">var eventUtil = &#123;</span><br><span class="line">  addHandler:function (element,type,handler)&#123;</span><br><span class="line">    if(element.addEventListener)&#123;</span><br><span class="line">      element.addEventListener(type,handler,false);</span><br><span class="line">    &#125;else if(element.attachEvent)&#123;</span><br><span class="line">      element.attachEvent(&apos;on&apos;+type,handler);</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">      element[&apos;on&apos;+type]=handler;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  removeHandler:function (element,type,handler)&#123;</span><br><span class="line">    if(element.removeEventListener)&#123;</span><br><span class="line">      element.removeEventListener(type,handler,false);</span><br><span class="line">    &#125;else if(element.detachEvent)&#123;</span><br><span class="line">      element.detachEvent(&apos;on&apos;+type,handler);</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">      element[&apos;on&apos;+type]=null;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  delegateEvent:function(element,tag,eventName,listener)&#123;</span><br><span class="line"></span><br><span class="line">    eventUtil.addHandler(element,eventName,function(event)&#123;</span><br><span class="line">      var target = event.target || event.srcElement;</span><br><span class="line">      if(target.tagName.toLowerCase() == tag.toLowerCase())&#123;</span><br><span class="line">        listener.call(target,event);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">  getEvent:function(event)&#123;</span><br><span class="line">    var event = event?window.event;</span><br><span class="line">  &#125;,</span><br><span class="line">  getType:function(event)&#123;</span><br><span class="line">            return event.type;</span><br><span class="line">    &#125;,</span><br><span class="line">  getElement:function(event)&#123;</span><br><span class="line">    return event.target || event.srcElement;</span><br><span class="line">  &#125;,</span><br><span class="line">  preventDefault:function(event)&#123;</span><br><span class="line">    if(event.preventDefault)&#123;</span><br><span class="line">      event.preventDefault();</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">      event.returnValue=false;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  stopPropagation:function(event)&#123;</span><br><span class="line">    if(event.stopPropagation)&#123;</span><br><span class="line">      event.stopPropagation();</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">      event.cancelBubble=true;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/20/javasrcipt-determine-the-type/" rel="next" title="Javascript 类型判断">
+                <i class="fa fa-chevron-left"></i> Javascript 类型判断
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/08/javascript-sort-algorithm/" rel="prev" title="Javascript 排序算法">
+                Javascript 排序算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">ruirui</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#事件流"><span class="nav-number">1.</span> <span class="nav-text">事件流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件处理程序"><span class="nav-number">2.</span> <span class="nav-text">事件处理程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件对象"><span class="nav-number">3.</span> <span class="nav-text">事件对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件委托"><span class="nav-number">4.</span> <span class="nav-text">事件委托</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#封装事件处理程序"><span class="nav-number">5.</span> <span class="nav-text">封装事件处理程序</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ruirui</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

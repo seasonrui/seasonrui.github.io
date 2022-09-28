@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.0.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.0" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="tags">
+<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta property="og:site_name" content="ruirui&#39;s blog">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-09-30T15:10:00.074Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tags">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.0.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/tags/">
+
+
+
+
+
+  <title>Vue 动态数据绑定（三）-- 深层数据变化向上传播 | ruirui's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ruirui's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">ruirui's 备忘录</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/05/vue-dynamic-data-binding-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ruirui">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruirui's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Vue 动态数据绑定（三）-- 深层数据变化向上传播</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-05T10:42:10+08:00">2017-09-05</time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="http://ife.baidu.com/2017/course/detail/id/21" target="_blank" rel="noopener">任务说明地址</a></p>
+<blockquote>
+<p><strong>任务描述</strong><br>这是“动态数据绑定”的第三题。在第二题的基础上，我们再多考虑一个问题：”深层次数据变化如何逐层往上传播”。举个例子。</p>
+</blockquote>
+<pre><code>let app2 = new Observer({
+    name: {
+        firstName: &apos;shaofeng&apos;,
+        lastName: &apos;liang&apos;
+    },
+    age: 25
+});
+
+app2.$watch(&apos;name&apos;, function (newName) {
+    console.log(&apos;我的姓名发生了变化，可能是姓氏变了，也可能是名字变了。&apos;)
+});
+
+app2.data.name.firstName = &apos;hahaha&apos;;
+// 输出：我的姓名发生了变化，可能是姓氏变了，也可能是名字变了。
+app2.data.name.lastName = &apos;blablabla&apos;;
+// 输出：我的姓名发生了变化，可能是姓氏变了，也可能是名字变了。
+</code></pre><blockquote>
+<p>观察到了吗？firstName 和 lastName 作为 name 的属性，其中任意一个发生变化，都会得出以下结论：”name 发生了变化。”这种机制符合”事件传播“机制，方向是从底层往上逐层传播到顶层。<br>  这现象想必你们也见过，比如：“点击某一个DOM元素，相当于也其父元素和其所有祖先元素。”（当然，你可以手动禁止事件传播） 所以，这里的本质是：”浏览器内部实现了一个事件传播的机制”，你有信心自己实现一个吗？</p>
+</blockquote>
+<hr>
+<p>所以重点是：<strong>深层次数据变化如何逐层往上传播</strong></p>
+<p>在任务二中，只能注册监听对象的第一层属性，深层属性的监听未完成。因为每一层的 event 都是独立的，深层对象属性触发的时候可以看出 this.events 里为空。所以要实现 event 之间的通信，使得可以向上传播。 一种方式： 每次进行 new Observer 的时候记录路径 set 时解析路径，虽然可以实现，但是也太残暴了，不符合向上传播的思想。</p>
+<p>重点在于“冒泡”，让父级事件知道子级触发了事件，怎么实现事件冒泡呢，冒泡啊冒泡。也就是当触发子级事件时（也就是 set 方法里），能拿到父级对象，触发父级的 Event 对象的 emit 方法。所以思路就理清了，在创建对象的时候，记录父级对象，将父级对象传入子级中，再对属性路径进行整合解析，当触发set时进行冒泡，触发父级相应的事件（又是一个递归））。所以构造函数就需要多加两个参数，一个是路径 path，一个是父级对象 $parent。</p>
+<p>最终代码（<a href="https://jsfiddle.net/ruirui/19ha04c7/" target="_blank" rel="noopener">Demo</a>）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line">function Observer(data, path, $parent) &#123;</span><br><span class="line">  this.data = data;</span><br><span class="line">  this.$parent = (typeof $parent === &apos;undefined&apos;) ? null : $parent;</span><br><span class="line">  this.makeObserver(data, path);</span><br><span class="line">  this.eventsBus = new Event();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Observer.prototype.makeObserver = function(data, path) &#123;</span><br><span class="line">  var self = this;</span><br><span class="line">  for (var i in data) &#123;</span><br><span class="line">    if (data.hasOwnProperty(i)) &#123;</span><br><span class="line">      var new_path = (typeof path === &apos;undefined&apos;) ? i : (path + &apos;.&apos; + i);</span><br><span class="line">      if (typeof data[i] === &apos;object&apos;) &#123;</span><br><span class="line">        new Observer(data[i], new_path, self);</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        this.getset(i, data[i], new_path);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Observer.prototype.getset = function (i, value, path) &#123;</span><br><span class="line">  let val = value;</span><br><span class="line">  let self = this;</span><br><span class="line">  Object.defineProperty(this.data, i, &#123;</span><br><span class="line">    configurable: true,</span><br><span class="line">    enumerable: true,</span><br><span class="line">    get: function () &#123;</span><br><span class="line">      console.log(&apos;你访问了&apos; + i);</span><br><span class="line">      return val;</span><br><span class="line">    &#125;,</span><br><span class="line">    set: function (newval) &#123;</span><br><span class="line">      self.bubble(self, path, val, newval); // 事件冒泡</span><br><span class="line">      if(typeof newval === &apos;object&apos;) &#123;</span><br><span class="line">        new Observer(val);</span><br><span class="line">      &#125;</span><br><span class="line">      console.log(&apos;你设置了&apos; + i + &apos;,新的值为&apos; + newval);</span><br><span class="line">      val = newval;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 往上层传递 沿着父对象往上传递</span><br><span class="line">Observer.prototype.bubble = function (self, path, val, newval) &#123;</span><br><span class="line">  if (self === null)</span><br><span class="line">    return;</span><br><span class="line">  self.eventsBus.emit(path, val, newval);</span><br><span class="line">  var parent_path = path.split(&apos;.&apos;).slice(0, -1).join(&apos;.&apos;); // 拆出父级的路径</span><br><span class="line">  self.bubble(self.$parent, parent_path, val, newval);  //关键点  递归触发父级的emit</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function Event() &#123;</span><br><span class="line">  this.events = &#123;&#125;;</span><br><span class="line">&#125;</span><br><span class="line">Event.prototype.on = function (attr, callback) &#123;</span><br><span class="line">  if (this.events[attr])&#123;</span><br><span class="line">    this.events[attr].push(callback);</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    this.events[attr] = [callback];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">Event.prototype.emit = function (attr, val, newval) &#123;</span><br><span class="line">  this.events[attr] &amp;&amp; this.events[attr].forEach(function(item) &#123;</span><br><span class="line">      item(newval);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Observer.prototype.$watch = function (attr,callback)&#123;</span><br><span class="line">  // 注册一个监听事件</span><br><span class="line">  this.eventsBus.on(attr, callback);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let app1 = new Observer(&#123;</span><br><span class="line">  age: 25,</span><br><span class="line">  name: &#123;</span><br><span class="line">    firstName: &apos;rui&apos;,</span><br><span class="line">    lastName: &apos;sun&apos;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line">app1.$watch(&apos;age&apos;, function(age) &#123;</span><br><span class="line">  console.log(`我的年纪变了，现在已经是：$&#123;age&#125;岁了`)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app1.$watch(&apos;name&apos;, function(newName) &#123;</span><br><span class="line">  console.log(&apos;我的名字变了,新的值是&apos; + newName);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">console.log(app1.data.age = 100);</span><br><span class="line">console.log(app1.data.name.lastName = &apos;ruirui&apos;);</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/vue/" rel="tag"># vue</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/01/vue-dynamic-data-binding-2/" rel="next" title="Vue 动态数据绑定（二）-- 深度监听">
+                <i class="fa fa-chevron-left"></i> Vue 动态数据绑定（二）-- 深度监听
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/10/vue-dynamic-data-binding-4/" rel="prev" title="Vue 动态数据绑定（四）-- 解析器 Compile">
+                Vue 动态数据绑定（四）-- 解析器 Compile <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">ruirui</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ruirui</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
